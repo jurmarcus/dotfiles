@@ -1,1 +1,13 @@
 copy-on-select = clipboard
+theme = Catppuccin Frappe
+
+# Modifier + Enter keybindings
+# shift+enter sends a newline
+keybind = shift+enter=text:\n
+
+# ctrl+enter sends a newline
+keybind = ctrl+enter=text:\n
+
+# Alternative: Use 'unconsumed:' prefix to pass through to applications
+# keybind = unconsumed:shift+enter=ignore
+# keybind = unconsumed:ctrl+enter=ignore

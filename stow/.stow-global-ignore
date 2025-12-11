@@ -22,3 +22,7 @@
 (^|/)target(/|$)
 (^|/)node_modules(/|$)
 (^|/)dist(/|$)
+
+# zsh runtime files (user-specific)
+(^|/)\.zsh_sessions(/|$)
+(^|/)\.zsh_history$
