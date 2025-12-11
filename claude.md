@@ -6,6 +6,22 @@ This file provides context for Claude Code when making adjustments to dotfiles.
 
 Main dotfiles repository: `/Users/methylene/dotfiles`
 
+## Version Control
+
+This repository uses **Sapling (sl)** commands for version control operations, even though it's a Git repository. Sapling provides a better user experience and works seamlessly with Git backends.
+
+### Preferred Commands
+
+- Use `sl` commands instead of `git` commands
+- `sl status` - Check working directory status
+- `sl commit` - Create commits
+- `sl push` - Push changes to remote
+- `sl pull` - Pull changes from remote
+- `sl log` - View commit history
+- `sl diff` - View changes
+
+**Important**: When working with this repository, always use `sl` commands rather than `git` commands.
+
 ## Directory Structure
 
 ```
@@ -208,6 +224,13 @@ SSH config location: `~/.ssh/config`
 
 ## Important Notes for Claude
 
+### Version Control Workflow
+
+**CRITICAL**: This repository uses **Sapling (sl)** commands, NOT git commands.
+- Use `sl status`, `sl commit`, `sl push`, etc.
+- Never use `git` commands - always use `sl` instead
+- Sapling works with the Git backend but provides better UX
+
 ### When Modifying Dotfiles:
 
 1. **Never modify files in `~/.config/` or `~/` directly** - these are symlinks managed by stow
@@ -236,7 +259,7 @@ Files are symlinked from `dotfiles/` to `~/` using GNU Stow. The structure in `d
 
 1. Navigate to project directory: `cd ~/code`
 2. Projects organized by category (personal/work/experiments)
-3. Initialize git repo if needed: `git init`
+3. Initialize repo if needed: `sl init --git` (creates a Git repo with Sapling interface)
 4. Use GitHub CLI for repo creation: `gh repo create`
 
 ### Shell Workflow
@@ -329,11 +352,11 @@ which starship
 grep starship ~/.config/zsh/.zshrc
 ```
 
-### Git Operations Failing
+### Version Control Operations Failing
 
 ```bash
-# Check git config
-git config --list
+# Check sl/git config
+sl config --list
 
 # Check SSH keys
 ls -la ~/.ssh/
@@ -341,6 +364,9 @@ ssh -T git@github.com
 
 # Check SSH config
 cat ~/.ssh/config
+
+# Check repository status
+sl status
 ```
 
 ### Permissions Issues
@@ -392,11 +418,10 @@ brew cleanup
 ### Dotfiles Updates
 
 ```bash
-# Commit changes
+# Commit and push changes (using Sapling)
 cd ~/dotfiles
-git add .
-git commit -m "Update configuration"
-git push
+sl commit -m "Update configuration"
+sl push
 ```
 
 ### Plugin Updates
