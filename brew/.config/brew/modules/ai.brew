@@ -1,0 +1,8 @@
+# AI Coding Agents
+cask "claude-code"
+brew "opencode"
+
+# AI Assistants
+cask "claude"
+cask "chatgpt"
+mas "Perplexity", id: 6714467650

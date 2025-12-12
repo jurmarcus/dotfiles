@@ -1,15 +1,37 @@
-brew "eza"
-brew "fzf"
-brew "mas"
-brew "neovim"
-brew "sapling"
-brew "starship"
-brew "stow"
-brew "tmux"
-brew "uv"
-brew "zoxide"
+# Shell & Terminal
 brew "zsh"
+brew "starship"
 brew "mosh"
-
 cask "ghostty"
+
+# Shell Enhancements
+brew "atuin"
+brew "fzf"
+brew "zoxide"
+
+# File & Text Utilities
+brew "bat"
+brew "eza"
+brew "fd"
+brew "ripgrep"
+
+# Version Control
+brew "sapling"
+brew "git-delta"
+brew "gh"
+
+# Development Tools
+brew "neovim"
+brew "tmux"
+brew "stow"
+brew "mas"
+
+# System Monitoring
+brew "btop"
+
+# Package Managers & Runtimes
+brew "uv"
+brew "bun"
+
+# Fonts
 cask "font-fira-code-nerd-font"

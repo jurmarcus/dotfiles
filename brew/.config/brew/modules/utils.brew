@@ -1,8 +1,13 @@
-cask "appcleaner"
-cask "chatgpt"
-cask "deepl"
-cask "jordanbaird-ice"
-cask "localsend"
+# Productivity & Launcher
 cask "raycast"
-cask "obsidian"
+
+# File Management
+cask "appcleaner"
 cask "the-unarchiver"
+
+# File Sharing & Downloads
+cask "localsend"
+cask "transmission"
+
+# Note Taking & Knowledge Management
+cask "obsidian"

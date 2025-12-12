@@ -1,0 +1,16 @@
+# VSCodium Extensions
+# Install with: ./install-extensions.sh
+# Or manually: codium --install-extension <extension-id>
+
+# AI Coding Assistants
+anthropic.claude-code
+google.gemini-cli-vscode-ide-companion
+google.geminicodeassist
+openai.chatgpt
+
+# Themes & Icons
+catppuccin.catppuccin-vsc
+catppuccin.catppuccin-vsc-icons
+
+# Productivity Tools
+pedro-bronsveld.anki-editor

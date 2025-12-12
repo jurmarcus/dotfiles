@@ -1,1 +1,2 @@
-cask "visual-studio-code"
+# Code Editors
+cask "vscodium"

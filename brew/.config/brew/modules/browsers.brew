@@ -1,2 +1,7 @@
+# Web Browsers
 cask "zen"
 cask "google-chrome"
+
+# Browser Extensions & Tools
+mas "1Password for Safari", id: 1569813296
+mas "SocialFocus", id: 1661093205

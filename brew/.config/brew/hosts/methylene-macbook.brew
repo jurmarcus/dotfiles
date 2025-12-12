@@ -1,3 +1,5 @@
+enable "ai"
+
 enable "browsers"
 enable "security"
 enable "utils"

@@ -1,4 +1,3 @@
+# Hardware Control Software
 cask "elgato-camera-hub"
-cask "elgato-stream-deck"
-cask "elgato-wave-link"
 cask "tourbox-console"

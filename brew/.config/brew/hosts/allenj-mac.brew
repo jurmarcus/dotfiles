@@ -1,3 +1,5 @@
+enable "ai"
+
 enable "browsers"
 enable "security"
 enable "utils"
@@ -5,7 +7,6 @@ enable "utils"
 enable "hardware"
 
 enable "developer"
-
 
 enable "photography"
 enable "entertainment"
