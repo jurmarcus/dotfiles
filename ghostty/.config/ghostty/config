@@ -1,5 +1,6 @@
 copy-on-select = clipboard
 theme = Catppuccin Frappe
+macos-titlebar-style = tabs
 
 # Modifier + Enter keybindings
 # shift+enter sends a newline
