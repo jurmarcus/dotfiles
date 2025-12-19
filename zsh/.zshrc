@@ -135,3 +135,136 @@ watch() {
 dft() {
   difft "$@"
 }
+
+# =============================================================================
+# Python / uv workflow
+# =============================================================================
+
+alias py="python3"
+alias ipy="uvx ipython"
+alias pip="uv pip"
+
+# Create new Python project with uv
+pyinit() {
+  local name="${1:-.}"
+  if [[ "$name" != "." ]]; then
+    mkdir -p "$name" && cd "$name"
+  fi
+  uv init
+  uv add --dev ruff pytest
+  echo "Created Python project with uv"
+}
+
+# Run Python script with uv
+pyr() {
+  uv run python "$@"
+}
+
+# Run pytest with uv
+pyt() {
+  uv run pytest "$@"
+}
+
+# Add and sync dependencies
+pya() {
+  uv add "$@"
+}
+
+# Run any Python tool without installing
+uvr() {
+  uvx "$@"
+}
+
+# =============================================================================
+# TypeScript / bun workflow
+# =============================================================================
+
+alias ts="bun run"
+alias tsx="bun x tsx"
+
+# Create new TypeScript project with bun
+tsinit() {
+  local name="${1:-.}"
+  if [[ "$name" != "." ]]; then
+    mkdir -p "$name" && cd "$name"
+  fi
+  bun init -y
+  bun add -d typescript @types/bun
+  echo "Created TypeScript project with bun"
+}
+
+# Run TypeScript file directly
+tsr() {
+  bun run "$@"
+}
+
+# Run tests with bun
+tst() {
+  bun test "$@"
+}
+
+# =============================================================================
+# MCP (Model Context Protocol) development
+# =============================================================================
+
+# Create new MCP server project (Python)
+mcp-init-py() {
+  local name="${1:-mcp-server}"
+  pyinit "$name"
+  cd "$name" 2>/dev/null || true
+  uv add mcp
+  cat > src/${name//-/_}/server.py << 'MCPEOF'
+from mcp.server import Server
+from mcp.server.stdio import stdio_server
+
+server = Server("${name}")
+
+@server.list_tools()
+async def list_tools():
+    return []
+
+@server.call_tool()
+async def call_tool(name: str, arguments: dict):
+    raise ValueError(f"Unknown tool: {name}")
+
+async def main():
+    async with stdio_server() as (read, write):
+        await server.run(read, write)
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
+MCPEOF
+  echo "Created MCP server project: $name"
+  echo "Run with: uv run python -m ${name//-/_}.server"
+}
+
+# Create new MCP server project (TypeScript)
+mcp-init-ts() {
+  local name="${1:-mcp-server}"
+  tsinit "$name"
+  cd "$name" 2>/dev/null || true
+  bun add @modelcontextprotocol/sdk
+  cat > src/index.ts << 'MCPEOF'
+import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+
+const server = new Server(
+  { name: "${name}", version: "0.1.0" },
+  { capabilities: { tools: {} } }
+);
+
+server.setRequestHandler("tools/list", async () => ({
+  tools: []
+}));
+
+server.setRequestHandler("tools/call", async (request) => {
+  throw new Error(`Unknown tool: ${request.params.name}`);
+});
+
+const transport = new StdioServerTransport();
+server.connect(transport);
+MCPEOF
+  echo "Created MCP server project: $name"
+  echo "Run with: bun run src/index.ts"
+}

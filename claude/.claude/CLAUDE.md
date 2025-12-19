@@ -74,6 +74,36 @@ dotfiles/
 - `watch <cmd> [ext]` - Run command on file changes
 - `dft` - Syntax-aware diff (difftastic)
 
+### Python / uv Workflow
+
+| Command | Description |
+|---------|-------------|
+| `py` | python3 |
+| `ipy` | IPython via uvx |
+| `pip` | uv pip |
+| `pyinit [name]` | Create Python project with ruff+pytest |
+| `pyr <file>` | Run Python with uv |
+| `pyt` | Run pytest |
+| `pya <pkg>` | Add dependency |
+| `uvr <tool>` | Run any tool via uvx |
+
+### TypeScript / bun Workflow
+
+| Command | Description |
+|---------|-------------|
+| `ts` | bun run |
+| `tsx` | Run TS directly |
+| `tsinit [name]` | Create TS project |
+| `tsr <file>` | Run with bun |
+| `tst` | Run tests |
+
+### MCP Development
+
+| Command | Description |
+|---------|-------------|
+| `mcp-init-py [name]` | Create Python MCP server |
+| `mcp-init-ts [name]` | Create TypeScript MCP server |
+
 ### Brew Modules
 
 Enabled via host file (`hosts/methylene-macbook.brew`):
