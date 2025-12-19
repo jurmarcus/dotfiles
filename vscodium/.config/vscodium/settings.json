@@ -1,0 +1,40 @@
+{
+  // Theme
+  "workbench.colorTheme": "Catppuccin Frappé",
+  "workbench.iconTheme": "catppuccin-frappe",
+
+  // Font
+  "editor.fontFamily": "FiraCode Nerd Font Mono, monospace",
+  "editor.fontSize": 14,
+  "editor.fontLigatures": true,
+  "terminal.integrated.fontFamily": "FiraCode Nerd Font Mono",
+
+  // Editor
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.formatOnSave": true,
+  "editor.minimap.enabled": false,
+  "editor.cursorBlinking": "smooth",
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.smoothScrolling": true,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+  "editor.renderWhitespace": "selection",
+  "editor.wordWrap": "on",
+
+  // Files
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.autoSave": "onFocusChange",
+
+  // Terminal
+  "terminal.integrated.smoothScrolling": true,
+
+  // Workbench
+  "workbench.startupEditor": "none",
+  "workbench.list.smoothScrolling": true,
+
+  // Telemetry off
+  "telemetry.telemetryLevel": "off"
+}
