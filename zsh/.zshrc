@@ -207,6 +207,26 @@ tsr() { bun run "$@"; }
 tst() { bun test "$@"; }
 
 # =============================================================================
+# Functions - Templates
+# =============================================================================
+
+# Simple mustache-style template: {{VAR}} gets replaced
+# Usage: template file.tpl VAR=value VAR2=value2
+template() {
+  local file="$1"; shift
+  local content=$(<"$file")
+  for arg in "$@"; do
+    local key="${arg%%=*}"
+    local val="${arg#*=}"
+    content="${content//\{\{$key\}\}/$val}"
+  done
+  echo "$content"
+}
+
+# Template directory
+TEMPLATE_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/templates"
+
+# =============================================================================
 # Functions - MCP Development
 # =============================================================================
 
@@ -217,28 +237,7 @@ mcp-init-py() {
   cd "$name" 2>/dev/null || true
   uv add mcp
   mkdir -p "src/$module_name"
-  cat > "src/$module_name/server.py" << MCPEOF
-from mcp.server import Server
-from mcp.server.stdio import stdio_server
-
-server = Server("$name")
-
-@server.list_tools()
-async def list_tools():
-    return []
-
-@server.call_tool()
-async def call_tool(name: str, arguments: dict):
-    raise ValueError(f"Unknown tool: {name}")
-
-async def main():
-    async with stdio_server() as (read, write):
-        await server.run(read, write)
-
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
-MCPEOF
+  template "$TEMPLATE_DIR/mcp-server.py" NAME="$name" > "src/$module_name/server.py"
   echo "Created MCP server: $name"
   echo "Run: uv run python -m $module_name.server"
 }
@@ -248,26 +247,7 @@ mcp-init-ts() {
   tsinit "$name"
   cd "$name" 2>/dev/null || true
   bun add @modelcontextprotocol/sdk
-  cat > src/index.ts << MCPEOF
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-
-const server = new Server(
-  { name: "$name", version: "0.1.0" },
-  { capabilities: { tools: {} } }
-);
-
-server.setRequestHandler("tools/list", async () => ({
-  tools: []
-}));
-
-server.setRequestHandler("tools/call", async (request) => {
-  throw new Error(\`Unknown tool: \${request.params.name}\`);
-});
-
-const transport = new StdioServerTransport();
-server.connect(transport);
-MCPEOF
+  template "$TEMPLATE_DIR/mcp-server.ts" NAME="$name" > src/index.ts
   echo "Created MCP server: $name"
   echo "Run: bun run src/index.ts"
 }
