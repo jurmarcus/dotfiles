@@ -1,0 +1,11 @@
+# Studio machine - heavy AI/ML workloads
+
+enable "ai"
+enable "browsers"
+enable "security"
+enable "utils"
+enable "developer"
+enable "editors"
+
+# Studio-specific: Local LLM GUI
+cask "lm-studio"

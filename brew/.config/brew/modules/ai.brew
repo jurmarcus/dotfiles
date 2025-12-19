@@ -1,6 +1,10 @@
 # AI Coding Agents
 cask "claude-code"
+brew "aider"
 brew "opencode"
+
+# Local LLMs
+cask "ollama"
 
 # AI Assistants
 cask "claude"
