@@ -14,20 +14,30 @@ brew "bat"
 brew "eza"
 brew "fd"
 brew "ripgrep"
+brew "dust"
+brew "duf"
+brew "jq"
+
+# Documentation
+brew "tealdeer"
 
 # Version Control
 brew "sapling"
 brew "git-delta"
 brew "gh"
+brew "lazygit"
 
 # Development Tools
 brew "neovim"
-brew "tmux"
 brew "stow"
 brew "mas"
 
 # System Monitoring
 brew "btop"
+brew "procs"
+
+# HTTP & Networking
+brew "xh"
 
 # Package Managers & Runtimes
 brew "uv"
