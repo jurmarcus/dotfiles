@@ -31,10 +31,13 @@ source <(fzf --zsh)
 # zoxide (smarter cd)
 eval "$(zoxide init zsh)"
 
+# atuin (better shell history with sync)
+eval "$(atuin init zsh)"
+
 # Starship prompt
 eval "$(starship init zsh)"
 
-# Aliases
+# Aliases - Modern replacements
 alias ls="eza"
 alias ll="eza -la"
 alias la="eza -a"
@@ -42,6 +45,9 @@ alias lt="eza --tree"
 alias cat="bat"
 alias grep="rg"
 alias find="fd"
+alias top="btop"
+alias htop="btop"
+alias diff="delta"
 
 # Git aliases
 alias g="git"
@@ -51,9 +57,10 @@ alias gc="git commit"
 alias gp="git push"
 alias gl="git log --oneline"
 alias gd="git diff"
+alias gds="git diff --staged"
 
-# uv shell completions
-eval "$(uv generate-shell-completion zsh)"
-
-# bun completions
-[ -s "/opt/homebrew/Cellar/bun/1.3.5/share/zsh/site-functions/_bun" ] && source "/opt/homebrew/Cellar/bun/1.3.5/share/zsh/site-functions/_bun"
+# Shell completions (dynamic generation)
+eval "$(uv generate-shell-completion zsh)"      # uv (Python)
+eval "$(bun completions)"                        # bun (JavaScript)
+eval "$(gh completion -s zsh)"                   # GitHub CLI
+eval "$(op completion zsh)" 2>/dev/null          # 1Password CLI (if available)
