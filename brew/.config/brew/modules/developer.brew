@@ -1,6 +1,7 @@
 # Shell & Terminal
 brew "zsh"
 brew "starship"
+brew "zellij"
 brew "mosh"
 cask "ghostty"
 
@@ -8,6 +9,8 @@ cask "ghostty"
 brew "atuin"
 brew "fzf"
 brew "zoxide"
+brew "zsh-autosuggestions"
+brew "zsh-syntax-highlighting"
 
 # File & Text Utilities
 brew "bat"

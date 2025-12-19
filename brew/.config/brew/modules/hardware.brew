@@ -1,3 +1,4 @@
 # Hardware Control Software
 cask "elgato-camera-hub"
 cask "tourbox-console"
+cask "karabiner-elements"

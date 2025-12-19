@@ -30,30 +30,16 @@ else
   compinit -C
 fi
 
-# Cache helper - regenerate all: rm ~/.cache/zsh/*
-_zsh_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
-[[ -d "$_zsh_cache" ]] || mkdir -p "$_zsh_cache"
+# Tool initializations
+eval "$(fzf --zsh)"
+eval "$(zoxide init zsh --cmd cd)"
+eval "$(atuin init zsh)"
+eval "$(starship init zsh)"
 
-_cached() {
-  local name="$1" cmd="$2" cache="$_zsh_cache/$name.zsh"
-  [[ -f "$cache" ]] || eval "$cmd" > "$cache" 2>/dev/null
-  source "$cache"
-}
-
-# Tool initializations (cached)
-_cached "fzf" "fzf --zsh"
-_cached "zoxide" "zoxide init zsh --cmd cd"
-_cached "atuin" "atuin init zsh"
-_cached "starship" "starship init zsh"
-
-# Completions (cached)
-_cached "uv" "uv generate-shell-completion zsh"
-_cached "bun" "bun completions"
-_cached "gh" "gh completion -s zsh"
-_cached "op" "op completion zsh"
-
-unset _zsh_cache
-unfunction _cached
+# Completions
+eval "$(uv generate-shell-completion zsh)"
+eval "$(gh completion -s zsh)"
+eval "$(op completion zsh)"
 
 # =============================================================================
 # History
@@ -168,6 +154,46 @@ yankdir() {
 
 watch() { watchexec -e "${2:-py,ts,js,rs}" -- "$1"; }
 dft() { difft "$@"; }
+
+# =============================================================================
+# Functions - Dotfiles
+# =============================================================================
+
+DOTFILES="$HOME/dotfiles"
+
+restow() {
+  local dir
+  cd "$DOTFILES" || return 1
+  for dir in */; do
+    dir="${dir%/}"
+    [[ "$dir" == "stow" ]] && continue
+    echo "Restowing $dir..."
+    stow -R "$dir"
+  done
+  cd - > /dev/null
+  echo "Done restowing all packages"
+}
+
+brewsync() {
+  echo "==> Installing from Brewfile..."
+  brew bundle --global
+
+  echo "\n==> Checking for orphans (installed but not in Brewfile)..."
+  local orphans
+  orphans=$(brew bundle cleanup --global 2>/dev/null)
+
+  if [[ -z "$orphans" ]]; then
+    echo "No orphans found"
+  else
+    echo "$orphans"
+    if [[ "$1" == "clean" ]]; then
+      echo "\n==> Removing orphans..."
+      brew bundle cleanup --global --force
+    else
+      echo "\nRun 'brewsync clean' to remove these"
+    fi
+  fi
+}
 
 # =============================================================================
 # Functions - Python / uv
