@@ -8,11 +8,16 @@ export VISUAL="nvim"
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export EZA_TIME_STYLE="long-iso"
 
-# Homebrew
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# Homebrew (inlined - no subprocess fork)
+export HOMEBREW_PREFIX="/opt/homebrew"
+export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
+export HOMEBREW_REPOSITORY="/opt/homebrew"
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin${PATH+:$PATH}"
+export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}:"
+export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
 
 # =============================================================================
-# Completions (cached for speed)
+# Caching (completions + tool init)
 # =============================================================================
 
 FPATH="/opt/homebrew/share/zsh/site-functions:$FPATH"
@@ -25,26 +30,30 @@ else
   compinit -C
 fi
 
-# Cache dynamic completions (regenerate with: rm ~/.zsh_completion_cache/*)
-_cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
-[[ -d "$_cache_dir" ]] || mkdir -p "$_cache_dir"
+# Cache helper - regenerate all: rm ~/.cache/zsh/*
+_zsh_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+[[ -d "$_zsh_cache" ]] || mkdir -p "$_zsh_cache"
 
-_cache_completion() {
-  local name="$1" cmd="$2"
-  local cache_file="$_cache_dir/$name.zsh"
-  if [[ ! -f "$cache_file" ]]; then
-    eval "$cmd" > "$cache_file" 2>/dev/null
-  fi
-  [[ -f "$cache_file" ]] && source "$cache_file"
+_cached() {
+  local name="$1" cmd="$2" cache="$_zsh_cache/$name.zsh"
+  [[ -f "$cache" ]] || eval "$cmd" > "$cache" 2>/dev/null
+  source "$cache"
 }
 
-_cache_completion "uv" "uv generate-shell-completion zsh"
-_cache_completion "bun" "bun completions"
-_cache_completion "gh" "gh completion -s zsh"
-_cache_completion "op" "op completion zsh"
+# Tool initializations (cached)
+_cached "fzf" "fzf --zsh"
+_cached "zoxide" "zoxide init zsh --cmd cd"
+_cached "atuin" "atuin init zsh"
+_cached "starship" "starship init zsh"
 
-unset _cache_dir
-unfunction _cache_completion
+# Completions (cached)
+_cached "uv" "uv generate-shell-completion zsh"
+_cached "bun" "bun completions"
+_cached "gh" "gh completion -s zsh"
+_cached "op" "op completion zsh"
+
+unset _zsh_cache
+unfunction _cached
 
 # =============================================================================
 # History
@@ -63,20 +72,10 @@ setopt HIST_IGNORE_DUPS HIST_IGNORE_SPACE SHARE_HISTORY
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-# fzf
-source <(fzf --zsh)
+# fzf config (init is cached above)
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 export FZF_CTRL_T_OPTS="--preview 'bat --color=always --line-range :500 {}'"
 export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
-
-# zoxide (replaces cd)
-eval "$(zoxide init zsh --cmd cd)"
-
-# atuin (shell history)
-eval "$(atuin init zsh)"
-
-# Starship prompt
-eval "$(starship init zsh)"
 
 # =============================================================================
 # SSH / Remote
