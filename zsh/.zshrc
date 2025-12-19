@@ -1,6 +1,10 @@
 # Path
 export PATH="$HOME/.local/bin:$PATH"
 
+# Default editor
+export EDITOR="nvim"
+export VISUAL="nvim"
+
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
@@ -27,21 +31,52 @@ source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # fzf
 source <(fzf --zsh)
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export FZF_CTRL_T_OPTS="--preview 'bat --color=always --line-range :500 {}'"
+export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
 
-# zoxide (smarter cd)
-eval "$(zoxide init zsh)"
+# zoxide (replaces cd)
+eval "$(zoxide init zsh --cmd cd)"
+alias cdi="zi"
+
+# atuin (better shell history with sync)
+eval "$(atuin init zsh)"
 
 # Starship prompt
 eval "$(starship init zsh)"
 
-# Aliases
-alias ls="eza"
-alias ll="eza -la"
-alias la="eza -a"
-alias lt="eza --tree"
+# bat as man pager
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
+# eza config
+export EZA_TIME_STYLE="long-iso"
+
+# Aliases - Modern replacements
+alias ls="eza --icons --group-directories-first"
+alias ll="eza -la --icons --group-directories-first"
+alias la="eza -a --icons --group-directories-first"
+alias lt="eza --tree --icons"
 alias cat="bat"
 alias grep="rg"
 alias find="fd"
+alias top="btop"
+alias htop="btop"
+alias diff="delta"
+alias du="dust"
+alias df="duf"
+alias ps="procs"
+alias curl="xh"
+alias help="tldr"
+
+# Editor aliases
+alias vim="nvim"
+alias vi="nvim"
+alias v="nvim"
+alias nano="nvim"
+alias code="codium"
+
+# Version control aliases
+alias hg="sl"
 
 # Git aliases
 alias g="git"
@@ -51,9 +86,16 @@ alias gc="git commit"
 alias gp="git push"
 alias gl="git log --oneline"
 alias gd="git diff"
+alias gds="git diff --staged"
+alias lg="lazygit"
 
-# uv shell completions
-eval "$(uv generate-shell-completion zsh)"
+# GitHub CLI aliases
+alias pr="gh pr"
+alias issue="gh issue"
+alias repo="gh repo"
 
-# bun completions
-[ -s "/opt/homebrew/Cellar/bun/1.3.5/share/zsh/site-functions/_bun" ] && source "/opt/homebrew/Cellar/bun/1.3.5/share/zsh/site-functions/_bun"
+# Shell completions (dynamic generation)
+eval "$(uv generate-shell-completion zsh)"      # uv (Python)
+eval "$(bun completions)"                        # bun (JavaScript)
+eval "$(gh completion -s zsh)"                   # GitHub CLI
+eval "$(op completion zsh)" 2>/dev/null          # 1Password CLI (if available)
