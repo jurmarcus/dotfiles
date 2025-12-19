@@ -17,6 +17,7 @@ brew "ripgrep"
 brew "dust"
 brew "duf"
 brew "jq"
+brew "yq"
 
 # Documentation
 brew "tealdeer"
@@ -24,6 +25,7 @@ brew "tealdeer"
 # Version Control
 brew "sapling"
 brew "git-delta"
+brew "difftastic"
 brew "gh"
 brew "lazygit"
 
@@ -31,6 +33,11 @@ brew "lazygit"
 brew "neovim"
 brew "stow"
 brew "mas"
+brew "watchexec"
+
+# Code Formatting & Linting
+brew "ruff"
+brew "biome"
 
 # System Monitoring
 brew "btop"

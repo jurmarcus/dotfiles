@@ -99,3 +99,39 @@ eval "$(uv generate-shell-completion zsh)"      # uv (Python)
 eval "$(bun completions)"                        # bun (JavaScript)
 eval "$(gh completion -s zsh)"                   # GitHub CLI
 eval "$(op completion zsh)" 2>/dev/null          # 1Password CLI (if available)
+
+# Claude workflow functions
+context() {
+  echo "## Project: $(basename $(pwd))"
+  echo "\n### Structure"
+  eza --tree -L 2 --icons --group-directories-first
+  echo "\n### Git Status"
+  git status --short 2>/dev/null || echo "Not a git repo"
+  echo "\n### Recent Changes"
+  git log --oneline -5 2>/dev/null || true
+}
+
+yank() {
+  if [[ -f "$1" ]]; then
+    bat --style=plain "$1" | pbcopy
+    echo "Copied $1 to clipboard ($(wc -l < "$1" | tr -d ' ') lines)"
+  else
+    echo "File not found: $1"
+  fi
+}
+
+yankdir() {
+  local depth="${2:-2}"
+  eza --tree -L "$depth" --icons "${1:-.}" | pbcopy
+  echo "Copied directory tree to clipboard"
+}
+
+# Watch and run command on file changes
+watch() {
+  watchexec -e "${2:-py,ts,js,rs}" -- "$1"
+}
+
+# Quick diff with syntax awareness
+dft() {
+  difft "$@"
+}
