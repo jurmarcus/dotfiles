@@ -108,6 +108,7 @@ alias htop="btop"
 alias ps="procs"
 alias curl="xh"
 alias help="tldr"
+alias tmux="zellij"
 
 # Editors
 alias vim="nvim"
