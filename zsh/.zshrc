@@ -1,29 +1,63 @@
-# Path
-export PATH="$HOME/.local/bin:$PATH"
+# =============================================================================
+# Environment
+# =============================================================================
 
-# Default editor
+export PATH="$HOME/.local/bin:$PATH"
 export EDITOR="nvim"
 export VISUAL="nvim"
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+export EZA_TIME_STYLE="long-iso"
 
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
-# Auto-start Zellij for SSH sessions
-if [[ -n "$SSH_CONNECTION" && -z "$ZELLIJ" && -t 0 ]] && command -v zellij &>/dev/null; then
-  zellij attach -c ssh
+# =============================================================================
+# Completions (cached for speed)
+# =============================================================================
+
+FPATH="/opt/homebrew/share/zsh/site-functions:$FPATH"
+
+# Cache compinit - only rebuild once per day
+autoload -Uz compinit
+if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
 fi
 
-# Completions
-FPATH="/opt/homebrew/share/zsh/site-functions:$FPATH"
-autoload -Uz compinit && compinit
+# Cache dynamic completions (regenerate with: rm ~/.zsh_completion_cache/*)
+_cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+[[ -d "$_cache_dir" ]] || mkdir -p "$_cache_dir"
 
+_cache_completion() {
+  local name="$1" cmd="$2"
+  local cache_file="$_cache_dir/$name.zsh"
+  if [[ ! -f "$cache_file" ]]; then
+    eval "$cmd" > "$cache_file" 2>/dev/null
+  fi
+  [[ -f "$cache_file" ]] && source "$cache_file"
+}
+
+_cache_completion "uv" "uv generate-shell-completion zsh"
+_cache_completion "bun" "bun completions"
+_cache_completion "gh" "gh completion -s zsh"
+_cache_completion "op" "op completion zsh"
+
+unset _cache_dir
+unfunction _cache_completion
+
+# =============================================================================
 # History
+# =============================================================================
+
 HISTSIZE=10000
 SAVEHIST=10000
 HISTFILE=~/.zsh_history
-setopt HIST_IGNORE_DUPS
-setopt HIST_IGNORE_SPACE
-setopt SHARE_HISTORY
+setopt HIST_IGNORE_DUPS HIST_IGNORE_SPACE SHARE_HISTORY
+
+# =============================================================================
+# Plugins & Tools
+# =============================================================================
 
 # Zsh plugins
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -37,21 +71,27 @@ export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
 
 # zoxide (replaces cd)
 eval "$(zoxide init zsh --cmd cd)"
-alias cdi="zi"
 
-# atuin (better shell history with sync)
+# atuin (shell history)
 eval "$(atuin init zsh)"
 
 # Starship prompt
 eval "$(starship init zsh)"
 
-# bat as man pager
-export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+# =============================================================================
+# SSH / Remote
+# =============================================================================
 
-# eza config
-export EZA_TIME_STYLE="long-iso"
+# Auto-start Zellij for SSH sessions
+if [[ -n "$SSH_CONNECTION" && -z "$ZELLIJ" && -t 0 ]] && command -v zellij &>/dev/null; then
+  zellij attach -c ssh
+fi
 
-# Aliases - Modern replacements
+# =============================================================================
+# Aliases - Modern CLI Replacements
+# =============================================================================
+
+# File operations
 alias ls="eza --icons --group-directories-first"
 alias ll="eza -la --icons --group-directories-first"
 alias la="eza -a --icons --group-directories-first"
@@ -59,26 +99,26 @@ alias lt="eza --tree --icons"
 alias cat="bat"
 alias grep="rg"
 alias find="fd"
-alias top="btop"
-alias htop="btop"
 alias diff="delta"
 alias du="dust"
 alias df="duf"
+
+# System
+alias top="btop"
+alias htop="btop"
 alias ps="procs"
 alias curl="xh"
 alias help="tldr"
 
-# Editor aliases
+# Editors
 alias vim="nvim"
 alias vi="nvim"
 alias v="nvim"
 alias nano="nvim"
 alias code="codium"
 
-# Version control aliases
+# Version control
 alias hg="sl"
-
-# Git aliases
 alias g="git"
 alias gs="git status"
 alias ga="git add"
@@ -89,20 +129,20 @@ alias gd="git diff"
 alias gds="git diff --staged"
 alias lg="lazygit"
 
-# GitHub CLI aliases
+# GitHub CLI
 alias pr="gh pr"
 alias issue="gh issue"
 alias repo="gh repo"
 
-# Shell completions (dynamic generation)
-eval "$(uv generate-shell-completion zsh)"      # uv (Python)
-eval "$(bun completions)"                        # bun (JavaScript)
-eval "$(gh completion -s zsh)"                   # GitHub CLI
-eval "$(op completion zsh)" 2>/dev/null          # 1Password CLI (if available)
+# Navigation
+alias cdi="zi"
 
-# Claude workflow functions
+# =============================================================================
+# Functions - Claude Workflow
+# =============================================================================
+
 context() {
-  echo "## Project: $(basename $(pwd))"
+  echo "## Project: $(basename $PWD)"
   echo "\n### Structure"
   eza --tree -L 2 --icons --group-directories-first
   echo "\n### Git Status"
@@ -126,98 +166,62 @@ yankdir() {
   echo "Copied directory tree to clipboard"
 }
 
-# Watch and run command on file changes
-watch() {
-  watchexec -e "${2:-py,ts,js,rs}" -- "$1"
-}
-
-# Quick diff with syntax awareness
-dft() {
-  difft "$@"
-}
+watch() { watchexec -e "${2:-py,ts,js,rs}" -- "$1"; }
+dft() { difft "$@"; }
 
 # =============================================================================
-# Python / uv workflow
+# Functions - Python / uv
 # =============================================================================
 
 alias py="python3"
 alias ipy="uvx ipython"
 alias pip="uv pip"
 
-# Create new Python project with uv
 pyinit() {
   local name="${1:-.}"
-  if [[ "$name" != "." ]]; then
-    mkdir -p "$name" && cd "$name"
-  fi
-  uv init
-  uv add --dev ruff pytest
+  [[ "$name" != "." ]] && mkdir -p "$name" && cd "$name"
+  uv init && uv add --dev ruff pytest
   echo "Created Python project with uv"
 }
 
-# Run Python script with uv
-pyr() {
-  uv run python "$@"
-}
-
-# Run pytest with uv
-pyt() {
-  uv run pytest "$@"
-}
-
-# Add and sync dependencies
-pya() {
-  uv add "$@"
-}
-
-# Run any Python tool without installing
-uvr() {
-  uvx "$@"
-}
+pyr() { uv run python "$@"; }
+pyt() { uv run pytest "$@"; }
+pya() { uv add "$@"; }
+uvr() { uvx "$@"; }
 
 # =============================================================================
-# TypeScript / bun workflow
+# Functions - TypeScript / bun
 # =============================================================================
 
 alias ts="bun run"
 alias tsx="bun x tsx"
 
-# Create new TypeScript project with bun
 tsinit() {
   local name="${1:-.}"
-  if [[ "$name" != "." ]]; then
-    mkdir -p "$name" && cd "$name"
-  fi
-  bun init -y
-  bun add -d typescript @types/bun
+  [[ "$name" != "." ]] && mkdir -p "$name" && cd "$name"
+  bun init -y && bun add -d typescript @types/bun
   echo "Created TypeScript project with bun"
 }
 
-# Run TypeScript file directly
-tsr() {
-  bun run "$@"
-}
-
-# Run tests with bun
-tst() {
-  bun test "$@"
-}
+tsr() { bun run "$@"; }
+tst() { bun test "$@"; }
 
 # =============================================================================
-# MCP (Model Context Protocol) development
+# Functions - MCP Development
 # =============================================================================
 
-# Create new MCP server project (Python)
 mcp-init-py() {
   local name="${1:-mcp-server}"
+  local module_name="${name//-/_}"
   pyinit "$name"
   cd "$name" 2>/dev/null || true
   uv add mcp
-  cat > src/${name//-/_}/server.py << 'MCPEOF'
+  mkdir -p "src/$module_name"
+  cat > "src/$module_name/server.py" << MCPEOF
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 
-server = Server("${name}")
+server = Server("$name")
 
 @server.list_tools()
 async def list_tools():
@@ -235,22 +239,21 @@ if __name__ == "__main__":
     import asyncio
     asyncio.run(main())
 MCPEOF
-  echo "Created MCP server project: $name"
-  echo "Run with: uv run python -m ${name//-/_}.server"
+  echo "Created MCP server: $name"
+  echo "Run: uv run python -m $module_name.server"
 }
 
-# Create new MCP server project (TypeScript)
 mcp-init-ts() {
   local name="${1:-mcp-server}"
   tsinit "$name"
   cd "$name" 2>/dev/null || true
   bun add @modelcontextprotocol/sdk
-  cat > src/index.ts << 'MCPEOF'
+  cat > src/index.ts << MCPEOF
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
 const server = new Server(
-  { name: "${name}", version: "0.1.0" },
+  { name: "$name", version: "0.1.0" },
   { capabilities: { tools: {} } }
 );
 
@@ -259,12 +262,12 @@ server.setRequestHandler("tools/list", async () => ({
 }));
 
 server.setRequestHandler("tools/call", async (request) => {
-  throw new Error(`Unknown tool: ${request.params.name}`);
+  throw new Error(\`Unknown tool: \${request.params.name}\`);
 });
 
 const transport = new StdioServerTransport();
 server.connect(transport);
 MCPEOF
-  echo "Created MCP server project: $name"
-  echo "Run with: bun run src/index.ts"
+  echo "Created MCP server: $name"
+  echo "Run: bun run src/index.ts"
 }
