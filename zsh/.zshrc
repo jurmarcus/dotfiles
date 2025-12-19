@@ -1,6 +1,10 @@
 # Path
 export PATH="$HOME/.local/bin:$PATH"
 
+# Default editor
+export EDITOR="nvim"
+export VISUAL="nvim"
+
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
@@ -44,10 +48,13 @@ eval "$(starship init zsh)"
 # bat as man pager
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
+# eza config
+export EZA_TIME_STYLE="long-iso"
+
 # Aliases - Modern replacements
-alias ls="eza --icons"
-alias ll="eza -la --icons"
-alias la="eza -a --icons"
+alias ls="eza --icons --group-directories-first"
+alias ll="eza -la --icons --group-directories-first"
+alias la="eza -a --icons --group-directories-first"
 alias lt="eza --tree --icons"
 alias cat="bat"
 alias grep="rg"
@@ -60,6 +67,16 @@ alias df="duf"
 alias ps="procs"
 alias curl="xh"
 alias help="tldr"
+
+# Editor aliases
+alias vim="nvim"
+alias vi="nvim"
+alias v="nvim"
+alias nano="nvim"
+alias code="codium"
+
+# Version control aliases
+alias hg="sl"
 
 # Git aliases
 alias g="git"
