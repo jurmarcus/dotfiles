@@ -1,25 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Check if git identity is already configured
-current_name=$(git config --global user.name 2>/dev/null || true)
-current_email=$(git config --global user.email 2>/dev/null || true)
+NAME="jurmarcus"
+EMAIL="me@jurmarcus.com"
 
-if [[ -n "${current_name}" && -n "${current_email}" ]]; then
-  echo "  Git identity already configured:"
-  echo "    Name:  ${current_name}"
-  echo "    Email: ${current_email}"
-  read -rp "  Overwrite? [y/N] " overwrite
-  [[ "${overwrite}" != "y" && "${overwrite}" != "Y" ]] && exit 0
-fi
-
-# Prompt for identity
-read -rp "  Enter your name: " name
-read -rp "  Enter your email: " email
-
-# Set git identity
-git config --global user.name "${name}"
-git config --global user.email "${email}"
+# Git identity
+git config --global user.name "${NAME}"
+git config --global user.email "${EMAIL}"
 
 # Set useful defaults
 git config --global init.defaultBranch main
@@ -44,6 +31,16 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
   git config --global credential.helper osxkeychain
 fi
 
-echo "  Git configured:"
-echo "    Name:  $(git config --global user.name)"
-echo "    Email: $(git config --global user.email)"
+# Sapling identity
+if command -v sl &>/dev/null; then
+  sl config --user ui.username "${NAME} <${EMAIL}>"
+fi
+
+# GitHub CLI
+if command -v gh &>/dev/null; then
+  gh config set -h github.com git_protocol ssh
+fi
+
+echo "  VCS identity configured:"
+echo "    Name:  ${NAME}"
+echo "    Email: ${EMAIL}"
