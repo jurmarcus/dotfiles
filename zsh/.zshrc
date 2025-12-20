@@ -19,6 +19,10 @@ export PATH="/opt/homebrew/bin:/opt/homebrew/sbin${PATH+:$PATH}"
 export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}:"
 export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
 
+# Bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
 # =============================================================================
 # Caching (completions + tool init)
 # =============================================================================
@@ -55,13 +59,6 @@ setopt HIST_IGNORE_DUPS HIST_IGNORE_SPACE SHARE_HISTORY
 # =============================================================================
 # Plugins & Tools
 # =============================================================================
-
-# Zsh plugins
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
 
 # fzf config (init is cached above)
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
@@ -171,7 +168,7 @@ restow() {
   cd "$DOTFILES" || return 1
   for dir in */; do
     dir="${dir%/}"
-    [[ "$dir" == "stow" ]] && continue
+    [[ "$dir" == "bootstrap" ]] && continue
     echo "Restowing $dir..."
     stow -R "$dir"
   done
@@ -284,3 +281,13 @@ mcp-init-ts() {
   echo "Created MCP server: $name"
   echo "Run: bun run src/index.ts"
 }
+
+# =============================================================================
+# Zsh Plugins (must be last, syntax-highlighting before history-substring-search)
+# =============================================================================
+
+source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down

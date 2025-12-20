@@ -4,12 +4,12 @@ enable "browsers"
 enable "security"
 enable "utils"
 
-enable "communication"
 enable "hardware"
-
 enable "developer"
-enable "editors"
 
 enable "photography"
 enable "entertainment"
+
+enable "editors"
+enable "communication"
 enable "learning"

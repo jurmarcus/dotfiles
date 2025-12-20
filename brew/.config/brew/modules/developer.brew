@@ -2,7 +2,8 @@
 brew "zsh"
 brew "starship"
 brew "zellij"
-brew "mosh"
+tap "mistertea/et"
+brew "mistertea/et/et"
 cask "ghostty"
 
 # Shell Enhancements
@@ -26,6 +27,7 @@ brew "yq"
 brew "tealdeer"
 
 # Version Control
+brew "git"
 brew "sapling"
 brew "git-delta"
 brew "difftastic"
@@ -47,6 +49,7 @@ brew "btop"
 brew "procs"
 
 # HTTP & Networking
+brew "curl"
 brew "xh"
 
 # Package Managers & Runtimes

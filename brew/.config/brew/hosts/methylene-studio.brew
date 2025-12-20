@@ -1,11 +1,19 @@
-# Studio machine - heavy AI/ML workloads
-
 enable "ai"
+
 enable "browsers"
 enable "security"
 enable "utils"
+
+enable "hardware"
 enable "developer"
+
+enable "photography"
+enable "entertainment"
+
 enable "editors"
+enable "communication"
+enable "learning"
 
 # Studio-specific: Local LLM GUI
 cask "lm-studio"
+cask "ollama"

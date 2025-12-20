@@ -1,10 +1,3 @@
-# AI Coding Agents
-# claude-code: npm install -g @anthropic-ai/claude-code
-brew "opencode"
-
-# Local LLMs
-cask "ollama"
-
 # AI Assistants
 cask "claude"
 cask "chatgpt"

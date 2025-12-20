@@ -5,7 +5,6 @@ enable "security"
 enable "utils"
 
 enable "hardware"
-
 enable "developer"
 
 enable "photography"
