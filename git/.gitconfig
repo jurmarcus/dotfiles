@@ -1,16 +1,32 @@
 [core]
-    pager = delta
+	pager = delta
 
 [interactive]
-    diffFilter = delta --color-only
+	diffFilter = delta --color-only
 
 [delta]
-    navigate = true
-    side-by-side = true
-    line-numbers = true
+	navigate = true
+	side-by-side = true
+	line-numbers = true
 
 [merge]
-    conflictstyle = zdiff3
+	conflictstyle = zdiff3
 
 [diff]
     colorMoved = default
+	algorithm = histogram
+[user]
+	name = jurmarcus
+	email = me@jurmarcus.com
+[init]
+	defaultBranch = main
+[pull]
+	rebase = true
+[push]
+	autoSetupRemote = true
+[fetch]
+	prune = true
+[rerere]
+	enabled = true
+[credential]
+	helper = osxkeychain
