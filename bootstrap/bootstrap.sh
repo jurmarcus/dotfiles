@@ -14,6 +14,7 @@ NC='\033[0m'
 step() { echo -e "\n${BLUE}>> $1${NC}"; }
 ok() { echo -e "${GREEN}✓ $1${NC}"; }
 warn() { echo -e "${YELLOW}! $1${NC}"; }
+skip() { echo -e "${YELLOW}  Skipped${NC}"; }
 
 # Step 1: Xcode CLI Tools
 step "Step 1: Xcode Command Line Tools"
@@ -65,23 +66,55 @@ export HOMEBREW_NO_ANALYTICS=1
 brew bundle --global
 ok "Packages installed"
 
-# Step 5: macOS settings
-step "Step 5: macOS settings"
+# Step 5: SSH setup
+step "Step 5: SSH key setup"
+if [[ -f "${BOOTSTRAP_DIR}/ssh.sh" ]]; then
+  bash "${BOOTSTRAP_DIR}/ssh.sh"
+  ok "SSH configured"
+else
+  skip
+fi
+
+# Step 6: Git identity
+step "Step 6: Git identity"
+if [[ -f "${BOOTSTRAP_DIR}/git.sh" ]]; then
+  bash "${BOOTSTRAP_DIR}/git.sh"
+  ok "Git configured"
+else
+  skip
+fi
+
+# Step 7: macOS settings
+step "Step 7: macOS settings"
 if [[ "$(uname -s)" == "Darwin" && -f "${BOOTSTRAP_DIR}/macos.sh" ]]; then
   bash "${BOOTSTRAP_DIR}/macos.sh"
   ok "Applied"
 else
-  warn "Skipped"
+  skip
 fi
 
-# Step 6: VSCodium extensions
-step "Step 6: VSCodium extensions"
+# Step 8: Default applications (duti)
+step "Step 8: Default applications"
+if [[ "$(uname -s)" == "Darwin" && -f "${BOOTSTRAP_DIR}/duti.sh" ]]; then
+  bash "${BOOTSTRAP_DIR}/duti.sh"
+  ok "Configured"
+else
+  skip
+fi
+
+# Step 9: VSCodium extensions
+step "Step 9: VSCodium extensions"
 if command -v codium >/dev/null 2>&1 && [[ -f "${BOOTSTRAP_DIR}/vscodium.sh" ]]; then
   bash "${BOOTSTRAP_DIR}/vscodium.sh"
   ok "Installed"
 else
-  warn "Skipped"
+  skip
 fi
 
 echo -e "\n${GREEN}✅ Bootstrap complete!${NC}"
-echo "Open a new shell for changes to take effect."
+echo ""
+echo "Next steps:"
+echo "  1. Open a new terminal for shell changes"
+echo "  2. Copy SSH key to GitHub: pbcopy < ~/.ssh/id_ed25519.pub"
+echo "  3. Log out/in for some macOS settings to take effect"
+echo ""

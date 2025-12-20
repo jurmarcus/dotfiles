@@ -56,5 +56,11 @@ brew "xh"
 brew "uv"
 brew "bun"
 
-# Fonts
+# Default Apps
+brew "duti"
+
+# Fonts (Nerd Font variants for terminal icons)
 cask "font-fira-code-nerd-font"
+cask "font-jetbrains-mono-nerd-font"
+cask "font-hack-nerd-font"
+cask "font-meslo-lg-nerd-font"
