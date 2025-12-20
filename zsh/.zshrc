@@ -94,7 +94,6 @@ alias df="duf"
 alias top="btop"
 alias htop="btop"
 alias ps="procs"
-alias curl="xh"
 alias help="tldr"
 alias tmux="zellij"
 
@@ -291,3 +290,11 @@ source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
+
+# opencode
+export PATH=/Users/methylene/.opencode/bin:$PATH
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/methylene/.lmstudio/bin"
+# End of LM Studio CLI section
+
