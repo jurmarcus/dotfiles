@@ -8,6 +8,9 @@ export VISUAL="nvim"
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export EZA_TIME_STYLE="long-iso"
 
+# uv - prefer managed Python installations
+export UV_PYTHON_PREFERENCE="only-managed"
+
 # Homebrew (inlined - no subprocess fork)
 export HOMEBREW_PREFIX="/opt/homebrew"
 export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
@@ -33,7 +36,6 @@ fi
 # Tool initializations
 eval "$(fzf --zsh)"
 eval "$(zoxide init zsh --cmd cd)"
-eval "$(atuin init zsh)"
 eval "$(starship init zsh)"
 
 # Completions
@@ -57,6 +59,9 @@ setopt HIST_IGNORE_DUPS HIST_IGNORE_SPACE SHARE_HISTORY
 # Zsh plugins
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
 
 # fzf config (init is cached above)
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
@@ -199,7 +204,9 @@ brewsync() {
 # Functions - Python / uv
 # =============================================================================
 
-alias py="python3"
+alias python="uv run python"
+alias python3="uv run python"
+alias py="uv run python"
 alias ipy="uvx ipython"
 alias pip="uv pip"
 

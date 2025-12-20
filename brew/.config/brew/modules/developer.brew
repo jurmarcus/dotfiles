@@ -6,11 +6,11 @@ brew "mosh"
 cask "ghostty"
 
 # Shell Enhancements
-brew "atuin"
 brew "fzf"
 brew "zoxide"
 brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
+brew "zsh-history-substring-search"
 
 # File & Text Utilities
 brew "bat"
