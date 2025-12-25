@@ -8,6 +8,9 @@ macos-option-as-alt = true
 keybind = alt+arrow_left=unbind
 keybind = alt+arrow_right=unbind
 
+# Command palette
+keybind = super+p=toggle_command_palette
+
 # Font
 font-family = FiraCode Nerd Font Mono
 font-size = 14
@@ -16,6 +19,16 @@ font-feature = calt
 
 # Theme
 theme = Catppuccin Frappe
+
+# Cursor
+cursor-style = bar
+cursor-style-blink = true
+
+# Shell integration (better Zellij/zsh experience)
+shell-integration = zsh
+
+# Don't confirm - Zellij handles sessions
+confirm-close-surface = false
 
 # macOS: Integrate tabs into title bar
 macos-titlebar-style = tabs

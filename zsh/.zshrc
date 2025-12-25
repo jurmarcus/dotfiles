@@ -123,6 +123,10 @@ alias repo="gh repo"
 
 # Navigation
 alias cdi="zi"
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
 
 # =============================================================================
 # Functions - Claude Workflow
