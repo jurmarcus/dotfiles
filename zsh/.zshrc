@@ -74,6 +74,21 @@ if [[ -n "$SSH_CONNECTION" && -z "$ZELLIJ" && -t 0 ]] && command -v zellij &>/de
   zellij attach -c ssh
 fi
 
+# Tailscale quick connect (mosh with SSH fallback)
+tssh() {
+  local host="${1:-studio}"
+  shift
+  if command -v mosh &>/dev/null; then
+    mosh "$host" -- zellij attach -c main "$@"
+  else
+    ssh -t "$host" "zellij attach -c main" "$@"
+  fi
+}
+
+# Quick aliases for Tailscale machines
+alias studio="tssh studio"
+alias mstudio="mosh studio"
+
 # =============================================================================
 # Aliases - Modern CLI Replacements
 # =============================================================================
