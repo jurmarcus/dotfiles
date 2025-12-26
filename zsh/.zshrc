@@ -96,6 +96,7 @@ alias htop="btop"
 alias ps="procs"
 alias help="tldr"
 alias tmux="zellij"
+alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 
 # Editors
 alias vim="nvim"
