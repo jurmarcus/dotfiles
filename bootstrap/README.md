@@ -9,7 +9,6 @@ bootstrap/
 ├── bootstrap.sh   # Main orchestrator
 ├── macos.sh       # System preferences
 ├── git.sh         # Git identity
-├── ssh.sh         # SSH key setup
 ├── duti.sh        # Default apps
 └── vscodium.sh    # Editor extensions
 ```
@@ -21,7 +20,7 @@ Runs in order:
 2. Homebrew
 3. GNU Stow + symlinks
 4. Brew bundle
-5. SSH setup
+5. Tailscale SSH setup
 6. Git identity
 7. macOS settings
 8. Default apps (duti)
@@ -45,13 +44,6 @@ Key settings:
 - Configures delta pager
 - macOS keychain credentials
 
-## ssh.sh
-
-- Generates ed25519 key
-- Adds to keychain
-- Creates SSH config
-- Displays public key
-
 ## duti.sh
 
 Sets VSCodium as default for code files (40+ extensions).
@@ -67,3 +59,13 @@ Sets VSCodium as default for code files (40+ extensions).
 ```
 
 Scripts are idempotent (safe to re-run).
+
+## Post-Bootstrap
+
+After running bootstrap, enable Tailscale SSH:
+
+```bash
+sudo brew services start tailscale
+tailscale up
+tailscale set --ssh
+```

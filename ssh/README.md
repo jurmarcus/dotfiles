@@ -1,6 +1,6 @@
 # SSH Configuration
 
-SSH config managed by stow.
+SSH config managed by stow. Uses **Tailscale SSH** for machine auth (no keys).
 
 ## Files
 
@@ -11,42 +11,37 @@ ssh/
 └── README.md
 ```
 
+## Setup
+
+Requires Tailscale CLI (not GUI app):
+
+```bash
+# Install CLI version
+brew install tailscale
+sudo brew services start tailscale
+tailscale up
+
+# Enable Tailscale SSH
+tailscale set --ssh
+```
+
 ## Hosts
 
 | Alias | Host | Description |
 |-------|------|-------------|
-| `studio` | methylene-studio | Mac Studio (Tailscale) |
-| `macbook` | methylene-macbook | MacBook (Tailscale) |
-| `github.com` | github.com | GitHub |
+| `studio` | methylene-studio | Mac Studio |
+| `macbook` | methylene-macbook | MacBook |
 
 ## Usage
 
 ```bash
-# SSH with short alias
-ssh studio
-
-# SSH with full hostname
-ssh methylene-studio
-
-# Mosh (persistent connection)
-mosh studio
-
-# Quick connect with Zellij (defined in zshrc)
-studio          # mosh + zellij attach
-mstudio         # mosh only
-tssh studio     # explicit function call
+ssh studio              # Tailscale handles auth
+ssh methylene-studio    # Same thing
+mosh studio             # Persistent connection
 ```
-
-## Shell Functions (in .zshrc)
-
-| Function/Alias | Description |
-|----------------|-------------|
-| `tssh [host]` | Mosh to host with Zellij attach (fallback to SSH) |
-| `studio` | Quick connect to methylene-studio |
-| `mstudio` | Mosh to methylene-studio |
 
 ## Notes
 
-- Uses Tailscale MagicDNS (hostnames resolve automatically)
-- Keys stored in `~/.ssh/id_ed25519` (not managed by stow)
-- `ServerAliveInterval` keeps connections alive
+- **No SSH keys needed** - Tailscale SSH handles authentication
+- **GitHub**: Use HTTPS + `gh auth` (no SSH keys)
+- **Local network**: Tailscale auto-detects LAN, uses direct connection

@@ -66,13 +66,16 @@ export HOMEBREW_NO_ANALYTICS=1
 brew bundle --global
 ok "Packages installed"
 
-# Step 5: SSH setup
-step "Step 5: SSH key setup"
-if [[ -f "${BOOTSTRAP_DIR}/ssh.sh" ]]; then
-  bash "${BOOTSTRAP_DIR}/ssh.sh"
-  ok "SSH configured"
+# Step 5: Tailscale SSH setup
+step "Step 5: Tailscale SSH"
+if command -v tailscale >/dev/null 2>&1; then
+  if ! pgrep -q tailscaled; then
+    warn "Run: sudo brew services start tailscale && tailscale up && tailscale set --ssh"
+  else
+    tailscale set --ssh 2>/dev/null && ok "SSH enabled" || warn "Run: tailscale set --ssh"
+  fi
 else
-  skip
+  warn "Install tailscale: brew install tailscale"
 fi
 
 # Step 6: Git identity
@@ -115,6 +118,7 @@ echo -e "\n${GREEN}✅ Bootstrap complete!${NC}"
 echo ""
 echo "Next steps:"
 echo "  1. Open a new terminal for shell changes"
-echo "  2. Copy SSH key to GitHub: pbcopy < ~/.ssh/id_ed25519.pub"
-echo "  3. Log out/in for some macOS settings to take effect"
+echo "  2. Start Tailscale: sudo brew services start tailscale && tailscale up"
+echo "  3. Enable Tailscale SSH: tailscale set --ssh"
+echo "  4. Log out/in for some macOS settings to take effect"
 echo ""

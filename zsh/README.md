@@ -7,6 +7,7 @@ Flat `.zshrc` configuration (not modular).
 ```
 zsh/
 ├── .zshrc                      # Main config (all-in-one)
+├── .zshenv                     # Non-interactive shell PATH (SSH, mosh)
 ├── .zprofile                   # Login shell (Homebrew init)
 └── .config/zsh/
     └── templates/              # MCP server templates
