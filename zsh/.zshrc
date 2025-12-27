@@ -71,7 +71,7 @@ export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
 
 # Auto-start Zellij for SSH sessions
 if [[ -n "$SSH_CONNECTION" && -z "$ZELLIJ" && -t 0 ]] && command -v zellij &>/dev/null; then
-  zellij attach -c ssh
+  zellij attach -c ssh --layout ssh
 fi
 
 # Tailscale quick connect (mosh with SSH fallback)
@@ -88,6 +88,31 @@ tssh() {
 # Quick aliases for Tailscale machines
 alias studio="tssh studio"
 alias mstudio="mosh studio"
+
+# =============================================================================
+# Zellij Session Management
+# =============================================================================
+
+# Named sessions for different workflows
+zcode() { zellij attach -c code --layout code "$@"; }
+zclaude() { zellij attach -c claude --layout claude "$@"; }
+zssh() { zellij attach -c ssh --layout ssh "$@"; }
+
+# Start all dev sessions (detached) for SSH access
+zdev() {
+  echo "Starting development sessions..."
+  zellij --session code --layout code &>/dev/null &
+  zellij --session claude --layout claude &>/dev/null &
+  zellij --session ssh --layout ssh &>/dev/null &
+  sleep 0.5
+  echo "Sessions started: code, claude, ssh"
+  echo "Use 'zellij list-sessions' to see all sessions"
+  echo "Use 'zcode', 'zclaude', or 'zssh' to attach"
+}
+
+# List and switch sessions interactively
+zls() { zellij list-sessions; }
+zswitch() { zellij attach "$@"; }
 
 # =============================================================================
 # Aliases - Modern CLI Replacements
