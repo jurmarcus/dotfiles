@@ -1,34 +1,64 @@
 #!/usr/bin/env bash
 
-# Get Tailscale status in JSON format
-machines=$(tailscale status --json | jq -r '.Peer[] | "\(.HostName) \(.TailscaleIPs[0])"')
+set -euo pipefail
 
-# Get current user for SSH
+machines=$(tailscale status --json | jq -r '.Peer[] | "\(.HostName) \(.TailscaleIPs[0])"')
 current_user=$(whoami)
 
-# Output file
+hosts_file="$HOME/.config/tailscale/hosts"
 ssh_config="$HOME/.ssh/tailscale_config"
+mkdir -p "$(dirname "$hosts_file")"
 
-# Generate config
-echo "# Generated Tailscale SSH config - $(date)" > "$ssh_config"
-echo "" >> "$ssh_config"
-
-while IFS= read -r line; do
-    hostname=$(echo "$line" | awk '{print $1}')
-    ip=$(echo "$line" | awk '{print $2}')
+{
+    echo "# Tailscale hosts - $(date)"
+    echo ""
     
-    cat >> "$ssh_config" << EOF
-Host $hostname
-    HostName $ip
-    User $current_user
+    while IFS= read -r line; do
+        hostname=$(echo "$line" | awk '{print $1}')
+        ip=$(echo "$line" | awk '{print $2}')
+        
+        [[ "$hostname" == "localhost" ]] && continue
+        
+        short_alias=""
+        if [[ "$hostname" == "${current_user}-"* ]]; then
+            short_alias="${hostname#*-}"
+        fi
+        
+        if [[ -n "$short_alias" && "$short_alias" != "$hostname" ]]; then
+            echo "$ip $hostname $short_alias"
+        else
+            echo "$ip $hostname"
+        fi
+    done <<< "$machines"
+} > "$hosts_file"
 
-EOF
-done <<< "$machines"
+{
+    echo "# Tailscale SSH config - $(date)"
+    echo ""
+    
+    while IFS= read -r line; do
+        hostname=$(echo "$line" | awk '{print $1}')
+        
+        [[ "$hostname" == "localhost" ]] && continue
+        
+        short_alias=""
+        if [[ "$hostname" == "${current_user}-"* ]]; then
+            short_alias="${hostname#*-}"
+        fi
+        
+        if [[ -n "$short_alias" && "$short_alias" != "$hostname" ]]; then
+            echo "Host $hostname $short_alias"
+        else
+            echo "Host $hostname"
+        fi
+        echo "    User $current_user"
+        echo "    IdentityFile ~/Documents/keys/personal"
+        echo ""
+    done <<< "$machines"
+} > "$ssh_config"
 
-echo "Generated SSH config at: $ssh_config"
+echo "Generated:"
+echo "  $hosts_file (paste into /etc/hosts)"
+echo "  $ssh_config (included by ~/.ssh/config)"
 echo ""
-echo "To use it, add this to your ~/.ssh/config:"
-echo "Include ~/.ssh/tailscale_config"
-echo ""
-echo "Or append it directly:"
-echo "cat $ssh_config >> ~/.ssh/config"
+cat "$hosts_file"

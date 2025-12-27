@@ -21,7 +21,7 @@ dotfiles/
 │   ├── bootstrap.sh    # Main orchestrator
 │   ├── macos.sh        # System preferences
 │   ├── git.sh          # Git identity setup
-│   ├── ssh.sh          # SSH key generation
+│   ├── tailscale.sh    # Generate SSH config from Tailscale
 │   ├── duti.sh         # Default file associations
 │   └── vscodium.sh     # VSCodium extensions
 ├── brew/               # Homebrew (modular)

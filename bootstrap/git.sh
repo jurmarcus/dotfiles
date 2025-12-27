@@ -38,7 +38,7 @@ fi
 
 # GitHub CLI
 if command -v gh &>/dev/null; then
-  gh config set -h github.com git_protocol ssh
+  gh config set -h github.com git_protocol https
 fi
 
 echo "  VCS identity configured:"

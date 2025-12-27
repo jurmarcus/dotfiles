@@ -7,36 +7,36 @@ SSH config managed by stow. Uses **Tailscale SSH** for machine auth (no keys).
 ```
 ssh/
 ├── .ssh/
-│   └── config          # SSH host configurations
+│   └── config          # Main config (includes tailscale_config)
 └── README.md
 ```
+
+Generated at runtime:
+- `~/.ssh/tailscale_config` - Auto-generated from Tailscale network
 
 ## Setup
 
 Requires Tailscale CLI (not GUI app):
 
 ```bash
-# Install CLI version
 brew install tailscale
 sudo brew services start tailscale
 tailscale up
-
-# Enable Tailscale SSH
 tailscale set --ssh
+
+# Generate SSH config from Tailscale peers
+~/dotfiles/bootstrap/tailscale.sh
 ```
 
 ## Hosts
 
-| Alias | Host | Description |
-|-------|------|-------------|
-| `studio` | methylene-studio | Mac Studio |
-| `macbook` | methylene-macbook | MacBook |
+Hosts are dynamically generated from your Tailscale network. Run `tailscale.sh` to regenerate.
 
-## Usage
+Short aliases are created automatically: `methylene-studio` becomes `studio`.
 
 ```bash
-ssh studio              # Tailscale handles auth
-ssh methylene-studio    # Same thing
+ssh studio              # Short alias
+ssh methylene-studio    # Full hostname
 mosh studio             # Persistent connection
 ```
 
@@ -45,3 +45,4 @@ mosh studio             # Persistent connection
 - **No SSH keys needed** - Tailscale SSH handles authentication
 - **GitHub**: Use HTTPS + `gh auth` (no SSH keys)
 - **Local network**: Tailscale auto-detects LAN, uses direct connection
+- **Regenerate config**: Run `~/dotfiles/bootstrap/tailscale.sh` when Tailscale network changes
