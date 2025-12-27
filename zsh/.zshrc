@@ -126,7 +126,13 @@ zdev() {
 
 # List, switch, and delete sessions
 zls() { zellij list-sessions; }
-zcd() { zellij attach "$1"; }
+zcd() {
+  if [[ -n "$ZELLIJ" ]]; then
+    zellij action switch-session "$1"
+  else
+    zellij attach "$1"
+  fi
+}
 zrm() { zellij delete-session "$@"; }
 
 # =============================================================================
