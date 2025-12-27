@@ -71,7 +71,7 @@ export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
 
 # Auto-start Zellij for SSH sessions
 if [[ -n "$SSH_CONNECTION" && -z "$ZELLIJ" && -t 0 ]] && command -v zellij &>/dev/null; then
-  zellij attach -c ssh --layout ssh
+  zellij attach -c ssh
 fi
 
 # Tailscale quick connect (mosh with SSH fallback)
@@ -94,25 +94,40 @@ alias mstudio="mosh studio"
 # =============================================================================
 
 # Named sessions for different workflows
-zcode() { zellij attach -c code --layout code "$@"; }
-zclaude() { zellij attach -c claude --layout claude "$@"; }
-zssh() { zellij attach -c ssh --layout ssh "$@"; }
+zssh() { zellij attach -c ssh; }
 
-# Start all dev sessions (detached) for SSH access
-zdev() {
-  echo "Starting development sessions..."
-  zellij --session code --layout code &>/dev/null &
-  zellij --session claude --layout claude &>/dev/null &
-  zellij --session ssh --layout ssh &>/dev/null &
-  sleep 0.5
-  echo "Sessions started: code, claude, ssh"
-  echo "Use 'zellij list-sessions' to see all sessions"
-  echo "Use 'zcode', 'zclaude', or 'zssh' to attach"
+# Numbered sessions helper
+_znew() {
+  local prefix="$1" n=1
+  local sessions=$(zellij list-sessions 2>/dev/null | sed 's/\x1b\[[0-9;]*m//g')
+  while echo "$sessions" | grep -q "^${prefix}-$n "; do
+    ((n++))
+  done
+  zellij --session "${prefix}-$n"
 }
 
-# List and switch sessions interactively
+zclaude() { _znew claude; }
+zopencode() { _znew opencode; }
+zservice() { _znew service; }
+
+# Zellij session helper
+zdev() {
+  echo "Zellij sessions:"
+  echo "  zssh      - ssh session (shared)"
+  echo "  zclaude   - new claude session (claude-1, claude-2, ...)"
+  echo "  zopencode - new opencode session (opencode-1, opencode-2, ...)"
+  echo "  zservice  - new service session (service-1, service-2, ...)"
+  echo "  zls       - list sessions"
+  echo "  zcd NAME  - switch to session"
+  echo "  zrm NAME  - delete session"
+  echo ""
+  zellij list-sessions 2>/dev/null || echo "No active sessions"
+}
+
+# List, switch, and delete sessions
 zls() { zellij list-sessions; }
-zswitch() { zellij attach "$@"; }
+zcd() { zellij attach "$1"; }
+zrm() { zellij delete-session "$@"; }
 
 # =============================================================================
 # Aliases - Modern CLI Replacements
