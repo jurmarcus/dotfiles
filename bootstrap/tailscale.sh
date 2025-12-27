@@ -2,6 +2,16 @@
 
 set -euo pipefail
 
+key_file="$HOME/Documents/keys/personal"
+if [[ ! -f "$key_file" ]]; then
+    mkdir -p "$(dirname "$key_file")"
+    ssh-keygen -t ed25519 -C "$(hostname -s)" -f "$key_file" -N ""
+    echo "Created SSH key: $key_file"
+    echo "Public key:"
+    cat "${key_file}.pub"
+    echo ""
+fi
+
 machines=$(tailscale status --json | jq -r '.Peer[] | "\(.HostName) \(.TailscaleIPs[0])"')
 current_user=$(whoami)
 
