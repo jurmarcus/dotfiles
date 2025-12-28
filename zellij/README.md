@@ -1,48 +1,92 @@
 # Zellij Configuration
 
-Terminal multiplexer (tmux replacement) with vim-style navigation.
+Terminal multiplexer (tmux replacement) with tmux-style Ctrl+a prefix.
+
+Based on [merikan/.dotfiles](https://github.com/merikan/.dotfiles) with Catppuccin Frappé theme.
 
 ## Files
 
 ```
 zellij/.config/zellij/
-└── config.kdl
+├── config.kdl           # Keybindings & settings
+├── layouts/
+│   └── terminal.kdl     # Default layout with zjstatus
+└── plugins/
+    └── zjstatus.wasm    # Status bar plugin
 ```
-
-## Modes
-
-- **normal** - Default, basic navigation
-- **pane** (Ctrl+p) - Pane management
-- **tab** (Ctrl+t) - Tab management
-- **resize** (Ctrl+n) - Resize panes
-- **scroll** (Ctrl+s) - Scroll/search
-- **locked** (Ctrl+g) - Pass all keys to terminal
 
 ## Key Bindings
 
-### Normal Mode
-- `Alt+h/j/k/l` - Focus pane
-- `Alt+[/]` - Previous/next tab
-- `Alt+1-9` - Go to tab
+### Prefix: `Ctrl+a` (tmux-style)
 
-### Pane Mode (Ctrl+p)
-- `n/d` - New pane down/right
-- `x` - Close pane
-- `f` - Fullscreen
-- `w` - Float/unfloat
+After pressing `Ctrl+a`, use these keys:
 
-### Tab Mode (Ctrl+t)
-- `n` - New tab
-- `x` - Close tab
-- `r` - Rename
-- `1-9` - Go to tab
+#### Panes
+| Key | Action |
+|-----|--------|
+| `n` | New pane |
+| `N` | New stacked pane |
+| `-` / `_` | Split down |
+| `\|` / `\` / `s` | Split right |
+| `x` | Close pane |
+| `z` | Fullscreen toggle |
+| `f` | Float toggle |
+| `F` | Embed/float toggle |
+| `h/j/k/l` | Focus pane |
+| `o` | Focus next pane |
+| `r` | Rename pane |
+| `i` | Pin pane |
 
-### Scroll Mode (Ctrl+s)
-- `j/k` - Scroll
-- `Ctrl+f/b` - Page down/up
-- `s` - Search
-- `e` - Edit in $EDITOR
+#### Tabs
+| Key | Action |
+|-----|--------|
+| `c` | New tab (+ rename) |
+| `X` | Close tab |
+| `R` | Rename tab |
+| `H/L` | Previous/next tab |
+| `1-9` | Go to tab |
+| `</>` | Move tab left/right |
 
-## SSH Auto-Attach
+#### Session
+| Key | Action |
+|-----|--------|
+| `d` | Detach |
+| `w` | Session manager |
+| `Ctrl+q` | Quit |
 
-SSH sessions automatically attach to Zellij session named "ssh".
+#### Other
+| Key | Action |
+|-----|--------|
+| `[` | Scroll mode |
+| `]` | Edit scrollback |
+| `m` | Resize mode |
+| `M` | Move mode |
+| `Space` | Next layout |
+
+### Quick Keys (No Prefix)
+
+| Key | Action |
+|-----|--------|
+| `Alt+h/j/k/l` | Focus pane |
+| `Alt+f` | Toggle floating panes |
+
+### Mode Switching (from Tmux mode)
+
+| Key | Mode |
+|-----|------|
+| `Ctrl+p` | Pane |
+| `Ctrl+t` | Tab |
+| `Ctrl+n` | Resize |
+| `Ctrl+s` | Scroll |
+| `Ctrl+o` | Session |
+| `Ctrl+m` | Move |
+| `Ctrl+g` | Locked |
+
+## Theme
+
+Catppuccin Frappé with zjstatus bar at bottom showing:
+- Session name
+- Current mode
+- Tabs
+- User@host
+- Date/time (Asia/Tokyo)

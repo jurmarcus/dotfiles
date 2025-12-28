@@ -12,7 +12,7 @@ keybind = alt+arrow_right=unbind
 keybind = super+p=toggle_command_palette
 
 # Font
-font-family = FiraCode Nerd Font Mono
+font-family = JetBrainsMono Nerd Font
 font-size = 14
 font-feature = liga
 font-feature = calt
