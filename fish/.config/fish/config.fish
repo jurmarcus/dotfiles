@@ -6,10 +6,19 @@
 # =============================================================================
 
 # =============================================================================
+# PATH (fish_add_path is idempotent - no duplicates)
+# =============================================================================
+
+fish_add_path $HOME/.local/bin
+fish_add_path /opt/homebrew/bin /opt/homebrew/sbin
+fish_add_path $HOME/.bun/bin
+fish_add_path $HOME/.opencode/bin
+fish_add_path $HOME/.lmstudio/bin
+
+# =============================================================================
 # Environment
 # =============================================================================
 
-set -gx PATH $HOME/.local/bin $PATH
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 set -gx MANPAGER "sh -c 'col -bx | bat -l man -p'"
@@ -20,16 +29,8 @@ set -gx UV_PYTHON_PREFERENCE only-managed
 set -gx HOMEBREW_PREFIX /opt/homebrew
 set -gx HOMEBREW_CELLAR /opt/homebrew/Cellar
 set -gx HOMEBREW_REPOSITORY /opt/homebrew
-set -gx PATH /opt/homebrew/bin /opt/homebrew/sbin $PATH
 set -gx MANPATH /opt/homebrew/share/man $MANPATH
 set -gx INFOPATH /opt/homebrew/share/info $INFOPATH
-
-# Bun
-set -gx BUN_INSTALL $HOME/.bun
-set -gx PATH $BUN_INSTALL/bin $PATH
-
-# Tools
-set -gx PATH $HOME/.opencode/bin $HOME/.lmstudio/bin $PATH
 
 # fzf
 set -gx FZF_DEFAULT_COMMAND 'fd --type f --hidden --follow --exclude .git'
