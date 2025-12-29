@@ -52,15 +52,13 @@ starship init fish | source
 # Abbreviations (expand inline - shows real command in history)
 # =============================================================================
 
-# Git
-abbr -a g git
-abbr -a gs "git status"
-abbr -a ga "git add"
-abbr -a gc "git commit"
-abbr -a gp "git push"
-abbr -a gl "git log --oneline"
-abbr -a gd "git diff"
-abbr -a gds "git diff --staged"
+# Sapling (aliased as sl, muscle memory from hg)
+abbr -a ss "sl status"
+abbr -a sa "sl add"
+abbr -a sc "sl commit"
+abbr -a sp "sl push"
+abbr -a spl "sl pull"
+abbr -a slog "sl log -l 10"
 
 # GitHub CLI
 abbr -a pr "gh pr"
@@ -93,7 +91,6 @@ alias lt "eza --tree --icons"
 alias cat bat
 alias grep rg
 alias find fd
-alias diff delta
 alias du dust
 alias df duf
 alias top btop
@@ -101,8 +98,6 @@ alias htop btop
 alias ps procs
 alias help tldr
 alias hg sl
-alias lg lazygit
-alias dft difft
 alias tmux zellij
 
 # Editors

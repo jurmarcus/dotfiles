@@ -24,8 +24,8 @@ theme = Catppuccin Frappe
 cursor-style = bar
 cursor-style-blink = true
 
-# Shell integration (better Zellij/zsh experience)
-shell-integration = zsh
+# Shell integration
+shell-integration = fish
 
 # Don't confirm - Zellij handles sessions
 confirm-close-surface = false
