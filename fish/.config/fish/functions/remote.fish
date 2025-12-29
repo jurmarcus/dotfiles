@@ -1,5 +1,6 @@
-# Tailscale quick connect (mosh with SSH fallback)
-function tssh
+# Remote connection helpers
+
+function tssh --description "Tailscale quick connect (mosh with SSH fallback)"
     set host (test -n "$argv[1]"; and echo $argv[1]; or echo "studio")
     set -e argv[1]
     if command -q mosh
