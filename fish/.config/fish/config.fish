@@ -101,7 +101,7 @@ alias lt 'eza --tree --icons'
 alias pyr 'uv run python'
 alias pyt 'uv run pytest'
 alias pya 'uv add'
-alais pyx 'uvx'
+alias pyx 'uvx'
 
 # Typescript
 alias tsr 'bun run'
