@@ -2,7 +2,7 @@
 set -euo pipefail
 
 NAME="jurmarcus"
-EMAIL="me@jurmarcus.com"
+EMAIL="jurmarcusallen@gmail.com"
 
 # Git identity
 git config --global user.name "${NAME}"

@@ -21,24 +21,3 @@ end
 function zservice --description "New service session"
     _znew service
 end
-
-function zcd --description "Switch to zellij session"
-    zellij attach $argv[1]
-end
-
-function zrm --description "Delete zellij session"
-    zellij delete-session $argv
-end
-
-function zdev --description "Show zellij session help"
-    echo "Zellij sessions:"
-    echo "  zssh      - ssh session (shared)"
-    echo "  zclaude   - new claude session (claude-1, claude-2, ...)"
-    echo "  zopencode - new opencode session"
-    echo "  zservice  - new service session"
-    echo "  zls       - list sessions"
-    echo "  zcd NAME  - switch to session"
-    echo "  zrm NAME  - delete session"
-    echo ""
-    zellij list-sessions 2>/dev/null; or echo "No active sessions"
-end

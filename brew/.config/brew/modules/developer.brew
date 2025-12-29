@@ -53,7 +53,7 @@ brew "curl"
 brew "xh"
 
 # Remote Access
-brew "tailscale"
+cask "tailscale"
 brew "mosh"
 
 # Package Managers & Runtimes

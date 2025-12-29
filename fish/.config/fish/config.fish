@@ -50,23 +50,17 @@ abbr sa 'sl add'
 abbr sc 'sl commit'
 abbr sp 'sl push'
 abbr spl 'sl pull'
-abbr slog 'sl log -l 10'
+abbr sar 'sl addremove' 
 
 # GitHub CLI
 abbr pr 'gh pr'
 abbr issue 'gh issue'
 abbr repo 'gh repo'
 
-# Dev
-abbr pyr 'uv run python'
-abbr pyt 'uv run pytest'
-abbr pya 'uv add'
-abbr uvr 'uvx'
-abbr tsr 'bun run'
-abbr tst 'bun test'
-
 # Zellij
 abbr zls 'zellij list-sessions'
+abbr zrm 'zellij delete-session'
+abbr zcd 'zellij attach'
 abbr zssh 'zellij attach -c ssh'
 
 # Navigation
@@ -85,12 +79,14 @@ alias find fd
 alias du dust
 alias df duf
 alias top btop
+alias htop btop
 alias ps procs
 alias help tldr
 alias hg sl
 alias tmux zellij
 
 # Editors
+alias nano nvim
 alias vim nvim
 alias vi nvim
 alias v nvim
@@ -100,12 +96,21 @@ alias code codium
 alias ll 'eza -la --icons --group-directories-first'
 alias la 'eza -a --icons --group-directories-first'
 alias lt 'eza --tree --icons'
+
+# Python
+alias pyr 'uv run python'
+alias pyt 'uv run pytest'
+alias pya 'uv add'
+alais pyx 'uvx'
+
+# Typescript
+alias tsr 'bun run'
+alias tst 'bun test'
+alias tsa 'bun add'
+alias tsx 'bunx tsx'
+
+# Development
 alias python 'uv run python'
 alias py 'uv run python'
 alias pip 'uv pip'
 alias ipy 'uvx ipython'
-alias ts 'bun run'
-alias tsx 'bun x tsx'
-alias cdi zi
-alias studio 'tssh studio'
-alias mstudio 'mosh studio'

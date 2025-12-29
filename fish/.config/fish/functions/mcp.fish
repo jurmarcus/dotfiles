@@ -12,7 +12,7 @@ function template --description "Simple mustache-style template"
     echo $content
 end
 
-function mcp-init-py --description "Initialize MCP server with Python"
+function py-init-mcp --description "Initialize MCP server with Python"
     set name (test -n "$argv[1]"; and echo $argv[1]; or echo "mcp-server")
     set module_name (string replace -a "-" "_" $name)
     pyinit $name
@@ -24,7 +24,7 @@ function mcp-init-py --description "Initialize MCP server with Python"
     echo "Run: uv run python -m $module_name.server"
 end
 
-function mcp-init-ts --description "Initialize MCP server with TypeScript"
+function ts-init-mcp --description "Initialize MCP server with TypeScript"
     set name (test -n "$argv[1]"; and echo $argv[1]; or echo "mcp-server")
     tsinit $name
     cd $name 2>/dev/null

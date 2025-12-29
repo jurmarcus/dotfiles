@@ -1,6 +1,6 @@
 # Python / uv project helpers
 
-function pyinit --description "Initialize Python project with uv"
+function py-init --description "Initialize Python project with uv"
     set name (test -n "$argv[1]"; and echo $argv[1]; or echo ".")
     if test "$name" != "."
         mkdir -p $name
