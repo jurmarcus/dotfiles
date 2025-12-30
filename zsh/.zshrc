@@ -114,11 +114,14 @@ zclaude() { _znew claude; }
 zopencode() { _znew opencode; }
 zservice() { _znew service; }
 
-# List, switch, and delete sessions
+# List, switch, kill, and delete sessions
 zls() { zellij list-sessions; }
 zcd() { zellij attach "$1"; }
-zrm() { zellij delete-session "$@"; }
 zssh() { zellij attach -c ssh; }
+zk() { zellij kill-session "$@"; }
+zka() { zellij kill-all-sessions; }
+zd() { zellij delete-session "$@"; }
+zda() { zellij delete-all-sessions; }
 
 # =============================================================================
 # Aliases - Modern CLI Replacements

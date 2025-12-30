@@ -65,8 +65,11 @@ abbr repo 'gh repo'
 # Zellij
 abbr zls 'zellij list-sessions'
 abbr zcd 'zellij attach'
-abbr zrm 'zellij delete-session'
 abbr zssh 'zellij attach -c ssh'
+abbr zk 'zellij kill-session'
+abbr zka 'zellij kill-all-sessions'
+abbr zd 'zellij delete-session'
+abbr zda 'zellij delete-all-sessions'
 
 # Navigation
 abbr -g .. 'cd ..'
