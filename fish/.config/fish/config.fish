@@ -42,6 +42,9 @@ starship init fish | source
 # Auto-attach to zellij on SSH
 set -q SSH_CONNECTION && not set -q ZELLIJ && command -q zellij && zellij attach -c ssh
 
+# Auto-attach to zellin on MOSH
+set -q MOSH_CONNECTION && not set -q ZELLIJ && command -q zellij && zellij attach -c mosh
+
 # -----------------------------------------------------------------------------
 # Abbreviations (expand inline, visible in history)
 # -----------------------------------------------------------------------------

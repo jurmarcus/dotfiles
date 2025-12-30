@@ -92,6 +92,10 @@ if [[ -n "$SSH_CONNECTION" && -z "$ZELLIJ" && -t 0 ]] && command -v zellij &>/de
   zellij attach -c ssh
 fi
 
+# Auto-start Zellij for MOSH sessions
+if [[ -n "$MOSH_CONNECTION" && -z "$ZELLIJ" && -t 0 ]] && command -v zellij &>/dev/null; then
+  zellij attach -c mosh
+fi
 # =============================================================================
 # Zellij Session Management
 # =============================================================================
@@ -150,7 +154,7 @@ alias ss="sl status"
 alias sa="sl add"
 alias sc="sl commit"
 alias sp="sl push"
-alias spl="sl pull"
+alias spl="sl pull --rebase"
 alias sar="sl addremove"
 
 # GitHub CLI

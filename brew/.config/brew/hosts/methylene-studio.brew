@@ -16,4 +16,4 @@ enable "learning"
 
 # Studio-specific: Local LLM GUI
 cask "lm-studio"
-cask "ollama"
+cask "ollama-app"
