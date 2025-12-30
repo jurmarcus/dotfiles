@@ -6,11 +6,11 @@ function context --description "Show project context for Claude"
     echo "### Structure"
     eza --tree -L 2 --icons --group-directories-first
     echo ""
-    echo "### Git Status"
-    git status --short 2>/dev/null; or echo "Not a git repo"
+    echo "### Status"
+    sl status 2>/dev/null or echo "Not a repo"
     echo ""
     echo "### Recent Changes"
-    git log --oneline -5 2>/dev/null
+    sl log -l 5 2>/dev/null or true
 end
 
 function yank --description "Copy file contents to clipboard"

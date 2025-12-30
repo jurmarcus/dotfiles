@@ -1,6 +1,6 @@
 # dotfiles
 
-Personal macOS development environment managed with GNU Stow and modular Homebrew.
+macOS development environment managed with GNU Stow. Dual-shell setup (zsh + fish).
 
 ## Quick Start
 
@@ -8,119 +8,76 @@ Personal macOS development environment managed with GNU Stow and modular Homebre
 git clone https://github.com/jurmarcus/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ./bootstrap/bootstrap.sh
-exec zsh
+exec zsh  # or: exec fish
 ```
-
-The bootstrap script installs Xcode CLI tools, Homebrew, stows all packages, installs brew bundles, sets up SSH/git, applies macOS defaults, and configures default apps.
 
 ## Structure
 
 ```
 dotfiles/
-├── bootstrap/          # Setup scripts
-│   ├── bootstrap.sh    # Main orchestrator
-│   ├── macos.sh        # System preferences
-│   ├── git.sh          # Git identity setup
-│   ├── tailscale.sh    # Generate SSH config from Tailscale
-│   ├── duti.sh         # Default file associations
-│   └── vscodium.sh     # VSCodium extensions
-├── brew/               # Homebrew (modular)
-│   ├── .Brewfile       # Main loader with host detection
-│   └── .config/brew/
-│       ├── hosts/      # Per-machine profiles
-│       └── modules/    # Category-based packages
-├── zsh/                # Shell (flat .zshrc)
-│   ├── .zshrc          # Main config
-│   ├── .zprofile       # Login shell
-│   └── .config/zsh/templates/  # MCP server templates
-├── nvim/               # Neovim (NvChad-based)
-├── ghostty/            # Terminal emulator
-├── starship/           # Prompt
-├── zellij/             # Terminal multiplexer
-├── git/                # Git config (delta pager)
-├── karabiner/          # Keyboard remapping
-├── claude/             # Claude Code config & commands
-└── stow/               # Stow settings
+├── bootstrap/     # Setup scripts
+├── brew/          # Modular Homebrew (host-based)
+├── zsh/           # Zsh config
+├── fish/          # Fish config
+├── templates/     # Shared MCP templates
+├── nvim/          # Neovim (NvChad)
+├── ghostty/       # Terminal
+├── zellij/        # Multiplexer
+├── starship/      # Prompt
+├── git/           # Git + delta
+├── karabiner/     # Keyboard remaps
+├── ssh/           # SSH config
+├── claude/        # Claude Code commands
+└── stow/          # Stow settings
 ```
 
-## Components
+## Shells
 
-### Homebrew
+Both zsh and fish are configured identically with modern CLI replacements:
 
-Modular system with automatic host detection.
+| Original | Replacement | Original | Replacement |
+|----------|-------------|----------|-------------|
+| ls | eza | cd | zoxide |
+| cat | bat | top | btop |
+| grep | rg | diff | delta |
+| find | fd | vim | nvim |
 
-**Modules:** ai, browsers, communication, developer, editors, entertainment, hardware, learning, photography, security, utils
+**Zsh**: Flat `.zshrc` with plugins from Homebrew
+**Fish**: Modular `config.fish` + `functions/` directory
 
-**Host profiles** in `brew/.config/brew/hosts/` define which modules each machine uses.
+## Development
 
-```bash
-# Add package to a module
-echo 'brew "newtool"' >> brew/.config/brew/modules/developer.brew
-brew bundle --global
-```
+| Language | Runtime | Commands |
+|----------|---------|----------|
+| Python | uv | `py`, `py-init`, `pyr`, `pyt`, `pya` |
+| TypeScript | bun | `ts-init`, `tsr`, `tst`, `tsa` |
+| MCP | both | `py-init-mcp`, `ts-init-mcp` |
 
-### Shell
+## Tools
 
-Flat `.zshrc` with modern CLI tools:
-
-| Original | Replacement |
-|----------|-------------|
-| ls | eza |
-| cat | bat |
-| grep | ripgrep |
-| find | fd |
-| cd | zoxide |
-| top | btop |
-| diff | delta |
-
-**Plugins:** zsh-autosuggestions, zsh-syntax-highlighting, zsh-history-substring-search
-
-### Development
-
-**Python (uv):** `py`, `pyinit`, `pyr`, `pyt`, `pya`
-
-**TypeScript (bun):** `ts`, `tsinit`, `tsr`, `tst`
-
-**MCP servers:** `mcp-init-py`, `mcp-init-ts`
-
-### Editors
-
-- **Neovim** - Primary editor (NvChad framework, onedark theme)
-- **VSCodium** - GUI editor (`code` alias)
-
-### Terminal
-
-- **Ghostty** - GPU-accelerated terminal
-- **Zellij** - Tmux replacement with vim-style navigation
-- **Starship** - Customized prompt (Catppuccin Frappe)
-
-### Version Control
-
-- **Sapling** (`sl`) - Preferred for daily use
-- **Git** - With delta pager (side-by-side diffs)
-- **Lazygit** - TUI interface
+- **Editor**: Neovim (NvChad) + VSCodium
+- **Terminal**: Ghostty
+- **Multiplexer**: Zellij
+- **Prompt**: Starship (Catppuccin Frappe)
+- **VCS**: Sapling (`sl`) + Git + Lazygit
+- **History**: Atuin
 
 ## Usage
 
 ```bash
-# Re-stow all packages
-restow
-
-# Sync brew packages
-brewsync
-
-# Re-stow single package
-cd ~/dotfiles && stow -R zsh
+restow              # Re-stow all packages
+brewsync            # Sync Homebrew packages
+brewsync clean      # Sync + remove orphans
+stow -R <pkg>       # Re-stow single package
 ```
 
 ## Customization
 
-1. Fork this repo
-2. Create host profile: `brew/.config/brew/hosts/your-hostname.brew`
-3. Enable desired modules in your host file
-4. Modify configs as needed
-5. Run `./bootstrap/bootstrap.sh`
+1. Fork repo
+2. Create host profile: `brew/.config/brew/hosts/$(hostname).brew`
+3. Enable modules in host file
+4. Run `./bootstrap/bootstrap.sh`
 
 ## Files
 
-All configs live in `~/dotfiles/` and are symlinked via Stow. Never edit files in `~/` directly.
+All configs live in `~/dotfiles/` and are symlinked via Stow. **Never edit files in `~/` directly.**

@@ -14,8 +14,12 @@ function restow --description "Re-stow all dotfiles packages"
 end
 
 function brewsync --description "Sync Homebrew with Brewfile"
-    echo "==> Installing from Brewfile..."
-    brew bundle --global
+    if brew bundle check --global >/dev/null 2>&1
+        echo "==> All packages already installed"
+    else
+        echo "==> Installing from Brewfile..."
+        brew bundle --global
+    end
 
     echo ""
     echo "==> Checking for orphans..."

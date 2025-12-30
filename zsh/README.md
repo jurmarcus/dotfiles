@@ -1,69 +1,78 @@
 # Zsh Configuration
 
-Flat `.zshrc` configuration (not modular).
+Flat `.zshrc` configuration with plugins from Homebrew.
 
 ## Files
 
 ```
 zsh/
-├── .zshrc                      # Main config (all-in-one)
-├── .zshenv                     # Non-interactive shell PATH (SSH, mosh)
-├── .zprofile                   # Login shell (Homebrew init)
-└── .config/zsh/
-    └── templates/              # MCP server templates
-        ├── mcp-server.py
-        └── mcp-server.ts
+├── .zshrc       # Main config (all-in-one)
+├── .zshenv      # PATH for non-interactive shells (SSH, scripts)
+└── .zprofile    # Login shell (Homebrew init)
 ```
 
 ## Structure of .zshrc
 
-1. **Environment** - PATH, EDITOR, MANPAGER, Homebrew paths, Bun paths
-2. **Caching** - compinit (rebuilds once/day), tool inits
-3. **History** - 10k entries, ~/.zsh_history, SHARE_HISTORY
-4. **Plugins** - fzf, zoxide, starship, completions
-5. **SSH/Remote** - Auto-attach Zellij for SSH sessions
-6. **Aliases** - Modern CLI replacements
-7. **Functions** - Claude workflow, dotfiles, Python/TS, MCP
-8. **Zsh plugins** - autosuggestions, syntax-highlighting, history-substring-search
+1. **Environment** - PATH, EDITOR, MANPAGER, Homebrew, BUN_INSTALL, UV_PYTHON_PREFERENCE
+2. **Completions** - Cached compinit (rebuilds once/day), `regen-completions` function
+3. **Tool init** - fzf, zoxide, atuin, starship
+4. **History** - 50k entries, dedup, shared
+5. **SSH** - Auto-attach Zellij for SSH sessions
+6. **Zellij** - Session management functions
+7. **Aliases** - Modern CLI replacements
+8. **Functions** - Claude workflow, dotfiles, Python/TS, MCP
+9. **Plugins** - zsh-autosuggestions, zsh-syntax-highlighting
 
-## Aliases
+## Aliases (synced with fish)
 
 | Category | Aliases |
 |----------|---------|
-| Files | `ls/ll/la/lt`->eza, `cat`->bat, `grep`->rg, `find`->fd, `diff`->delta |
-| System | `top/htop`->btop, `ps`->procs, `du`->dust, `df`->duf, `help`->tldr |
-| Editors | `vim/vi/v/nano`->nvim, `code`->codium |
-| Git | `g`, `gs`, `ga`, `gc`, `gp`, `gl`, `gd`, `gds`, `lg`->lazygit |
-| VCS | `hg`->sapling |
+| Files | `ls/ll/la/lt`→eza, `cat`→bat, `grep`→rg, `find`→fd |
+| System | `top/htop`→btop, `ps`→procs, `du`→dust, `df`→duf, `help`→tldr |
+| Editors | `vim/vi/v/nano`→nvim, `code`→codium |
+| Sapling | `ss`, `sa`, `sc`, `sp`, `spl`, `sar` |
+| GitHub | `pr`, `issue`, `repo` |
+| Navigation | `..`, `...`, `....`, `.....` |
 
 ## Functions
 
 | Function | Description |
 |----------|-------------|
-| `context` | Show project tree + git status |
+| `context` | Project tree + sapling status |
 | `yank <file>` | Copy file to clipboard |
 | `yankdir [dir] [depth]` | Copy tree to clipboard |
-| `watch <cmd> [ext]` | Run command on file changes |
+| `watch <cmd> [ext]` | watchexec wrapper |
 | `restow` | Re-stow all packages |
-| `brewsync [clean]` | Sync Homebrew packages |
+| `brewsync [clean]` | Sync Homebrew |
+| `regen-completions` | Rebuild completion cache |
 
-### Python (uv)
-`py`, `pyinit`, `pyr`, `pyt`, `pya`, `uvr`
+### Dev Functions
+| Function | Description |
+|----------|-------------|
+| `py-init [name]` | Create uv Python project |
+| `ts-init [name]` | Create bun TypeScript project |
+| `py-init-mcp [name]` | Create Python MCP server |
+| `ts-init-mcp [name]` | Create TypeScript MCP server |
+| `pyr`, `pyt`, `pya` | uv run/pytest/add |
+| `tsr`, `tst`, `tsa` | bun run/test/add |
 
-### TypeScript (bun)
-`ts`, `tsx`, `tsinit`, `tsr`, `tst`
-
-### MCP
-`mcp-init-py [name]`, `mcp-init-ts [name]`
+### Zellij Functions
+| Function | Description |
+|----------|-------------|
+| `zls` | List sessions |
+| `zcd <session>` | Attach to session |
+| `zrm <session>` | Delete session |
+| `zclaude` | New numbered claude session |
+| `zopencode` | New numbered opencode session |
 
 ## Plugins
 
-1. zsh-autosuggestions - Fish-like suggestions
-2. zsh-syntax-highlighting - Command highlighting
-3. zsh-history-substring-search - Up/Down arrow search
+From Homebrew (must be last in .zshrc):
+- `zsh-autosuggestions` - Fish-like suggestions
+- `zsh-syntax-highlighting` - Command highlighting
 
 ## Key Bindings
 
-- `Ctrl+R` - fzf history search
-- `Up/Down` - history substring search
+- `Ctrl+R` - fzf history (via atuin)
 - `Ctrl+T` - fzf file search
+- `Alt+C` - fzf cd

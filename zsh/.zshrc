@@ -23,10 +23,16 @@ export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
+# Opencode
+export PATH=/Users/methylene/.opencode/bin:$PATH
+
 # =============================================================================
-# Caching (completions + tool init)
+# Completions (cached to files for fast startup)
 # =============================================================================
 
+# Completion cache dir - generate with: regen-completions
+ZSH_COMP_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/completions"
+[[ -d "$ZSH_COMP_DIR" ]] && FPATH="$ZSH_COMP_DIR:$FPATH"
 FPATH="/opt/homebrew/share/zsh/site-functions:$FPATH"
 
 # Cache compinit - only rebuild once per day
@@ -37,24 +43,36 @@ else
   compinit -C
 fi
 
-# Tool initializations
+# Regenerate cached completions (run once, or after tool updates)
+regen-completions() {
+  local dir="$ZSH_COMP_DIR"
+  mkdir -p "$dir"
+  echo "Generating completions to $dir..."
+  uv generate-shell-completion zsh > "$dir/_uv"
+  gh completion -s zsh > "$dir/_gh"
+  op completion zsh > "$dir/_op"
+  just --completions zsh > "$dir/_just"
+  echo "Done. Restart shell to use."
+}
+
+# =============================================================================
+# Tool Initialization (lazy where possible)
+# =============================================================================
+
 eval "$(fzf --zsh)"
 eval "$(zoxide init zsh --cmd cd)"
+eval "$(atuin init zsh)"
 eval "$(starship init zsh)"
 
-# Completions
-eval "$(uv generate-shell-completion zsh)"
-eval "$(gh completion -s zsh)"
-eval "$(op completion zsh)"
-
 # =============================================================================
-# History
+# History (backup - atuin is primary)
 # =============================================================================
 
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=50000
+SAVEHIST=50000
 HISTFILE=~/.zsh_history
 setopt HIST_IGNORE_DUPS HIST_IGNORE_SPACE SHARE_HISTORY
+setopt HIST_EXPIRE_DUPS_FIRST HIST_FIND_NO_DUPS INC_APPEND_HISTORY
 
 # =============================================================================
 # Plugins & Tools
@@ -74,27 +92,9 @@ if [[ -n "$SSH_CONNECTION" && -z "$ZELLIJ" && -t 0 ]] && command -v zellij &>/de
   zellij attach -c ssh
 fi
 
-# Tailscale quick connect (mosh with SSH fallback)
-tssh() {
-  local host="${1:-studio}"
-  shift
-  if command -v mosh &>/dev/null; then
-    mosh "$host" -- zellij attach -c main "$@"
-  else
-    ssh -t "$host" "zellij attach -c main" "$@"
-  fi
-}
-
-# Quick aliases for Tailscale machines
-alias studio="tssh studio"
-alias mstudio="mosh studio"
-
 # =============================================================================
 # Zellij Session Management
 # =============================================================================
-
-# Named sessions for different workflows
-zssh() { zellij attach -c ssh; }
 
 # Numbered sessions helper
 _znew() {
@@ -110,24 +110,11 @@ zclaude() { _znew claude; }
 zopencode() { _znew opencode; }
 zservice() { _znew service; }
 
-# Zellij session helper
-zdev() {
-  echo "Zellij sessions:"
-  echo "  zssh      - ssh session (shared)"
-  echo "  zclaude   - new claude session (claude-1, claude-2, ...)"
-  echo "  zopencode - new opencode session (opencode-1, opencode-2, ...)"
-  echo "  zservice  - new service session (service-1, service-2, ...)"
-  echo "  zls       - list sessions"
-  echo "  zcd NAME  - switch to session"
-  echo "  zrm NAME  - delete session"
-  echo ""
-  zellij list-sessions 2>/dev/null || echo "No active sessions"
-}
-
 # List, switch, and delete sessions
 zls() { zellij list-sessions; }
 zcd() { zellij attach "$1"; }
 zrm() { zellij delete-session "$@"; }
+zssh() { zellij attach -c ssh; }
 
 # =============================================================================
 # Aliases - Modern CLI Replacements
@@ -141,7 +128,6 @@ alias lt="eza --tree --icons"
 alias cat="bat"
 alias grep="rg"
 alias find="fd"
-alias diff="delta"
 alias du="dust"
 alias df="duf"
 
@@ -153,23 +139,19 @@ alias help="tldr"
 alias tmux="zellij"
 
 # Editors
+alias nano="nvim"
 alias vim="nvim"
 alias vi="nvim"
 alias v="nvim"
-alias nano="nvim"
 alias code="codium"
 
-# Version control
-alias hg="sl"
-alias g="git"
-alias gs="git status"
-alias ga="git add"
-alias gc="git commit"
-alias gp="git push"
-alias gl="git log --oneline"
-alias gd="git diff"
-alias gds="git diff --staged"
-alias lg="lazygit"
+# Version control (sapling for everything)
+alias ss="sl status"
+alias sa="sl add"
+alias sc="sl commit"
+alias sp="sl push"
+alias spl="sl pull"
+alias sar="sl addremove"
 
 # GitHub CLI
 alias pr="gh pr"
@@ -177,7 +159,6 @@ alias issue="gh issue"
 alias repo="gh repo"
 
 # Navigation
-alias cdi="zi"
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -191,10 +172,10 @@ context() {
   echo "## Project: $(basename $PWD)"
   echo "\n### Structure"
   eza --tree -L 2 --icons --group-directories-first
-  echo "\n### Git Status"
-  git status --short 2>/dev/null || echo "Not a git repo"
+  echo "\n### Status"
+  sl status 2>/dev/null || echo "Not a repo"
   echo "\n### Recent Changes"
-  git log --oneline -5 2>/dev/null || true
+  sl log -l 5 2>/dev/null || true
 }
 
 yank() {
@@ -213,7 +194,6 @@ yankdir() {
 }
 
 watch() { watchexec -e "${2:-py,ts,js,rs}" -- "$1"; }
-dft() { difft "$@"; }
 
 # =============================================================================
 # Functions - Dotfiles
@@ -235,8 +215,12 @@ restow() {
 }
 
 brewsync() {
-  echo "==> Installing from Brewfile..."
-  brew bundle --global
+  if brew bundle check --global >/dev/null 2>&1; then
+    echo "==> All packages already installed"
+  else
+    echo "==> Installing from Brewfile..."
+    brew bundle --global
+  fi
 
   echo "\n==> Checking for orphans (installed but not in Brewfile)..."
   local orphans
@@ -262,10 +246,10 @@ brewsync() {
 alias python="uv run python"
 alias python3="uv run python"
 alias py="uv run python"
-alias ipy="uvx ipython"
 alias pip="uv pip"
+alias ipy="uvx ipython"
 
-pyinit() {
+py-init() {
   local name="${1:-.}"
   [[ "$name" != "." ]] && mkdir -p "$name" && cd "$name"
   uv init && uv add --dev ruff pytest
@@ -275,16 +259,13 @@ pyinit() {
 pyr() { uv run python "$@"; }
 pyt() { uv run pytest "$@"; }
 pya() { uv add "$@"; }
-uvr() { uvx "$@"; }
+pyx() { uvx "$@"; }
 
 # =============================================================================
 # Functions - TypeScript / bun
 # =============================================================================
 
-alias ts="bun run"
-alias tsx="bun x tsx"
-
-tsinit() {
+ts-init() {
   local name="${1:-.}"
   [[ "$name" != "." ]] && mkdir -p "$name" && cd "$name"
   bun init -y && bun add -d typescript @types/bun
@@ -293,6 +274,8 @@ tsinit() {
 
 tsr() { bun run "$@"; }
 tst() { bun test "$@"; }
+tsa() { bun add "$@"; }
+tsx() { bun x tsx "$@"; }
 
 # =============================================================================
 # Functions - Templates
@@ -312,16 +295,16 @@ template() {
 }
 
 # Template directory
-TEMPLATE_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/templates"
+TEMPLATE_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/templates"
 
 # =============================================================================
 # Functions - MCP Development
 # =============================================================================
 
-mcp-init-py() {
+py-init-mcp() {
   local name="${1:-mcp-server}"
   local module_name="${name//-/_}"
-  pyinit "$name"
+  py-init "$name"
   cd "$name" 2>/dev/null || true
   uv add mcp
   mkdir -p "src/$module_name"
@@ -330,9 +313,9 @@ mcp-init-py() {
   echo "Run: uv run python -m $module_name.server"
 }
 
-mcp-init-ts() {
+ts-init-mcp() {
   local name="${1:-mcp-server}"
-  tsinit "$name"
+  ts-init "$name"
   cd "$name" 2>/dev/null || true
   bun add @modelcontextprotocol/sdk
   template "$TEMPLATE_DIR/mcp-server.ts" NAME="$name" > src/index.ts
@@ -341,19 +324,8 @@ mcp-init-ts() {
 }
 
 # =============================================================================
-# Zsh Plugins (must be last, syntax-highlighting before history-substring-search)
+# Zsh Plugins (must be last)
 # =============================================================================
 
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
-
-# opencode
-export PATH=/Users/methylene/.opencode/bin:$PATH
-
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/methylene/.lmstudio/bin"
-# End of LM Studio CLI section
-

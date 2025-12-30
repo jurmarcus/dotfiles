@@ -22,13 +22,14 @@ PDF="com.apple.Preview"  # or "net.sourceforge.skim-app.skim"
 echo "  Setting default applications..."
 
 # Code/Text files -> VSCodium
+# Note: .html/.htm excluded - handled by browser below
 CODE_EXTENSIONS=(
   .txt .md .markdown
   .json .yaml .yml .toml
   .sh .bash .zsh .fish
   .py .pyw
   .js .mjs .cjs .ts .mts .tsx .jsx
-  .html .htm .css .scss .sass .less
+  .css .scss .sass .less
   .rs .go .rb .php .java .kt .swift .c .cpp .h .hpp
   .sql .graphql .prisma
   .xml .svg

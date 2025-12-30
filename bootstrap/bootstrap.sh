@@ -11,19 +11,86 @@ YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
+# Flags
+DRY_RUN=false
+VERBOSE=false
+
 step() { echo -e "\n${BLUE}>> $1${NC}"; }
 ok() { echo -e "${GREEN}✓ $1${NC}"; }
 warn() { echo -e "${YELLOW}! $1${NC}"; }
 skip() { echo -e "${YELLOW}  Skipped${NC}"; }
+
+run() {
+  if [[ "$DRY_RUN" == "true" ]]; then
+    echo -e "${YELLOW}[dry-run]${NC} $*"
+  else
+    "$@"
+  fi
+}
+
+usage() {
+  cat <<EOF
+Usage: $(basename "$0") [OPTIONS]
+
+Bootstrap a new macOS machine with dotfiles.
+
+OPTIONS:
+    -h, --help      Show this help message
+    -n, --dry-run   Show what would be done without doing it
+    -v, --verbose   Enable verbose output
+
+STEPS:
+    1. Xcode Command Line Tools
+    2. Homebrew
+    3. GNU Stow + symlinks
+    4. Brew bundle (packages)
+    5. Git identity
+    6. macOS settings
+    7. Default applications (duti)
+    8. VSCodium extensions
+
+EXAMPLES:
+    $(basename "$0")              # Full bootstrap
+    $(basename "$0") --dry-run    # Preview changes
+EOF
+}
+
+cleanup() {
+  local exit_code=$?
+  if [[ $exit_code -ne 0 ]]; then
+    echo -e "\n${RED}Bootstrap failed at step. Check output above.${NC}"
+  fi
+  exit $exit_code
+}
+
+trap cleanup EXIT
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help) usage; exit 0 ;;
+    -n|--dry-run) DRY_RUN=true; shift ;;
+    -v|--verbose) VERBOSE=true; set -x; shift ;;
+    *) echo "Unknown option: $1"; usage; exit 1 ;;
+  esac
+done
+
+if [[ "$DRY_RUN" == "true" ]]; then
+  echo -e "${YELLOW}Running in dry-run mode. No changes will be made.${NC}"
+fi
 
 # Step 1: Xcode CLI Tools
 step "Step 1: Xcode Command Line Tools"
 if xcode-select -p >/dev/null 2>&1; then
   ok "Already installed"
 else
-  xcode-select --install || true
-  warn "Complete the GUI prompt, then re-run this script"
-  exit 1
+  if [[ "$DRY_RUN" == "true" ]]; then
+    echo -e "${YELLOW}[dry-run]${NC} Would install Xcode CLI Tools"
+  else
+    xcode-select --install || true
+    warn "Complete the GUI prompt, then re-run this script"
+    exit 1
+  fi
 fi
 
 # Step 2: Homebrew
@@ -31,8 +98,12 @@ step "Step 2: Homebrew"
 if command -v brew >/dev/null 2>&1; then
   ok "Already installed"
 else
-  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  ok "Installed"
+  if [[ "$DRY_RUN" == "true" ]]; then
+    echo -e "${YELLOW}[dry-run]${NC} Would install Homebrew"
+  else
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    ok "Installed"
+  fi
 fi
 
 # Ensure brew is in PATH
@@ -44,7 +115,7 @@ fi
 
 # Step 3: Stow + dotfiles
 step "Step 3: Stow dotfiles"
-command -v stow >/dev/null 2>&1 || brew install stow
+command -v stow >/dev/null 2>&1 || run brew install stow
 pushd "${DOTFILES_DIR}" >/dev/null
 shopt -s nullglob
 for d in */; do
@@ -53,7 +124,11 @@ for d in */; do
     .git*|scripts*|bin*|images*|docs*|.github*|private*|bootstrap* ) continue ;;
   esac
   echo "  Stowing: $d"
-  stow --target="${HOME}" "$d" 2>/dev/null || stow --target="${HOME}" -R "$d"
+  if [[ "$DRY_RUN" == "true" ]]; then
+    stow --simulate --target="${HOME}" "$d" 2>/dev/null || stow --simulate --target="${HOME}" -R "$d"
+  else
+    stow --target="${HOME}" "$d" 2>/dev/null || stow --target="${HOME}" -R "$d"
+  fi
 done
 popd >/dev/null
 ok "All packages stowed"
@@ -63,52 +138,60 @@ step "Step 4: Homebrew packages"
 export HOMEBREW_NO_AUTO_UPDATE=1
 export HOMEBREW_NO_ENV_HINTS=1
 export HOMEBREW_NO_ANALYTICS=1
-brew bundle --global
-ok "Packages installed"
-
-# Step 5: Tailscale SSH setup
-step "Step 5: Tailscale SSH"
-if command -v tailscale >/dev/null 2>&1; then
-  if ! pgrep -q tailscaled; then
-    warn "Run: sudo brew services start tailscale && tailscale up && tailscale set --ssh"
-  else
-    tailscale set --ssh 2>/dev/null && ok "SSH enabled" || warn "Run: tailscale set --ssh"
-  fi
+if brew bundle check --global >/dev/null 2>&1; then
+  ok "All packages already installed"
 else
-  warn "Install tailscale: brew install tailscale"
+  run brew bundle --global
+  ok "Packages installed"
 fi
 
-# Step 6: Git identity
-step "Step 6: Git identity"
+# Step 5: Git identity
+step "Step 5: Git identity"
 if [[ -f "${BOOTSTRAP_DIR}/git.sh" ]]; then
-  bash "${BOOTSTRAP_DIR}/git.sh"
+  if [[ "$DRY_RUN" == "true" ]]; then
+    echo -e "${YELLOW}[dry-run]${NC} Would configure git identity"
+  else
+    bash "${BOOTSTRAP_DIR}/git.sh"
+  fi
   ok "Git configured"
 else
   skip
 fi
 
-# Step 7: macOS settings
-step "Step 7: macOS settings"
+# Step 6: macOS settings
+step "Step 6: macOS settings"
 if [[ "$(uname -s)" == "Darwin" && -f "${BOOTSTRAP_DIR}/macos.sh" ]]; then
-  bash "${BOOTSTRAP_DIR}/macos.sh"
+  if [[ "$DRY_RUN" == "true" ]]; then
+    echo -e "${YELLOW}[dry-run]${NC} Would apply macOS settings"
+  else
+    bash "${BOOTSTRAP_DIR}/macos.sh"
+  fi
   ok "Applied"
 else
   skip
 fi
 
-# Step 8: Default applications (duti)
-step "Step 8: Default applications"
+# Step 7: Default applications (duti)
+step "Step 7: Default applications"
 if [[ "$(uname -s)" == "Darwin" && -f "${BOOTSTRAP_DIR}/duti.sh" ]]; then
-  bash "${BOOTSTRAP_DIR}/duti.sh"
+  if [[ "$DRY_RUN" == "true" ]]; then
+    echo -e "${YELLOW}[dry-run]${NC} Would configure default applications"
+  else
+    bash "${BOOTSTRAP_DIR}/duti.sh"
+  fi
   ok "Configured"
 else
   skip
 fi
 
-# Step 9: VSCodium extensions
-step "Step 9: VSCodium extensions"
+# Step 8: VSCodium extensions
+step "Step 8: VSCodium extensions"
 if command -v codium >/dev/null 2>&1 && [[ -f "${BOOTSTRAP_DIR}/vscodium.sh" ]]; then
-  bash "${BOOTSTRAP_DIR}/vscodium.sh"
+  if [[ "$DRY_RUN" == "true" ]]; then
+    echo -e "${YELLOW}[dry-run]${NC} Would install VSCodium extensions"
+  else
+    bash "${BOOTSTRAP_DIR}/vscodium.sh"
+  fi
   ok "Installed"
 else
   skip
@@ -118,7 +201,5 @@ echo -e "\n${GREEN}✅ Bootstrap complete!${NC}"
 echo ""
 echo "Next steps:"
 echo "  1. Open a new terminal for shell changes"
-echo "  2. Start Tailscale: sudo brew services start tailscale && tailscale up"
-echo "  3. Enable Tailscale SSH: tailscale set --ssh"
-echo "  4. Log out/in for some macOS settings to take effect"
+echo "  2. Log out/in for some macOS settings to take effect"
 echo ""

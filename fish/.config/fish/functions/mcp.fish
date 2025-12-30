@@ -15,7 +15,7 @@ end
 function py-init-mcp --description "Initialize MCP server with Python"
     set name (test -n "$argv[1]"; and echo $argv[1]; or echo "mcp-server")
     set module_name (string replace -a "-" "_" $name)
-    pyinit $name
+    py-init $name
     cd $name 2>/dev/null
     uv add mcp
     mkdir -p "src/$module_name"
@@ -26,7 +26,7 @@ end
 
 function ts-init-mcp --description "Initialize MCP server with TypeScript"
     set name (test -n "$argv[1]"; and echo $argv[1]; or echo "mcp-server")
-    tsinit $name
+    ts-init $name
     cd $name 2>/dev/null
     bun add @modelcontextprotocol/sdk
     template $TEMPLATE_DIR/mcp-server.ts NAME=$name > src/index.ts

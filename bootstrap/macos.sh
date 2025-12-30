@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Close System Settings to prevent it from overriding changes
+osascript -e 'tell application "System Settings" to quit' 2>/dev/null || true
+
 # =============================================================================
 # Keyboard & Input
 # =============================================================================
-
-# Caps Lock -> Control
-hidutil property --set '{"UserKeyMapping": [{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E0}]}'
 
 # Fast key repeat (essential for vim)
 defaults write NSGlobalDomain KeyRepeat -int 2

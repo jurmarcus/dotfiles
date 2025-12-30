@@ -1,69 +1,91 @@
+# =============================================================================
 # Shell & Terminal
+# =============================================================================
+
 brew "zsh"
+brew "fish"
 brew "starship"
 brew "zellij"
-tap "mistertea/et"
-brew "mistertea/et/et"
 cask "ghostty"
 
-# Shell Enhancements
-brew "fzf"
-brew "zoxide"
+# Zsh plugins
 brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
-brew "zsh-history-substring-search"
+# Note: atuin replaces zsh-history-substring-search
 
-# File & Text Utilities
-brew "bat"
-brew "eza"
-brew "fd"
-brew "ripgrep"
-brew "dust"
-brew "duf"
-brew "jq"
-brew "yq"
+# Shell tools
+brew "fzf"
+brew "zoxide"
+brew "atuin"        # shell history with SQLite + sync
 
-# Documentation
-brew "tealdeer"
-
-# Version Control
-brew "git"
-brew "sapling"
-brew "git-delta"
-brew "difftastic"
-brew "gh"
-brew "lazygit"
-
-# Development Tools
-brew "neovim"
-brew "stow"
-brew "mas"
-brew "watchexec"
-
-# Code Formatting & Linting
-brew "ruff"
-brew "biome"
-
-# System Monitoring
-brew "btop"
-brew "procs"
-
-# HTTP & Networking
-brew "curl"
-brew "xh"
-
-# Remote Access
-cask "tailscale"
+# Remote access
+tap "mistertea/et"
+brew "mistertea/et/et"
 brew "mosh"
+cask "tailscale-app"
 
-# Package Managers & Runtimes
-brew "uv"
-brew "bun"
+# =============================================================================
+# Modern CLI Replacements
+# =============================================================================
 
-# Default Apps
-brew "duti"
+# Files & directories
+brew "bat"          # cat
+brew "eza"          # ls
+brew "fd"           # find
+brew "ripgrep"      # grep
+brew "sd"           # sed
+brew "dust"         # du
+brew "duf"          # df
 
+# Data processing
+brew "jq"           # JSON
+brew "yq"           # YAML
+
+# System
+brew "btop"         # top/htop
+brew "procs"        # ps
+
+# HTTP
+brew "xh"           # curl (fancy)
+brew "curl"         # curl (standard)
+
+# Docs
+brew "tealdeer"     # tldr
+
+# =============================================================================
+# Version Control
+# =============================================================================
+
+brew "git"          # required by many tools
+brew "sapling"      # actual VCS
+brew "gh"           # GitHub CLI
+
+# =============================================================================
+# Development
+# =============================================================================
+
+# Editors
+brew "neovim"
+
+# Runtimes & package managers
+brew "uv"           # Python
+brew "bun"          # TypeScript/JavaScript
+
+# Linting & formatting
+brew "ruff"         # Python
+brew "biome"        # JS/TS
+
+# Tools
+brew "stow"         # dotfile management
+brew "watchexec"    # file watcher
+brew "mas"          # Mac App Store CLI
+brew "duti"         # default app associations
+brew "just"         # modern make (task runner)
+
+# =============================================================================
 # Fonts (Nerd Font variants for terminal icons)
+# =============================================================================
+
 cask "font-fira-code-nerd-font"
 cask "font-jetbrains-mono-nerd-font"
 cask "font-hack-nerd-font"
