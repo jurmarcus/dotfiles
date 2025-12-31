@@ -23,6 +23,7 @@ macOS development environment managed with GNU Stow.
 | zellij | `zellij/README.md` | Multiplexer |
 | git | `git/README.md` | Git + delta |
 | karabiner | `karabiner/README.md` | Keyboard |
+| opencode | `opencode/README.md` | AI coding assistant |
 | stow | `stow/README.md` | Symlink config |
 
 ## Quick Reference
