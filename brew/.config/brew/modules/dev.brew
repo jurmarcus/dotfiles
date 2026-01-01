@@ -9,7 +9,8 @@ cask "vscodium"
 
 # Runtimes & Package Managers
 brew "uv"           # Python
-brew "bun"          # TypeScript/JavaScript
+tap "oven-sh/bun"
+brew "oven-sh/bun/bun"  # TypeScript/JavaScript
 
 # Linting & Formatting
 brew "ruff"         # Python
