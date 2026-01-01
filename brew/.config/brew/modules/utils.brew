@@ -11,3 +11,7 @@ cask "transmission"
 
 # Keyboard Customization
 cask "karabiner-elements"
+
+# System Tools
+brew "mas"          # Mac App Store CLI
+brew "duti"         # default app associations

@@ -1,8 +1,7 @@
 # Base module - include on every machine
 # This is a meta-module that enables common modules
 
-enable "core"
-enable "shell"
+enable "terminal"
 enable "security"
 enable "browsers"
 enable "utils"

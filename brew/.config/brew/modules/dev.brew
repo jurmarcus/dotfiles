@@ -5,6 +5,7 @@ brew "gh"           # GitHub CLI
 
 # Editors
 brew "neovim"
+cask "vscodium"
 
 # Runtimes & Package Managers
 brew "uv"           # Python
@@ -14,9 +15,6 @@ brew "bun"          # TypeScript/JavaScript
 brew "ruff"         # Python
 brew "biome"        # JS/TS
 
-# Tools
-brew "stow"         # dotfile management
+# Build Tools
 brew "watchexec"    # file watcher
-brew "mas"          # Mac App Store CLI
-brew "duti"         # default app associations
 brew "just"         # modern make (task runner)
