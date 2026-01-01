@@ -146,19 +146,19 @@ defaults write com.apple.screensaver askForPassword -int 1
 defaults write com.apple.screensaver askForPasswordDelay -int 0
 
 # =============================================================================
-# Safari (if used)
+# Safari (if used) - may fail due to sandboxing, non-fatal
 # =============================================================================
 
 # Show full URL in address bar
-defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
+defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true 2>/dev/null || true
 
 # Enable Develop menu
-defaults write com.apple.Safari IncludeDevelopMenu -bool true
-defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
+defaults write com.apple.Safari IncludeDevelopMenu -bool true 2>/dev/null || true
+defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true 2>/dev/null || true
 
 # Disable AutoFill
-defaults write com.apple.Safari AutoFillPasswords -bool false
-defaults write com.apple.Safari AutoFillCreditCardData -bool false
+defaults write com.apple.Safari AutoFillPasswords -bool false 2>/dev/null || true
+defaults write com.apple.Safari AutoFillCreditCardData -bool false 2>/dev/null || true
 
 # =============================================================================
 # TextEdit
