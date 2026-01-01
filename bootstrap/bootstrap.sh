@@ -95,7 +95,7 @@ fi
 
 # Step 2: Homebrew (+ PATH setup for this script)
 step "Step 2: Homebrew"
-if command -v brew >/dev/null 2>&1; then
+if [[ -x /opt/homebrew/bin/brew ]] || [[ -x /usr/local/bin/brew ]]; then
   ok "Already installed"
 else
   if [[ "$DRY_RUN" == "true" ]]; then
