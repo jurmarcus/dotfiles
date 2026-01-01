@@ -1,11 +1,16 @@
+# Allen's Mac - minimal setup
+
+# Base (core, shell, security, browsers, utils)
+enable "base"
+
+# Development
+enable "dev"
+enable "remote"
+enable "fonts"
+
+# AI & Media
 enable "ai"
+enable "media"
 
-enable "browsers"
-enable "security"
-enable "utils"
-
+# Hardware
 enable "hardware"
-enable "developer"
-
-enable "photography"
-enable "entertainment"

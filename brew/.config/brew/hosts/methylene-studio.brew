@@ -1,19 +1,22 @@
-enable "ai"
+# Studio - AI workhorse
 
-enable "browsers"
-enable "security"
-enable "utils"
+# Base (core, shell, security, browsers, utils)
+enable "base"
 
-enable "hardware"
-enable "developer"
-
-enable "photography"
-enable "entertainment"
-
+# Development
+enable "dev"
+enable "remote"
+enable "fonts"
 enable "editors"
-enable "communication"
-enable "learning"
 
-# Studio-specific: Local LLM GUI
-cask "lm-studio"
-cask "ollama-app"
+# AI
+enable "ai"
+enable "local-llm"
+
+# Media & Knowledge
+enable "media"
+enable "knowledge"
+enable "communication"
+
+# Hardware (Elgato, TourBox)
+enable "hardware"

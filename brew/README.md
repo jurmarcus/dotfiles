@@ -16,28 +16,43 @@ brew/
 ├── .Brewfile                    # Main loader (Ruby DSL)
 └── .config/brew/
     ├── hosts/                   # Per-machine profiles
-    │   ├── methylene-macbook.brew
-    │   ├── methylene-studio.brew
-    │   └── allenj-mac.brew
+    │   ├── methylene-studio.brew    # AI workhorse
+    │   ├── methylene-macbook.brew   # Travel laptop
+    │   ├── methylene-mini.brew      # TV/media center
+    │   └── allenj-mac.brew          # Minimal setup
     └── modules/                 # Category packages
-        ├── ai.brew              # Claude, ChatGPT, Perplexity
-        ├── browsers.brew        # Zen, Chrome, Safari extensions
-        ├── communication.brew   # Discord, Line
-        ├── developer.brew       # CLI tools, fonts (67 items)
+        ├── base.brew            # Meta: core + shell + security + browsers + utils
+        ├── core.brew            # CLI replacements (bat, eza, fd, rg, jq, btop)
+        ├── shell.brew           # Shells & terminal (zsh, fish, starship, ghostty)
+        ├── dev.brew             # Dev tools (git, neovim, uv, bun, stow)
+        ├── remote.brew          # Remote access (mosh, et, tailscale)
+        ├── fonts.brew           # Nerd fonts
         ├── editors.brew         # VSCodium
-        ├── entertainment.brew   # iina, Pocket Casts
-        ├── hardware.brew        # Elgato, TourBox, Karabiner
-        ├── learning.brew        # Anki
-        ├── photography.brew     # ffmpeg, Phoenix Slides
-        ├── security.brew        # 1Password, 1Password-CLI
-        └── utils.brew           # Raycast, Obsidian, etc.
+        ├── ai.brew              # Claude, ChatGPT, Perplexity
+        ├── local-llm.brew       # LM Studio, Ollama
+        ├── browsers.brew        # Zen, Chrome, Safari extensions
+        ├── security.brew        # 1Password
+        ├── utils.brew           # Raycast, file tools, Karabiner
+        ├── media.brew           # ffmpeg, iina, Phoenix Slides, Pocket Casts
+        ├── knowledge.brew       # Obsidian, Anki
+        ├── communication.brew   # Discord, Line
+        └── hardware.brew        # Elgato, TourBox
 ```
+
+## Host Profiles
+
+| Host | Purpose | Modules |
+|------|---------|---------|
+| **studio** | AI workhorse | base, dev, remote, fonts, editors, ai, local-llm, media, knowledge, communication, hardware |
+| **macbook** | Travel | base, dev, remote, fonts, editors, ai, media, knowledge, communication, hardware |
+| **mini** | TV/Media | base, dev, remote, fonts, editors, media |
+| **allenj-mac** | Minimal | base, dev, remote, fonts, ai, media, hardware |
 
 ## Common Tasks
 
 ```bash
 # Add package to module
-echo 'brew "newtool"' >> .config/brew/modules/developer.brew
+echo 'brew "newtool"' >> .config/brew/modules/dev.brew
 
 # Add cask
 echo 'cask "newapp"' >> .config/brew/modules/utils.brew
@@ -65,7 +80,6 @@ brewsync clean  # Install + remove orphans
 cat > .config/brew/modules/gaming.brew << 'EOF'
 # Gaming
 cask "steam"
-cask "discord"
 EOF
 ```
 
@@ -74,11 +88,18 @@ Then enable in your host file:
 echo 'enable "gaming"' >> .config/brew/hosts/methylene-macbook.brew
 ```
 
-## Host Profiles
+## Meta-Modules
 
-- **methylene-macbook.brew** - Full development setup (all 11 modules)
-- **methylene-studio.brew** - Same + local LLM tools (LM Studio, Ollama)
-- **allenj-mac.brew** - Minimal setup (8 modules, no editors/communication/learning)
+`base.brew` is a meta-module that enables common modules:
+```ruby
+enable "core"
+enable "shell"
+enable "security"
+enable "browsers"
+enable "utils"
+```
+
+This keeps host configs DRY - just `enable "base"` instead of listing 5 modules.
 
 ## Finding App IDs for mas
 

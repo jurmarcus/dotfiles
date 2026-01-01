@@ -1,0 +1,3 @@
+# Local LLM Interfaces
+cask "lm-studio"
+cask "ollama"

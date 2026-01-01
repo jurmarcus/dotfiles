@@ -1,5 +1,0 @@
-# Media Processing
-brew "ffmpeg"
-
-# Photo & Video Management
-cask "phoenix-slides"

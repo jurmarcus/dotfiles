@@ -1,0 +1,11 @@
+# Media Processing
+brew "ffmpeg"
+
+# Video Player
+cask "iina"
+
+# Photo Viewer
+cask "phoenix-slides"
+
+# Podcasts
+cask "pocket-casts"

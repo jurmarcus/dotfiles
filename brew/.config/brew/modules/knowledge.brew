@@ -1,0 +1,5 @@
+# Note Taking & Knowledge Management
+cask "obsidian"
+
+# Spaced Repetition
+cask "anki"

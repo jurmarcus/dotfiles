@@ -1,4 +1,4 @@
-# Productivity & Launcher
+# Launcher
 cask "raycast"
 
 # File Management
@@ -9,5 +9,5 @@ cask "the-unarchiver"
 cask "localsend"
 cask "transmission"
 
-# Note Taking & Knowledge Management
-cask "obsidian"
+# Keyboard Customization
+cask "karabiner-elements"

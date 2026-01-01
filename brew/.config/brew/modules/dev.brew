@@ -1,0 +1,22 @@
+# Version Control
+brew "git"
+brew "sapling"
+brew "gh"           # GitHub CLI
+
+# Editors
+brew "neovim"
+
+# Runtimes & Package Managers
+brew "uv"           # Python
+brew "bun"          # TypeScript/JavaScript
+
+# Linting & Formatting
+brew "ruff"         # Python
+brew "biome"        # JS/TS
+
+# Tools
+brew "stow"         # dotfile management
+brew "watchexec"    # file watcher
+brew "mas"          # Mac App Store CLI
+brew "duti"         # default app associations
+brew "just"         # modern make (task runner)

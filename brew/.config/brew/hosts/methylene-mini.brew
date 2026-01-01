@@ -1,4 +1,4 @@
-# MacBook - travel device
+# Mac Mini - TV/media center
 
 # Base (core, shell, security, browsers, utils)
 enable "base"
@@ -9,13 +9,5 @@ enable "remote"
 enable "fonts"
 enable "editors"
 
-# AI
-enable "ai"
-
-# Media & Knowledge
+# Media
 enable "media"
-enable "knowledge"
-enable "communication"
-
-# Hardware (Elgato, TourBox)
-enable "hardware"

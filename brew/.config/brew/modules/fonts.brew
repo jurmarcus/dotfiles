@@ -1,0 +1,5 @@
+# Nerd Fonts (terminal icons)
+cask "font-fira-code-nerd-font"
+cask "font-jetbrains-mono-nerd-font"
+cask "font-hack-nerd-font"
+cask "font-meslo-lg-nerd-font"
