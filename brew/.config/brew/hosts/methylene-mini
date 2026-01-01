@@ -1,0 +1,10 @@
+enable "browsers"
+enable "security"
+enable "utils"
+
+enable "developer"
+
+enable "photography"
+enable "entertainment"
+
+enable "editors"
