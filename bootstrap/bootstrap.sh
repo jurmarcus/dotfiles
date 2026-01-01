@@ -41,9 +41,9 @@ OPTIONS:
 
 STEPS:
     1. Xcode Command Line Tools
-    2. Homebrew
-    3. GNU Stow + symlinks
-    4. Brew bundle (packages)
+    2. Homebrew (+ PATH setup)
+    3. Stow (install + symlink dotfiles)
+    4. Brew bundle (remaining packages)
     5. Git identity
     6. macOS settings
     7. Default applications (duti)
@@ -93,7 +93,7 @@ else
   fi
 fi
 
-# Step 2: Homebrew
+# Step 2: Homebrew (+ PATH setup for this script)
 step "Step 2: Homebrew"
 if command -v brew >/dev/null 2>&1; then
   ok "Already installed"
@@ -106,15 +106,15 @@ else
   fi
 fi
 
-# Ensure brew is in PATH
+# Add brew to PATH for this script (dotfiles not stowed yet, can't rely on .zshrc)
 if [[ -x /opt/homebrew/bin/brew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 elif [[ -x /usr/local/bin/brew ]]; then
   eval "$(/usr/local/bin/brew shellenv)"
 fi
 
-# Step 3: Stow + dotfiles
-step "Step 3: Stow dotfiles"
+# Step 3: Install stow (if needed) + symlink dotfiles
+step "Step 3: Install stow + symlink dotfiles"
 command -v stow >/dev/null 2>&1 || run brew install stow
 pushd "${DOTFILES_DIR}" >/dev/null
 shopt -s nullglob
@@ -133,7 +133,7 @@ done
 popd >/dev/null
 ok "All packages stowed"
 
-# Step 4: Homebrew packages
+# Step 4: Remaining Homebrew packages (stow already installed above)
 step "Step 4: Homebrew packages"
 export HOMEBREW_NO_AUTO_UPDATE=1
 export HOMEBREW_NO_ENV_HINTS=1

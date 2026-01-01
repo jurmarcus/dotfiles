@@ -35,9 +35,9 @@ Main orchestrator with CLI flags:
 ### Steps
 
 1. **Xcode CLI Tools** - Required for git, compilers
-2. **Homebrew** - Package manager
-3. **GNU Stow** - Symlink dotfiles packages
-4. **Brew bundle** - Install packages (skips if already installed)
+2. **Homebrew** - Package manager + PATH setup for this script
+3. **Stow** - Install via brew (if needed) + symlink dotfiles
+4. **Brew bundle** - Remaining packages (stow already installed)
 5. **Git identity** - Prompt for name/email
 6. **macOS settings** - System preferences
 7. **Default apps** - File associations via duti
