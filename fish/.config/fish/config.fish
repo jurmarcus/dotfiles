@@ -117,12 +117,26 @@ alias pyr 'uv run python'
 alias pyt 'uv run pytest'
 alias pya 'uv add'
 alias pyx 'uvx'
+alias pyb 'uv build'
+alias pyl 'uvx ruff check'
+alias pyf 'uvx ruff format'
 
 # Typescript
 alias tsr 'bun run'
 alias tst 'bun test'
 alias tsa 'bun add'
-alias tsx 'bun x tsx'
+alias tsx 'bunx tsx'
+alias tsb 'bun build'
+alias tsl 'bunx biome lint'
+alias tsf 'bunx biome format'
+
+# Rust
+alias rsr 'cargo run'
+alias rst 'cargo test'
+alias rsa 'cargo add'
+alias rsb 'cargo build'
+alias rsl 'cargo clippy'
+alias rsf 'cargo fmt'
 
 # Claude CLI
 alias claude 'claude --dangerously-skip-permissions'

@@ -51,10 +51,15 @@ zsh/
 |----------|-------------|
 | `py-init [name]` | Create uv Python project |
 | `ts-init [name]` | Create bun TypeScript project |
+| `rs-init [name]` | Create cargo Rust project |
 | `py-init-mcp [name]` | Create Python MCP server |
 | `ts-init-mcp [name]` | Create TypeScript MCP server |
-| `pyr`, `pyt`, `pya` | uv run/pytest/add |
-| `tsr`, `tst`, `tsa` | bun run/test/add |
+| `pyr`, `pyt`, `pya`, `pyx`, `pyb` | uv run/pytest/add/uvx/build |
+| `pyl`, `pyf` | ruff check/format (via uvx) |
+| `tsr`, `tst`, `tsa`, `tsx`, `tsb` | bun run/test/add/x/build |
+| `tsl`, `tsf` | biome lint/format (via bunx) |
+| `rsr`, `rst`, `rsa`, `rsb` | cargo run/test/add/build |
+| `rsl`, `rsf` | cargo clippy/fmt |
 
 ### Zellij Functions
 | Function | Description |

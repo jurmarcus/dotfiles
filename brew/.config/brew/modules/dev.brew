@@ -13,6 +13,7 @@ cask "vscodium"
 # Runtimes & Package Managers
 brew "uv"           # Python
 brew "oven-sh/bun/bun"  # TypeScript/JavaScript
+brew "rustup"       # Rust (includes cargo, clippy via: rustup component add clippy rustfmt)
 
 # Linting & Formatting
 brew "ruff"         # Python

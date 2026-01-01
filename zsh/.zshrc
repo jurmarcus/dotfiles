@@ -274,6 +274,9 @@ pyr() { uv run python "$@"; }
 pyt() { uv run pytest "$@"; }
 pya() { uv add "$@"; }
 pyx() { uvx "$@"; }
+pyb() { uv build "$@"; }
+pyl() { uvx ruff check "$@"; }
+pyf() { uvx ruff format "$@"; }
 
 # =============================================================================
 # Functions - TypeScript / bun
@@ -289,7 +292,31 @@ ts-init() {
 tsr() { bun run "$@"; }
 tst() { bun test "$@"; }
 tsa() { bun add "$@"; }
-tsx() { bun x tsx "$@"; }
+tsx() { bunx tsx "$@"; }
+tsb() { bun build "$@"; }
+tsl() { bunx biome lint "$@"; }
+tsf() { bunx biome format "$@"; }
+
+# =============================================================================
+# Functions - Rust / cargo
+# =============================================================================
+
+rs-init() {
+  local name="${1:-.}"
+  if [[ "$name" != "." ]]; then
+    cargo new "$name" && cd "$name"
+  else
+    cargo init
+  fi
+  echo "Created Rust project with cargo"
+}
+
+rsr() { cargo run "$@"; }
+rst() { cargo test "$@"; }
+rsa() { cargo add "$@"; }
+rsb() { cargo build "$@"; }
+rsl() { cargo clippy "$@"; }
+rsf() { cargo fmt "$@"; }
 
 # =============================================================================
 # Functions - Templates

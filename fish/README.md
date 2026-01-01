@@ -13,6 +13,7 @@ fish/
         ├── dotfiles.fish     # restow, brewsync
         ├── mcp.fish          # template, py-init-mcp, ts-init-mcp
         ├── python.fish       # py-init
+        ├── rust.fish         # rs-init
         ├── typescript.fish   # ts-init
         └── zellij.fish       # _znew, zclaude, zopencode, zservice
 ```
@@ -32,8 +33,9 @@ fish/
 | Files | `ls/ll/la/lt`→eza, `cat`→bat, `grep`→rg, `find`→fd |
 | System | `top/htop`→btop, `ps`→procs, `du`→dust, `df`→duf, `help`→tldr |
 | Editors | `vim/vi/v/nano`→nvim, `code`→codium |
-| Python | `python/py`→`uv run python`, `pyr`, `pyt`, `pya`, `pyx` |
-| TypeScript | `tsr`, `tst`, `tsa`, `tsx` |
+| Python | `python/py`→`uv run python`, `pyr`, `pyt`, `pya`, `pyx`, `pyb`, `pyl`, `pyf` |
+| TypeScript | `tsr`, `tst`, `tsa`, `tsx`, `tsb`, `tsl`, `tsf` |
+| Rust | `rsr`, `rst`, `rsa`, `rsb`, `rsl`, `rsf` |
 
 ## Functions
 
@@ -47,6 +49,7 @@ fish/
 | `brewsync [clean]` | dotfiles.fish | Sync Homebrew |
 | `py-init [name]` | python.fish | Create uv Python project |
 | `ts-init [name]` | typescript.fish | Create bun TS project |
+| `rs-init [name]` | rust.fish | Create cargo Rust project |
 | `py-init-mcp [name]` | mcp.fish | Create Python MCP server |
 | `ts-init-mcp [name]` | mcp.fish | Create TypeScript MCP server |
 | `zclaude` | zellij.fish | New numbered claude session |
