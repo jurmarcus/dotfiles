@@ -1,3 +1,6 @@
+# Taps (must be first)
+tap "oven-sh/bun"
+
 # Version Control
 brew "git"
 brew "sapling"
@@ -9,7 +12,6 @@ cask "vscodium"
 
 # Runtimes & Package Managers
 brew "uv"           # Python
-tap "oven-sh/bun"
 brew "oven-sh/bun/bun"  # TypeScript/JavaScript
 
 # Linting & Formatting

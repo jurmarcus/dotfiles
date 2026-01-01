@@ -7,7 +7,7 @@ cask "the-unarchiver"
 
 # File Sharing & Downloads
 cask "localsend"
-cask "transmission"
+cask "homebrew/cask/transmission"
 
 # Keyboard Customization
 cask "karabiner-elements"
