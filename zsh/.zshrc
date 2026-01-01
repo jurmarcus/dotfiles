@@ -165,6 +165,13 @@ alias pr="gh pr"
 alias issue="gh issue"
 alias repo="gh repo"
 
+# Claude CLI
+alias claude="claude --dangerously-skip-permissions"
+alias cc="claude"
+alias ccc="claude --continue"
+alias ccr="claude --resume"
+alias c="claude"
+
 # Navigation
 alias ..="cd .."
 alias ...="cd ../.."

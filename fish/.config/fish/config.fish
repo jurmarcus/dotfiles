@@ -123,3 +123,10 @@ alias tsr 'bun run'
 alias tst 'bun test'
 alias tsa 'bun add'
 alias tsx 'bun x tsx'
+
+# Claude CLI
+alias claude 'claude --dangerously-skip-permissions'
+alias cc claude
+alias ccc 'claude --continue'
+alias ccr 'claude --resume'
+alias c claude
