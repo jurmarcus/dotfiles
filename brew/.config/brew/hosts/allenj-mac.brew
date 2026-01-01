@@ -7,6 +7,7 @@ enable "base"
 enable "dev"
 enable "remote"
 enable "fonts"
+enable "editors"
 
 # AI & Media
 enable "ai"
