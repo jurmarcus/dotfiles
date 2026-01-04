@@ -37,6 +37,7 @@ status is-interactive || return
 fzf --fish | source
 zoxide init fish --cmd cd | source
 atuin init fish | source
+direnv hook fish | source
 starship init fish | source
 
 # Auto-attach to zellij on SSH
@@ -71,11 +72,10 @@ abbr zka 'zellij kill-all-sessions'
 abbr zd 'zellij delete-session'
 abbr zda 'zellij delete-all-sessions'
 
-# Navigation
-abbr -g .. 'cd ..'
-abbr -g ... 'cd ../..'
-abbr -g .... 'cd ../../..'
-abbr -g ..... 'cd ../../../..'
+# Navigation (fish has AUTO_CD built-in)
+abbr -g ... '../..'
+abbr -g .... '../../..'
+abbr -g ..... '../../../..'
 
 # -----------------------------------------------------------------------------
 # Aliases (wrapper functions - shadow commands)

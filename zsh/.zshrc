@@ -62,6 +62,7 @@ regen-completions() {
 eval "$(fzf --zsh)"
 eval "$(zoxide init zsh --cmd cd)"
 eval "$(atuin init zsh)"
+eval "$(direnv hook zsh)"
 eval "$(starship init zsh)"
 
 # =============================================================================
@@ -73,6 +74,11 @@ SAVEHIST=50000
 HISTFILE=~/.zsh_history
 setopt HIST_IGNORE_DUPS HIST_IGNORE_SPACE SHARE_HISTORY
 setopt HIST_EXPIRE_DUPS_FIRST HIST_FIND_NO_DUPS INC_APPEND_HISTORY
+
+# Directory navigation (fish-like AUTO_CD)
+setopt AUTO_CD              # Type directory name to cd into it
+setopt AUTO_PUSHD           # cd pushes old dir to stack
+setopt PUSHD_IGNORE_DUPS    # No duplicates in dir stack
 
 # =============================================================================
 # Plugins & Tools
@@ -172,11 +178,10 @@ alias ccc="claude --continue"
 alias ccr="claude --resume"
 alias c="claude"
 
-# Navigation
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
+# Navigation (AUTO_CD handles the cd)
+alias ...="../.."
+alias ....="../../.."
+alias .....="../../../.."
 
 # =============================================================================
 # Functions - Claude Workflow

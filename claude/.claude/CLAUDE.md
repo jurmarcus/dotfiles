@@ -70,3 +70,66 @@ All scripts are idempotent (safe to re-run).
 | Environment | `.zshrc` | `config.fish` |
 
 When modifying shell config, update BOTH shells.
+
+## Claude Code Automation
+
+**COMPLETE DEVELOPMENT WORKFLOW AUTOMATION**: Hooks, skills, and commands for Python, TypeScript, and Rust projects.
+
+📖 **Full Guide**: See `~/.claude/AUTOMATION.md` for comprehensive documentation.
+
+### Quick Reference
+
+**Hooks** (run automatically):
+- ✅ Type checking after edits (Python, TypeScript, Rust)
+- ✅ Auto-formatting after edits (prettier, rustfmt, ruff)
+- ✅ Tests after edits (pytest, jest, cargo test)
+- ✅ Pre-commit checks (format, LSP, tests, lint, TODO scan)
+- ✅ Session summary on exit
+
+**Commands** (invoke with `/command`):
+- `/test <file>` - Generate comprehensive tests
+- `/review <file>` - Code review for bugs/security/performance
+- `/doc [file]` - Update CLAUDE.md, README.md, docstrings
+- `/commit [msg]` - Smart conventional commits
+- `/refactor <target>` - Guided refactoring with safety checks
+- `/perf <file>` - Performance analysis and optimization
+- `/debug <issue>` - Investigate without fixing
+- `/design <feature>` - Create implementation plan
+- `/migrate <from> <to>` - Safe pattern/library migration
+
+**Skills** (auto-triggered):
+- `homebrew-modular` - Add brew packages to dotfiles modules
+- `dotfiles-stow` - Stow changes after editing dotfiles
+
+### Supported Languages
+
+All hooks and commands support:
+- 🐍 **Python**: ty, pytest, ruff format (via uv/uvx)
+- 📘 **TypeScript**: tsc, bun test, prettier (via bun/bunx)
+- 🦀 **Rust**: cargo check, cargo test, rustfmt
+
+### Configuration
+
+**Location**: `~/.claude/hooks/`
+
+**Disable a hook**:
+```bash
+mv ~/.claude/hooks/hook-name.sh{,.disabled}
+```
+
+**Enable a hook**:
+```bash
+mv ~/.claude/hooks/hook-name.sh{.disabled,}
+```
+
+### Workflow
+
+```
+1. Code changes → Auto: type check, format, test
+2. /review → Code review
+3. /doc → Update documentation
+4. /commit → Smart commit with pre-commit checks
+5. Session end → Summary of changes
+```
+
+All automation is **invisible**, **fast** (<5s), and **helpful** (catches errors early).

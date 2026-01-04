@@ -9,28 +9,28 @@
   },
   "agents": {
     "Sisyphus": {
-      "model": "proxypal/claude-opus-4-5-xhigh"
+      "model": "anthropic/claude-opus-4-5-xhigh"
     },
     "Planner-Sisyphus": {
-      "model": "proxypal/gemini-3-flash"
+      "model": "google/gemini-3-flash"
     },
     "oracle": {
-      "model": "proxypal/gpt-5-2-medium"
+      "model": "openai/gpt-5-2-medium"
     },
     "librarian": {
-      "model": "proxypal/claude-sonnet-4-5-xhigh"
+      "model": "anthropic/claude-sonnet-4-5-xhigh"
     },
     "explore": {
-      "model": "proxypal/gemini-3-flash"
+      "model": "google/gemini-3-flash"
     },
     "frontend-ui-ux-engineer": {
-      "model": "proxypal/gemini-3-pro-high"
+      "model": "google/gemini-3-pro-high"
     },
     "document-writer": {
-      "model": "proxypal/claude-sonnet-4-5-xhigh"
+      "model": "anthropic/claude-sonnet-4-5-xhigh"
     },
     "multimodal-looker": {
-      "model": "proxypal/gemini-3-flash"
+      "model": "google/gemini-3-flash"
     }
   }
 }
