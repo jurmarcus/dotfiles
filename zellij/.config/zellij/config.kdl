@@ -1,6 +1,7 @@
 // Zellij config - minimal with Catppuccin theme
 
 default_layout "terminal"
+default_mode "locked"
 
 theme "catppuccin-frappe"
 
