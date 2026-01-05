@@ -82,6 +82,7 @@ Applies system preferences. Closes System Settings first to prevent conflicts.
 | Desktop | Hide icons, disable click-to-show |
 | Screenshots | ~/Screenshots, PNG, no shadow |
 | Security | Firewall enabled, stealth mode, immediate password on sleep |
+| Continuity | Disable Universal Control (cross-device pointer/keyboard) |
 | Safari | Full URL, Develop menu, no AutoFill |
 | Misc | Expanded save/print panels, save to disk not iCloud |
 

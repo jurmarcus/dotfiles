@@ -183,6 +183,13 @@ defaults write com.apple.ActivityMonitor SortColumn -string "CPUUsage"
 defaults write com.apple.ActivityMonitor SortDirection -int 0
 
 # =============================================================================
+# Continuity (Cross-Device Features)
+# =============================================================================
+
+# Disable Universal Control (pointer/keyboard sharing between Macs/iPads)
+defaults write com.apple.universalcontrol Disable -bool true
+
+# =============================================================================
 # Misc
 # =============================================================================
 
