@@ -90,19 +90,6 @@ export FZF_CTRL_T_OPTS="--preview 'bat --color=always --line-range :500 {}'"
 export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
 
 # =============================================================================
-# SSH / Remote
-# =============================================================================
-
-# Auto-start Zellij for SSH sessions
-if [[ -n "$SSH_CONNECTION" && -z "$ZELLIJ" && -t 0 ]] && command -v zellij &>/dev/null; then
-  zellij attach -c ssh
-fi
-
-# Auto-start Zellij for MOSH sessions
-if [[ -n "$MOSH_CONNECTION" && -z "$ZELLIJ" && -t 0 ]] && command -v zellij &>/dev/null; then
-  zellij attach -c mosh
-fi
-# =============================================================================
 # Zellij Session Management
 # =============================================================================
 
