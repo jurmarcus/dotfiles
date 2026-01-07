@@ -1,10 +1,25 @@
 Create a smart conventional commit with proper message: $ARGUMENTS
 
-## 1. Analyze Staged Changes
+## 1. Analyze Changes
 
+Determine if using Sapling (sl) or Git:
+```bash
+# Check VCS type
+if sl root &>/dev/null; then
+  VCS="sl"
+elif git rev-parse --git-dir &>/dev/null; then
+  VCS="git"
+fi
+```
+
+**For Sapling (sl):**
+- Run `sl status` to see modified/added/removed files
+- Run `sl diff` to see exact changes (Sapling has no staging - shows all uncommitted changes)
+- Categorize changes by type and scope
+
+**For Git (fallback):**
 - Run `git status` to see staged files
 - Run `git diff --cached` to see exact changes
-- Categorize changes by type and scope
 
 ## 2. Determine Commit Type
 
@@ -46,13 +61,44 @@ Use conventional commit format: `<type>(<scope>): <description>`
 ## 4. Pre-Commit Checks
 
 Before committing, run checks:
-- TypeScript: `npx tsc --noEmit`
+- TypeScript: `bunx tsc --noEmit`
 - Rust: `cargo check && cargo test`
-- Python: `uvx pyright && uv run pytest`
+- Python: `uvx ty check && uv run pytest`
 
 ## 5. Commit Command
 
-Generate the commit using heredoc format:
+### Sapling (preferred)
+
+**Commit all changes:**
+```bash
+sl commit -m "$(cat <<'EOF'
+feat(scope): subject line
+
+Body explaining what and why.
+
+EOF
+)"
+```
+
+**Commit specific files only:**
+```bash
+# Include only certain patterns
+sl commit -I '*.rs' -m "feat: message"
+
+# Exclude certain patterns
+sl commit -X 'tests/*' -m "feat: message"
+
+# Interactive selection
+sl commit -i -m "feat: message"
+```
+
+**Amend last commit:**
+```bash
+sl amend -m "feat(scope): updated message"
+```
+
+### Git (fallback)
+
 ```bash
 git commit -m "$(cat <<'EOF'
 feat(scope): subject line
@@ -62,6 +108,30 @@ Body explaining what and why.
 EOF
 )"
 ```
+
+## 6. Push Changes
+
+### Sapling
+```bash
+# Push to remote (default bookmark/branch)
+sl push
+
+# Push to specific destination
+sl push --to main
+```
+
+### Git
+```bash
+git push
+```
+
+## Sapling Advantages
+
+- **No staging area**: All tracked changes commit together (use `-I`/`-X` for selectivity)
+- **No detached HEAD**: Bookmarks always point somewhere valid
+- **Easy amend**: `sl amend` to update last commit
+- **Stack workflow**: Build commits incrementally with `sl next`/`sl prev`
+- **Smart log**: `sl ssl` for interactive stack view
 
 ## Guidelines
 

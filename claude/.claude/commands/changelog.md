@@ -2,7 +2,8 @@ Generate changelog from commits: $ARGUMENTS
 
 ## What This Command Does
 
-Generates a structured changelog from git commit history, grouped by type and formatted for release notes.
+Generates a structured changelog from commit history, grouped by type and formatted for release notes.
+Supports both Sapling (sl) and Git.
 
 ## Usage
 
@@ -13,30 +14,46 @@ Generates a structured changelog from git commit history, grouped by type and fo
 
 ## Process
 
-### 1. Get Commits
+### 1. Detect VCS and Get Commits
 
+**Sapling (sl):**
+```bash
+# Check if using Sapling
+sl root &>/dev/null
+
+# Since last tag/bookmark
+sl log -r 'ancestors(.) & not ancestors(last(tag()))' --template '{node|short}|{desc|firstline}|{author|user}|{date|isodate}\n'
+
+# Between specific versions
+sl log -r 'v1.2.0::v1.3.0' --template '{node|short}|{desc|firstline}|{author|user}|{date|isodate}\n'
+
+# All commits on current stack
+sl log -r 'stack()' --template '{node|short}|{desc|firstline}|{author|user}|{date|isodate}\n'
+```
+
+**Git (fallback):**
 ```bash
 # Since last tag
 git log $(git describe --tags --abbrev=0 2>/dev/null || echo "")..HEAD --pretty=format:"%h|%s|%an|%ad" --date=short
 
-# Or between specific versions
+# Between specific versions
 git log v1.2.0..v1.3.0 --pretty=format:"%h|%s|%an|%ad" --date=short
 ```
 
 ### 2. Parse Conventional Commits
 
 Group commits by type prefix:
-- `feat:` → Features
-- `fix:` → Bug Fixes
-- `perf:` → Performance
-- `refactor:` → Refactoring
-- `docs:` → Documentation
-- `test:` → Tests
-- `chore:` → Maintenance
-- `build:` → Build System
-- `ci:` → CI/CD
+- `feat:` - Features
+- `fix:` - Bug Fixes
+- `perf:` - Performance
+- `refactor:` - Refactoring
+- `docs:` - Documentation
+- `test:` - Tests
+- `chore:` - Maintenance
+- `build:` - Build System
+- `ci:` - CI/CD
 
-Extract scope if present: `feat(api):` → Features (api)
+Extract scope if present: `feat(api):` - Features (api)
 
 ### 3. Generate Changelog
 
@@ -68,6 +85,23 @@ Extract scope if present: `feat(api):` → Features (api)
 - @alice (5 commits)
 - @bob (3 commits)
 ```
+
+## Sapling-Specific Features
+
+### Stack-based Changelog
+Generate changelog for your current commit stack:
+```bash
+sl log -r 'stack()' --template '{desc|firstline}\n'
+```
+
+### PR Description
+Generate a PR description from your stack:
+```bash
+sl log -r 'stack()' --template '- {desc|firstline}\n'
+```
+
+### Interactive Stack View
+Use `sl ssl` for interactive stack visualization before generating changelog.
 
 ## Output Options
 
