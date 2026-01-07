@@ -22,7 +22,7 @@ dotfiles/
 ├── templates/     # Shared MCP templates
 ├── nvim/          # Neovim (NvChad)
 ├── ghostty/       # Terminal
-├── zellij/        # Multiplexer
+├── tmux/          # Multiplexer
 ├── starship/      # Prompt
 ├── git/           # Git + delta
 ├── karabiner/     # Keyboard remaps
@@ -57,7 +57,7 @@ Both zsh and fish are configured identically with modern CLI replacements:
 
 - **Editor**: Neovim (NvChad) + VSCodium
 - **Terminal**: Ghostty
-- **Multiplexer**: Zellij
+- **Multiplexer**: Tmux
 - **Prompt**: Starship (Catppuccin Frappe)
 - **VCS**: Sapling (`sl`) + Git + Lazygit
 - **History**: Atuin

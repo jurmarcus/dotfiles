@@ -20,7 +20,7 @@ macOS development environment managed with GNU Stow.
 | nvim | `nvim/README.md` | Neovim (NvChad) |
 | ghostty | `ghostty/README.md` | Terminal |
 | starship | `starship/README.md` | Prompt |
-| zellij | `zellij/README.md` | Multiplexer |
+| tmux | `tmux/README.md` | Multiplexer |
 | git | `git/README.md` | Git + delta |
 | karabiner | `karabiner/README.md` | Keyboard |
 | opencode | `opencode/README.md` | AI coding assistant |

@@ -13,7 +13,7 @@ dotfiles/
 ├── templates/     # Shared MCP templates (both shells)
 ├── nvim/          # Neovim (NvChad)
 ├── ghostty/       # Terminal
-├── zellij/        # Multiplexer
+├── tmux/          # Multiplexer
 ├── starship/      # Prompt
 ├── git/           # Git + delta
 ├── karabiner/     # Keyboard remaps
@@ -33,7 +33,7 @@ dotfiles/
 | Add macOS setting | `bootstrap/macos.sh` | Grouped by category |
 | Add default app | `bootstrap/duti.sh` | By file extension |
 | Change editor keys | `nvim/.config/nvim/lua/mappings.lua` | |
-| Add zellij layout | `zellij/.config/zellij/layouts/` | |
+| Change tmux config | `tmux/.config/tmux/tmux.conf` | |
 
 ## BOOTSTRAP
 
@@ -85,7 +85,7 @@ New machine setup: `./bootstrap/bootstrap.sh`
 - Aliases: ls→eza, cat→bat, grep→rg, find→fd, vim→nvim, etc.
 - Dev aliases: pyr, pyt, pya, tsr, tst, tsa
 - Functions: py-init, ts-init, py-init-mcp, ts-init-mcp, restow, brewsync
-- Zellij: zls, zcd, zrm, zssh, zclaude, zopencode, zservice
+- Tmux: tls, tcd, tk, tka, tssh, tclaude, topencode, tservice
 
 ## ANTI-PATTERNS
 

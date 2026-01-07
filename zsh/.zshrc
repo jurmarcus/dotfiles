@@ -90,31 +90,43 @@ export FZF_CTRL_T_OPTS="--preview 'bat --color=always --line-range :500 {}'"
 export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
 
 # =============================================================================
-# Zellij Session Management
+# SSH / Remote
+# =============================================================================
+
+# Auto-start tmux for SSH sessions
+if [[ -n "$SSH_CONNECTION" && -z "$TMUX" && -t 0 ]] && command -v tmux &>/dev/null; then
+  tmux new-session -A -s ssh
+fi
+
+# Auto-start tmux for MOSH sessions
+if [[ -n "$MOSH_CONNECTION" && -z "$TMUX" && -t 0 ]] && command -v tmux &>/dev/null; then
+  tmux new-session -A -s mosh
+fi
+
+# =============================================================================
+# Tmux Session Management
 # =============================================================================
 
 # Numbered sessions helper
-_znew() {
+_tnew() {
   local prefix="$1" n=1
-  local sessions=$(zellij list-sessions 2>/dev/null | sed 's/\x1b\[[0-9;]*m//g')
-  while echo "$sessions" | grep -q "^${prefix}-$n "; do
+  local sessions=$(tmux list-sessions -F '#{session_name}' 2>/dev/null)
+  while echo "$sessions" | grep -qx "${prefix}-$n"; do
     ((n++))
   done
-  zellij --session "${prefix}-$n"
+  tmux new-session -s "${prefix}-$n"
 }
 
-zclaude() { _znew claude; }
-zopencode() { _znew opencode; }
-zservice() { _znew service; }
+tclaude() { _tnew claude; }
+topencode() { _tnew opencode; }
+tservice() { _tnew service; }
 
-# List, switch, kill, and delete sessions
-zls() { zellij list-sessions; }
-zcd() { zellij attach "$1"; }
-zssh() { zellij attach -c ssh; }
-zk() { zellij kill-session "$@"; }
-zka() { zellij kill-all-sessions; }
-zd() { zellij delete-session "$@"; }
-zda() { zellij delete-all-sessions; }
+# List, attach, kill sessions
+tls() { tmux list-sessions; }
+tcd() { tmux attach-session -t "$1"; }
+tssh() { tmux new-session -A -s ssh; }
+tk() { tmux kill-session -t "$@"; }
+tka() { tmux kill-server; }
 
 # =============================================================================
 # Aliases - Modern CLI Replacements
@@ -136,7 +148,6 @@ alias top="btop"
 alias htop="btop"
 alias ps="procs"
 alias help="tldr"
-alias tmux="zellij"
 
 # Editors
 alias nano="nvim"

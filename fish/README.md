@@ -15,15 +15,15 @@ fish/
         ├── python.fish       # py-init
         ├── rust.fish         # rs-init
         ├── typescript.fish   # ts-init
-        └── zellij.fish       # _znew, zclaude, zopencode, zservice
+        └── tmux.fish         # _tnew, tclaude, topencode, tservice
 ```
 
 ## Structure of config.fish
 
 1. **Environment** - PATH, EDITOR, VISUAL, MANPAGER, FZF_*, Homebrew, BUN_INSTALL
 2. **Tool init** - fzf, zoxide, atuin, starship (interactive only)
-3. **SSH auto-attach** - Zellij for SSH sessions
-4. **Abbreviations** - Sapling (ss, sa, sc), GitHub (pr, issue), Zellij (zls, zcd), Navigation (..)
+3. **SSH auto-attach** - Tmux for SSH sessions
+4. **Abbreviations** - Sapling (ss, sa, sc), GitHub (pr, issue), Tmux (tls, tcd), Navigation (..)
 5. **Aliases** - Modern CLI replacements, Python/TS shortcuts
 
 ## Aliases (synced with zsh)
@@ -52,15 +52,16 @@ fish/
 | `rs-init [name]` | rust.fish | Create cargo Rust project |
 | `py-init-mcp [name]` | mcp.fish | Create Python MCP server |
 | `ts-init-mcp [name]` | mcp.fish | Create TypeScript MCP server |
-| `zclaude` | zellij.fish | New numbered claude session |
-| `zopencode` | zellij.fish | New numbered opencode session |
+| `tclaude` | tmux.fish | New numbered claude session |
+| `topencode` | tmux.fish | New numbered opencode session |
+| `tservice` | tmux.fish | New numbered service session |
 
 ## Abbreviations vs Aliases
 
 - **Abbreviations** (`abbr`): Expand inline, visible in history
 - **Aliases** (`alias`): Execute directly, show alias in history
 
-Fish uses abbreviations for Sapling/GitHub/Zellij commands so you see the expanded command.
+Fish uses abbreviations for Sapling/GitHub/Tmux commands so you see the expanded command.
 
 ## Key Bindings
 

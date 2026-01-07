@@ -40,6 +40,12 @@ atuin init fish | source
 direnv hook fish | source
 starship init fish | source
 
+# Auto-attach to tmux on SSH
+set -q SSH_CONNECTION && not set -q TMUX && command -q tmux && tmux new-session -A -s ssh
+
+# Auto-attach to tmux on MOSH
+set -q MOSH_CONNECTION && not set -q TMUX && command -q tmux && tmux new-session -A -s mosh
+
 # -----------------------------------------------------------------------------
 # Abbreviations (expand inline, visible in history)
 # -----------------------------------------------------------------------------
@@ -57,14 +63,12 @@ abbr pr 'gh pr'
 abbr issue 'gh issue'
 abbr repo 'gh repo'
 
-# Zellij
-abbr zls 'zellij list-sessions'
-abbr zcd 'zellij attach'
-abbr zssh 'zellij attach -c ssh'
-abbr zk 'zellij kill-session'
-abbr zka 'zellij kill-all-sessions'
-abbr zd 'zellij delete-session'
-abbr zda 'zellij delete-all-sessions'
+# Tmux
+abbr tls 'tmux list-sessions'
+abbr tcd 'tmux attach-session -t'
+abbr tssh 'tmux new-session -A -s ssh'
+abbr tk 'tmux kill-session -t'
+abbr tka 'tmux kill-server'
 
 # Navigation (fish has AUTO_CD built-in)
 abbr -g ... '../..'
@@ -91,7 +95,6 @@ alias top btop
 alias htop btop
 alias ps procs
 alias help tldr
-alias tmux zellij
 
 # Editors
 alias nano nvim

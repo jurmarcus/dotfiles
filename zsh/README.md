@@ -17,8 +17,8 @@ zsh/
 2. **Completions** - Cached compinit (rebuilds once/day), `regen-completions` function
 3. **Tool init** - fzf, zoxide, atuin, starship
 4. **History** - 50k entries, dedup, shared
-5. **SSH** - Auto-attach Zellij for SSH sessions
-6. **Zellij** - Session management functions
+5. **SSH** - Auto-attach tmux for SSH sessions
+6. **Tmux** - Session management functions
 7. **Aliases** - Modern CLI replacements
 8. **Functions** - Claude workflow, dotfiles, Python/TS, MCP
 9. **Plugins** - zsh-autosuggestions, zsh-syntax-highlighting
@@ -61,14 +61,16 @@ zsh/
 | `rsr`, `rst`, `rsa`, `rsb` | cargo run/test/add/build |
 | `rsl`, `rsf` | cargo clippy/fmt |
 
-### Zellij Functions
+### Tmux Functions
 | Function | Description |
 |----------|-------------|
-| `zls` | List sessions |
-| `zcd <session>` | Attach to session |
-| `zrm <session>` | Delete session |
-| `zclaude` | New numbered claude session |
-| `zopencode` | New numbered opencode session |
+| `tls` | List sessions |
+| `tcd <session>` | Attach to session |
+| `tk <session>` | Kill session |
+| `tka` | Kill all sessions |
+| `tclaude` | New numbered claude session |
+| `topencode` | New numbered opencode session |
+| `tservice` | New numbered service session |
 
 ## Plugins
 
