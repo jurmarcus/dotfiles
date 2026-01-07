@@ -24,10 +24,11 @@ nvim/.config/nvim/
 
 ## Key Settings
 
-- **Theme**: onedark
+- **Theme**: catppuccin
 - **Leader**: Space
 - **LSP**: html, cssls
 - **Formatter**: stylua (Lua)
+- **Diff mode**: Custom highlights with dark text for readability
 
 ## Customization
 

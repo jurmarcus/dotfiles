@@ -140,6 +140,7 @@ alias vim="nvim"
 alias vi="nvim"
 alias v="nvim"
 alias code="codium"
+alias vimdiff='nvim -d'
 
 # Version control (sapling for everything)
 alias ss="sl status"

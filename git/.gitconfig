@@ -11,10 +11,24 @@
 
 [merge]
 	conflictstyle = zdiff3
+	tool = nvimdiff
+
+[mergetool]
+	keepBackup = false
+
+[mergetool "nvimdiff"]
+	cmd = nvim -d "$LOCAL" "$MERGED" "$REMOTE"
 
 [diff]
-    colorMoved = default
+	colorMoved = default
 	algorithm = histogram
+	tool = nvimdiff
+
+[difftool]
+	prompt = false
+
+[difftool "nvimdiff"]
+	cmd = nvim -d "$LOCAL" "$REMOTE"
 [user]
 	name = jurmarcus
 	email = me@jurmarcus.com
