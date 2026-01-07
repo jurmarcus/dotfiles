@@ -90,20 +90,6 @@ export FZF_CTRL_T_OPTS="--preview 'bat --color=always --line-range :500 {}'"
 export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
 
 # =============================================================================
-# SSH / Remote
-# =============================================================================
-
-# Auto-start tmux for SSH sessions
-if [[ -n "$SSH_CONNECTION" && -z "$TMUX" && -t 0 ]] && command -v tmux &>/dev/null; then
-  tmux new-session -A -s ssh
-fi
-
-# Auto-start tmux for MOSH sessions
-if [[ -n "$MOSH_CONNECTION" && -z "$TMUX" && -t 0 ]] && command -v tmux &>/dev/null; then
-  tmux new-session -A -s mosh
-fi
-
-# =============================================================================
 # Tmux Session Management
 # =============================================================================
 
@@ -124,7 +110,6 @@ tservice() { _tnew service; }
 # List, attach, kill sessions
 tls() { tmux list-sessions; }
 tcd() { tmux attach-session -t "$1"; }
-tssh() { tmux new-session -A -s ssh; }
 tk() { tmux kill-session -t "$@"; }
 tka() { tmux kill-server; }
 

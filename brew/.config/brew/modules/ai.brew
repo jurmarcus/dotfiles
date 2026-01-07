@@ -1,4 +1,3 @@
 # AI Assistants
 cask "claude"
 cask "chatgpt"
-mas "Perplexity", id: 6714467650

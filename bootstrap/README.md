@@ -19,6 +19,7 @@ bootstrap/
 ├── git.sh          # Git/Sapling identity
 ├── duti.sh         # Default file associations
 ├── vscodium.sh     # Editor extensions
+├── claude.sh       # Claude Code symlinks (manual)
 └── tailscale.sh    # Generate /etc/hosts from Tailscale (manual)
 ```
 
@@ -132,6 +133,19 @@ Stored in iCloud-synced `~/Documents/keys/`:
 | `git_info` | Git identity (name/email) |
 
 These sync automatically across machines via iCloud Drive.
+
+## claude.sh (Manual)
+
+Sets up Claude Code symlinks for synced directories. Run after Notes sync is configured:
+
+```bash
+./bootstrap/claude.sh
+```
+
+**Creates:**
+- `~/.claude/plans` -> `~/Notes/plans/claude` (synced plans directory)
+
+**Requires:** `~/Notes/plans/claude` to exist (iCloud/Obsidian sync)
 
 ## tailscale.sh (Manual)
 

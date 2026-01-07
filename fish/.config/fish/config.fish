@@ -40,12 +40,6 @@ atuin init fish | source
 direnv hook fish | source
 starship init fish | source
 
-# Auto-attach to tmux on SSH
-set -q SSH_CONNECTION && not set -q TMUX && command -q tmux && tmux new-session -A -s ssh
-
-# Auto-attach to tmux on MOSH
-set -q MOSH_CONNECTION && not set -q TMUX && command -q tmux && tmux new-session -A -s mosh
-
 # -----------------------------------------------------------------------------
 # Abbreviations (expand inline, visible in history)
 # -----------------------------------------------------------------------------
@@ -66,7 +60,6 @@ abbr repo 'gh repo'
 # Tmux
 abbr tls 'tmux list-sessions'
 abbr tcd 'tmux attach-session -t'
-abbr tssh 'tmux new-session -A -s ssh'
 abbr tk 'tmux kill-session -t'
 abbr tka 'tmux kill-server'
 

@@ -8,7 +8,6 @@ cask "the-unarchiver"
 # File Sharing & Downloads
 cask "localsend"
 cask "homebrew/cask/transmission"
-mas "KDE Connect", id: 1580245991
 
 # Keyboard Customization
 cask "karabiner-elements"
