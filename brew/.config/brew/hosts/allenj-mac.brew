@@ -1,4 +1,4 @@
-# Allen's Mac - minimal setup
+# Work - minimal setup
 
 # Base (terminal, security, browsers, utils)
 enable "base"
@@ -14,3 +14,5 @@ enable "media"
 
 # Hardware
 enable "hardware"
+
+cask "obsidian"
