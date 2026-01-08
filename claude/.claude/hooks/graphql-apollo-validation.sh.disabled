@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+# Hook: PostToolUse - GraphQL ↔ Apollo Validation
+#
+# Validates the GraphQL/Apollo I/O layer whenever relevant files are edited.
+# Runs codegen to validate queries/fragments against the introspected schema.
+#
+# Triggers on:
+#   - lib/graphql/**/*.ts    (fragments, queries)
+#   - lib/apollo/**/*.ts     (Apollo client config)
+#   - app/**/*.tsx           (pages with inline queries)
+#   - components/**/*.tsx    (components with useQuery/useMutation)
+#   - *.graphql, *.gql       (raw GraphQL files)
+
+set -euo pipefail
+
+TOOL_NAME="${CLAUDE_HOOK_TOOL_NAME:-}"
+EDITED_FILE="${CLAUDE_HOOK_TOOL_ARGS_file_path:-}"
+
+# Only run after Edit or Write tools
+if [[ "$TOOL_NAME" != "Edit" && "$TOOL_NAME" != "Write" ]]; then
+  exit 0
+fi
+
+# Skip if no file path
+if [[ -z "$EDITED_FILE" ]]; then
+  exit 0
+fi
+
+# Check if file is part of the GraphQL/Apollo I/O layer
+is_graphql_layer() {
+  local file="$1"
+
+  # Raw GraphQL files
+  [[ "$file" =~ \.(graphql|gql)$ ]] && return 0
+
+  # TypeScript/TSX files only
+  [[ ! "$file" =~ \.(ts|tsx)$ ]] && return 1
+
+  # GraphQL definitions (fragments, queries, generated)
+  [[ "$file" =~ /graphql/.*\.(ts|tsx)$ ]] && return 0
+
+  # Apollo client configuration
+  [[ "$file" =~ /apollo/.*\.(ts|tsx)$ ]] && return 0
+
+  # Pages and components - check if they contain gql imports
+  if [[ "$file" =~ /(app|components)/.*\.(ts|tsx)$ ]]; then
+    # Quick check: does the file contain GraphQL-related imports?
+    if grep -qE '(from.*@apollo/client|from.*gql|gql`)' "$file" 2>/dev/null; then
+      return 0
+    fi
+  fi
+
+  return 1
+}
+
+if ! is_graphql_layer "$EDITED_FILE"; then
+  exit 0
+fi
+
+# Find project root by traversing up from the edited file
+find_project_root() {
+  local dir
+  dir=$(dirname "$1")
+
+  while [[ "$dir" != "/" ]]; do
+    if [[ -f "$dir/codegen.ts" || -f "$dir/codegen.yml" || -f "$dir/codegen.yaml" ]]; then
+      echo "$dir"
+      return 0
+    fi
+    dir=$(dirname "$dir")
+  done
+
+  echo ""
+}
+
+PROJECT_ROOT=$(find_project_root "$EDITED_FILE")
+
+# No codegen config found
+if [[ -z "$PROJECT_ROOT" ]]; then
+  exit 0
+fi
+
+# Must have package.json with codegen script
+if [[ ! -f "$PROJECT_ROOT/package.json" ]]; then
+  exit 0
+fi
+
+# Check if codegen script exists
+if ! grep -q '"codegen"' "$PROJECT_ROOT/package.json" 2>/dev/null; then
+  exit 0
+fi
+
+echo "🔄 Running GraphQL codegen..."
+
+cd "$PROJECT_ROOT"
+
+# Run codegen and check for errors
+CODEGEN_OUTPUT=$(npm run codegen 2>&1)
+CODEGEN_EXIT=$?
+
+if [[ $CODEGEN_EXIT -eq 0 ]]; then
+  echo "✅ GraphQL schema validation passed"
+else
+  echo "$CODEGEN_OUTPUT" | grep -A5 "Error\|error:" | head -20
+  echo ""
+  echo "❌ GraphQL schema validation failed"
+  echo "Check fragment/query types against your GraphQL schema"
+  exit 1
+fi
+
+exit 0
