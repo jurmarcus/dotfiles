@@ -103,6 +103,14 @@ _tnew() {
   tmux new-session -s "${prefix}-$n"
 }
 
+if [[ "$(hostname -s)" == allenj-mac* ]]; then
+  x2ssh() { TERM=xterm-256color command x2ssh -mosh -mosh_colors 256 "$@"; }
+  dev()   { TERM=xterm-256color command dev "$@"; }
+  dconn() { TERM=xterm-256color command dev connect -m "$@"; }
+  mosh()  { TERM=xterm-256color command mosh "$@"; }
+  et()    { TERM=xterm-256color command et "$@"; }
+fi
+
 tclaude() { _tnew claude; }
 topencode() { _tnew opencode; }
 tservice() { _tnew service; }
@@ -141,6 +149,7 @@ alias vi="nvim"
 alias v="nvim"
 alias code="codium"
 alias vimdiff='nvim -d'
+[[ "$(hostname -s)" == "allenj-mac" ]] && alias code="code-fb" || alias code="codium"
 
 # Version control (sapling for everything)
 alias ss="sl status"
