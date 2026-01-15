@@ -1,9 +1,59 @@
 {
     "profiles": [
         {
+            "complex_modifications": {
+                "rules": [
+                    {
+                        "description": "Swap ¥ and \\: ¥ outputs \\, option+¥ outputs ¥",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "international3",
+                                    "modifiers": { "mandatory": ["option"] }
+                                },
+                                "to": [{ "key_code": "international3" }],
+                                "type": "basic"
+                            },
+                            {
+                                "from": { "key_code": "international3" },
+                                "to": [
+                                    {
+                                        "key_code": "international3",
+                                        "modifiers": ["option"]
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Map shift+enter to option+enter",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "return_or_enter",
+                                    "modifiers": { "mandatory": ["shift"] }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "return_or_enter",
+                                        "modifiers": ["option"]
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "devices": [
+                {
+                    "identifiers": { "is_keyboard": true },
+                    "ignore": true
+                }
+            ],
             "name": "Default profile",
             "selected": true,
-            "virtual_hid_keyboard": { "keyboard_type_v2": "jis" },
             "simple_modifications": [
                 {
                     "from": { "key_code": "caps_lock" },
@@ -14,51 +64,7 @@
                     "to": [{ "key_code": "caps_lock" }]
                 }
             ],
-            "complex_modifications": {
-                "rules": [
-                    {
-                        "description": "Swap ¥ and \\: ¥ outputs \\, option+¥ outputs ¥",
-                        "manipulators": [
-                            {
-                                "type": "basic",
-                                "from": {
-                                    "key_code": "international3",
-                                    "modifiers": { "mandatory": ["option"] }
-                                },
-                                "to": [{ "key_code": "international3" }]
-                            },
-                            {
-                                "type": "basic",
-                                "from": { "key_code": "international3" },
-                                "to": [
-                                    {
-                                        "key_code": "international3",
-                                        "modifiers": ["option"]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Map shift+enter to option+enter",
-                        "manipulators": [
-                            {
-                                "type": "basic",
-                                "from": {
-                                    "key_code": "return_or_enter",
-                                    "modifiers": { "mandatory": ["shift"] }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "return_or_enter",
-                                        "modifiers": ["option"]
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }
+            "virtual_hid_keyboard": { "keyboard_type_v2": "jis" }
         }
     ]
 }

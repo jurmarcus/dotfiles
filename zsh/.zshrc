@@ -93,7 +93,6 @@ export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
 # Tmux Session Management
 # =============================================================================
 
-# Numbered sessions helper
 _tnew() {
   local prefix="$1" n=1
   local sessions=$(tmux list-sessions -F '#{session_name}' 2>/dev/null)
@@ -102,14 +101,6 @@ _tnew() {
   done
   tmux new-session -s "${prefix}-$n"
 }
-
-if [[ "$(hostname -s)" == allenj-mac* ]]; then
-  x2ssh() { TERM=xterm-256color command x2ssh -mosh -mosh_colors 256 "$@"; }
-  dev()   { TERM=xterm-256color command dev "$@"; }
-  dconn() { TERM=xterm-256color command dev connect -m "$@"; }
-  mosh()  { TERM=xterm-256color command mosh "$@"; }
-  et()    { TERM=xterm-256color command et "$@"; }
-fi
 
 tclaude() { _tnew claude; }
 topencode() { _tnew opencode; }
@@ -124,6 +115,14 @@ tka() { tmux kill-server; }
 # =============================================================================
 # Aliases - Modern CLI Replacements
 # =============================================================================
+if [[ "$(hostname -s)" == allenj* ]]; then
+  ssh()   { TERM=xterm-256color command ssh "$@"; }
+  x2ssh() { TERM=xterm-256color command x2ssh -mosh -mosh_colors 256 "$@"; }
+  dev()   { TERM=xterm-256color command dev "$@"; }
+  dconn() { TERM=xterm-256color command dev connect -m "$@"; }
+  mosh()  { TERM=xterm-256color command mosh "$@"; }
+  et()    { TERM=xterm-256color command et "$@"; }
+fi
 
 # File operations
 alias ls="eza --icons --group-directories-first"
@@ -149,7 +148,7 @@ alias vi="nvim"
 alias v="nvim"
 alias code="codium"
 alias vimdiff='nvim -d'
-[[ "$(hostname -s)" == "allenj-mac" ]] && alias code="code-fb" || alias code="codium"
+[[ "$(hostname -s)" == allenj* ]] && alias code="code-fb" || alias code="codium"
 
 # Version control (sapling for everything)
 alias ss="sl status"
@@ -164,8 +163,12 @@ alias pr="gh pr"
 alias issue="gh issue"
 alias repo="gh repo"
 
+if [[ "$(hostname -s)" == allenj* ]]; then
+  export META_CLAUDE_CODE_RELEASE=latest
+fi
+
 # Claude CLI
-alias claude="claude --dangerously-skip-permissions"
+alias claude="claude"
 alias cc="claude"
 alias ccc="claude --continue"
 alias ccr="claude --resume"

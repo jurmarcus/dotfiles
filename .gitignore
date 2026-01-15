@@ -20,3 +20,9 @@
 # Temporary files
 *.tmp
 .cache/
+
+# Karabiner automatic backups
+karabiner/.config/karabiner/automatic_backups/
+
+# Claude Code
+.claude/internet-mode-used_DO_NOT_REMOVE_MANUALLY_SECURITY_RISK

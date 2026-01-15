@@ -33,3 +33,4 @@ confirm-close-surface = false
 # macOS: Integrate tabs into title bar
 macos-titlebar-style = tabs
 
+keybind = shift+enter=text:\x1b\r
