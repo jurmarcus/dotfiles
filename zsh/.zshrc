@@ -26,6 +26,13 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # Opencode
 export PATH=/Users/methylene/.opencode/bin:$PATH
 
+# Android SDK
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH"
+
+# Rust (Homebrew rustup doesn't create ~/.cargo/bin proxies)
+export PATH="$HOME/.rustup/toolchains/stable-aarch64-apple-darwin/bin:$PATH"
+
 # =============================================================================
 # Completions (cached to files for fast startup)
 # =============================================================================
@@ -102,6 +109,10 @@ _tnew() {
   tmux new-session -s "${prefix}-$n"
 }
 
+# Auto-start tmux (creates dev-1, dev-2, ... per terminal)
+if [[ -z "$TMUX" ]] && [[ -z "$SSH_CONNECTION" ]] && [[ "$TERM_PROGRAM" != "vscode" ]]; then
+  _tnew dev
+fi
 tclaude() { _tnew claude; }
 topencode() { _tnew opencode; }
 tservice() { _tnew service; }

@@ -23,6 +23,10 @@ set -gx HOMEBREW_REPOSITORY /opt/homebrew
 set -gx MANPATH /opt/homebrew/share/man $MANPATH
 set -gx INFOPATH /opt/homebrew/share/info $INFOPATH
 
+# Android SDK
+set -gx ANDROID_HOME ~/Library/Android/sdk
+fish_add_path $ANDROID_HOME/emulator $ANDROID_HOME/platform-tools
+
 # Local
 set -g DOTFILES ~/dotfiles
 set -g TEMPLATE_DIR ~/.config/templates
@@ -39,6 +43,11 @@ zoxide init fish --cmd cd | source
 atuin init fish | source
 direnv hook fish | source
 starship init fish | source
+
+# Auto-start tmux (creates dev-1, dev-2, ... per terminal)
+if not set -q TMUX; and not set -q SSH_CONNECTION; and test "$TERM_PROGRAM" != vscode
+    _tnew dev
+end
 
 # -----------------------------------------------------------------------------
 # Abbreviations (expand inline, visible in history)

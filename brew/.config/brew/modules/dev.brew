@@ -14,6 +14,7 @@ cask "vscodium"
 brew "uv"           # Python
 brew "oven-sh/bun/bun"  # TypeScript/JavaScript
 brew "rustup"       # Rust (includes cargo, clippy via: rustup component add clippy rustfmt)
+cask "temurin@21"   # Java (for Android builds)
 
 # Linting & Formatting
 brew "ruff"         # Python
