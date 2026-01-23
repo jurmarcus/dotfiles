@@ -1,43 +1,59 @@
 # Tmux session management
 
-function _tnew --description "Create numbered tmux session"
-    set prefix $argv[1]
-    set n 1
-    set sessions (tmux list-sessions -F '#{session_name}' 2>/dev/null)
-    while echo $sessions | grep -qx "$prefix-$n"
-        set n (math $n + 1)
+# Machine slug from hostname (methylene-macbook → macbook)
+function _machine --description "Get machine slug from hostname"
+    set host (hostname -s)
+    if string match -q 'methylene-*' $host
+        string replace 'methylene-' '' $host
+    else
+        echo $host
     end
-    tmux new-session -s "$prefix-$n"
 end
 
-function _tmux_picker --description "fzf-based tmux session picker"
+# Rename current tmux session to machine-prefix-N
+function _trename --description "Rename current session to machine-prefix-N"
+    set prefix (_machine)-$argv[1]
+    set n 1
+    while tmux has-session -t "$prefix-$n" 2>/dev/null
+        set n (math $n + 1)
+    end
+    tmux rename-session "$prefix-$n"
+    echo "Renamed to $prefix-$n"
+end
+
+# fzf-based tmux session picker (uses exec - single exit closes terminal)
+function _tmux_picker --description "fzf tmux picker with exec"
+    set prefix (_machine)-dev
     set sessions (tmux list-sessions -F '#{session_name}: #{session_windows} win#{?session_attached, (attached),}' 2>/dev/null)
 
     if test -z "$sessions"
-        _tnew dev
-        return
+        exec tmux new-session -s "$prefix-1"
     end
 
     set choice (printf '%s\n+ new session' $sessions | fzf --height=40% --reverse --prompt="tmux> ")
 
     switch "$choice"
         case "+ new session"
-            _tnew dev
+            set n 1
+            while tmux has-session -t "$prefix-$n" 2>/dev/null
+                set n (math $n + 1)
+            end
+            exec tmux new-session -s "$prefix-$n"
         case ""
-            return 0  # cancelled, stay in shell
+            exit 0  # cancelled - close terminal
         case '*'
-            tmux attach -t (string split ':' $choice)[1]
+            exec tmux attach -t (string split ':' $choice)[1]
     end
 end
 
-function tclaude --description "New Claude session (claude-1, claude-2, ...)"
-    _tnew claude
+function tclaude --description "Rename session to claude-N"
+    _trename claude
 end
 
-function topencode --description "New OpenCode session"
-    _tnew opencode
+function topencode --description "Rename session to opencode-N"
+    _trename opencode
 end
 
-function tservice --description "New service session"
-    _tnew service
+function tservice --description "Rename session to service-N"
+    _trename service
 end

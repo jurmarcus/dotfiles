@@ -100,45 +100,49 @@ export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
 # Tmux Session Management
 # =============================================================================
 
-_tnew() {
-  local prefix="$1" n=1
-  local sessions=$(tmux list-sessions -F '#{session_name}' 2>/dev/null)
-  while echo "$sessions" | grep -qx "${prefix}-$n"; do
-    ((n++))
-  done
-  tmux new-session -s "${prefix}-$n"
+# Machine slug from hostname (methylene-macbook → macbook)
+_machine() {
+  local host=$(hostname -s)
+  [[ "$host" == methylene-* ]] && echo "${host#methylene-}" || echo "$host"
 }
 
-# fzf-based tmux session picker
+# Rename current tmux session to machine-prefix-N
+_trename() {
+  local prefix="$(_machine)-$1" n=1
+  while tmux has-session -t "${prefix}-$n" 2>/dev/null; do ((n++)); done
+  tmux rename-session "${prefix}-$n"
+  echo "Renamed to ${prefix}-$n"
+}
+
+# fzf-based tmux session picker (uses exec - single exit closes terminal)
 _tmux_picker() {
-  local sessions choice
+  local sessions choice n prefix="$(_machine)-dev"
   sessions=$(tmux list-sessions -F '#{session_name}: #{session_windows} win#{?session_attached, (attached),}' 2>/dev/null)
 
   if [[ -z "$sessions" ]]; then
-    _tnew dev
-    return
+    exec tmux new-session -s "${prefix}-1"
   fi
 
   choice=$(echo "$sessions\n+ new session" | fzf --height=40% --reverse --prompt="tmux> ")
 
   case "$choice" in
-    "+ new session") _tnew dev ;;
-    "") return 0 ;;  # cancelled, stay in shell
-    *) tmux attach -t "${choice%%:*}" ;;
+    "+ new session")
+      n=1
+      while tmux has-session -t "${prefix}-$n" 2>/dev/null; do ((n++)); done
+      exec tmux new-session -s "${prefix}-$n"
+      ;;
+    "") exit 0 ;;  # cancelled - close terminal
+    *) exec tmux attach -t "${choice%%:*}" ;;
   esac
 }
 
-# Auto-start tmux
+# Auto-start tmux with picker
 if [[ -z "$TMUX" ]] && [[ "$TERM_PROGRAM" != "vscode" ]]; then
-  if [[ -n "$SSH_CONNECTION" ]]; then
-    _tmux_picker  # SSH: interactive picker
-  else
-    tmux attach 2>/dev/null || _tnew dev  # Local: smart attach
-  fi
+  _tmux_picker
 fi
-tclaude() { _tnew claude; }
-topencode() { _tnew opencode; }
-tservice() { _tnew service; }
+tclaude() { _trename claude; }
+topencode() { _trename opencode; }
+tservice() { _trename service; }
 
 # List, attach, kill sessions
 tls() { tmux list-sessions; }
