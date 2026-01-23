@@ -109,9 +109,32 @@ _tnew() {
   tmux new-session -s "${prefix}-$n"
 }
 
-# Auto-start tmux (smart: attach to detached session, or create new)
+# fzf-based tmux session picker
+_tmux_picker() {
+  local sessions choice
+  sessions=$(tmux list-sessions -F '#{session_name}: #{session_windows} win#{?session_attached, (attached),}' 2>/dev/null)
+
+  if [[ -z "$sessions" ]]; then
+    _tnew dev
+    return
+  fi
+
+  choice=$(echo "$sessions\n+ new session" | fzf --height=40% --reverse --prompt="tmux> ")
+
+  case "$choice" in
+    "+ new session") _tnew dev ;;
+    "") return 0 ;;  # cancelled, stay in shell
+    *) tmux attach -t "${choice%%:*}" ;;
+  esac
+}
+
+# Auto-start tmux
 if [[ -z "$TMUX" ]] && [[ "$TERM_PROGRAM" != "vscode" ]]; then
-  tmux attach 2>/dev/null || _tnew dev
+  if [[ -n "$SSH_CONNECTION" ]]; then
+    _tmux_picker  # SSH: interactive picker
+  else
+    tmux attach 2>/dev/null || _tnew dev  # Local: smart attach
+  fi
 fi
 tclaude() { _tnew claude; }
 topencode() { _tnew opencode; }

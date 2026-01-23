@@ -44,9 +44,13 @@ atuin init fish | source
 direnv hook fish | source
 starship init fish | source
 
-# Auto-start tmux (smart: attach to detached session, or create new)
+# Auto-start tmux
 if not set -q TMUX; and test "$TERM_PROGRAM" != vscode
-    tmux attach 2>/dev/null; or _tnew dev
+    if set -q SSH_CONNECTION
+        _tmux_picker  # SSH: interactive picker
+    else
+        tmux attach 2>/dev/null; or _tnew dev  # Local: smart attach
+    end
 end
 
 # -----------------------------------------------------------------------------
