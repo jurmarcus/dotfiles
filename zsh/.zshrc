@@ -109,9 +109,9 @@ _tnew() {
   tmux new-session -s "${prefix}-$n"
 }
 
-# Auto-start tmux (creates dev-1, dev-2, ... per terminal)
-if [[ -z "$TMUX" ]] && [[ -z "$SSH_CONNECTION" ]] && [[ "$TERM_PROGRAM" != "vscode" ]]; then
-  _tnew dev
+# Auto-start tmux (smart: attach to detached session, or create new)
+if [[ -z "$TMUX" ]] && [[ "$TERM_PROGRAM" != "vscode" ]]; then
+  tmux attach 2>/dev/null || _tnew dev
 fi
 tclaude() { _tnew claude; }
 topencode() { _tnew opencode; }
