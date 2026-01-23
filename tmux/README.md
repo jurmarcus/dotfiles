@@ -1,6 +1,6 @@
 # Tmux Configuration
 
-Terminal multiplexer with Ctrl+B prefix (default) and Catppuccin Frappe theme.
+Terminal multiplexer with Ctrl+A prefix and Catppuccin Frappe theme.
 
 ## Files
 
@@ -11,9 +11,9 @@ tmux/.config/tmux/
 
 ## Key Bindings
 
-### Prefix: `Ctrl+B`
+### Prefix: `Ctrl+A`
 
-After pressing `Ctrl+B`, use these keys:
+After pressing `Ctrl+A`, use these keys:
 
 #### Panes
 | Key | Action |
@@ -31,6 +31,8 @@ After pressing `Ctrl+B`, use these keys:
 | `X` | Close window |
 | `Ctrl+h` | Previous window |
 | `Ctrl+l` | Next window |
+| `Shift+←` | Move window left |
+| `Shift+→` | Move window right |
 | `0-9` | Go to window |
 
 #### Session

@@ -1,0 +1,35 @@
+# Ghostty config
+# Docs: https://ghostty.org/docs/config
+
+# macOS: Make Option key work as Alt (for Zellij, etc.)
+macos-option-as-alt = true
+
+# Unbind default alt keybinds so they pass through to Zellij
+keybind = alt+arrow_left=unbind
+keybind = alt+arrow_right=unbind
+
+# Command palette
+keybind = super+p=toggle_command_palette
+
+# Font
+font-family = JetBrainsMono Nerd Font
+font-size = 14
+font-feature = liga
+font-feature = calt
+
+# Theme
+theme = Catppuccin Frappe
+
+# Cursor
+cursor-style = bar
+cursor-style-blink = true
+
+# Shell integration
+shell-integration = fish
+
+# Don't confirm - Zellij handles sessions
+confirm-close-surface = false
+
+# macOS: Integrate tabs into title bar
+macos-titlebar-style = tabs
+
