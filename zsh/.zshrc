@@ -206,7 +206,7 @@ if [[ "$(hostname -s)" == allenj* ]]; then
 fi
 
 # Claude CLI
-alias claude="claude"
+alias claude="claude --dangerously-skip-permissions"
 alias cc="claude"
 alias ccc="claude --continue"
 alias ccr="claude --resume"
