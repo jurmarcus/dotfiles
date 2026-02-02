@@ -1,5 +1,6 @@
 # Media Processing
 brew "ffmpeg"
+brew "yt-dlp"
 
 # Video Player
 cask "iina"

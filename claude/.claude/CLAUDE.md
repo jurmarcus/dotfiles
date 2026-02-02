@@ -1,63 +1,185 @@
-# Dotfiles
+# Development Environment
 
 macOS development environment managed with GNU Stow.
 
-## Rules
+## Critical Rules
 
-- **Never edit files in `~/`** - modify in `~/dotfiles/`, run `stow -R <pkg>`
-- Brew packages go in `brew/.config/brew/modules/`
-- **When working on a component, read its README.md first** (e.g., `zsh/README.md` for shell changes)
+These rules MUST be followed without exception:
 
-## Components
+- **Always use `sl` (Sapling), never `git`** - `sl status`, `sl commit`, `sl push`
+- **Always use Claude Code tasks** - Every task = 1 commit for clean diff stacks
+- **Never edit files in `~/`** - Modify in `~/dotfiles/`, run `stow -R <pkg>`
+- **Always use `just`** - Never raw `cargo build`, `bun run`, `uv run`
+- **When working on a component, read its README.md first**
 
-| Package | README | Purpose |
-|---------|--------|---------|
-| bootstrap | `bootstrap/README.md` | Setup scripts |
-| brew | `brew/README.md` | Modular Homebrew |
-| zsh | `zsh/README.md` | Shell config |
-| fish | `fish/README.md` | Shell config |
-| templates | `templates/README.md` | Shared MCP templates |
-| nvim | `nvim/README.md` | Neovim (NvChad) |
-| ghostty | `ghostty/README.md` | Terminal |
-| starship | `starship/README.md` | Prompt |
-| tmux | `tmux/README.md` | Multiplexer |
-| git | `git/README.md` | Git + delta |
-| karabiner | `karabiner/README.md` | Keyboard |
-| opencode | `opencode/README.md` | AI coding assistant |
-| stow | `stow/README.md` | Symlink config |
+## Version Control: Sapling
 
-## Quick Reference
+Use `sl` for everything. Git is only for compatibility.
 
-### CLI Aliases
-`ls`→eza, `cat`→bat, `grep`→rg, `find`→fd, `cd`→zoxide, `diff`→delta, `top`→btop, `vim`→nvim, `code`→codium
+| Alias | Command | Purpose |
+|-------|---------|---------|
+| `ss` | `sl status` | Show status |
+| `sa` | `sl add` | Stage files |
+| `sc` | `sl commit` | Commit |
+| `sp` | `sl push` | Push |
+| `spl` | `sl pull --rebase` | Pull with rebase |
+| `sar` | `sl addremove` | Add new, remove deleted |
 
-### Development
-- Python: `py`, `py-init`, `pyr`, `pyt`, `pya`
-- TypeScript: `ts-init`, `tsr`, `tst`, `tsa`
-- MCP: `py-init-mcp`, `ts-init-mcp`
+### Diff Stacks Workflow
 
-### Functions
-- `restow` - Re-stow all packages
-- `brewsync` - Sync Homebrew (skips if current)
+When working on a plan/project with multiple tasks:
 
-## Bootstrap
+1. **Create a task per logical unit** using Claude Code tasks
+2. **Each task = one `sl commit`** with the task purpose as message
+3. This creates a reviewable diff stack
+4. Use `sl push` to push the stack for review
+
+## Language Tooling
+
+### Python: Always `uv`
+
+Never use pip, venv, or virtualenv directly.
+
+| Alias | Command | Purpose |
+|-------|---------|---------|
+| `py` | `uv run python` | Run Python |
+| `pya` | `uv add` | Add dependency |
+| `pyt` | `uv run pytest` | Run tests |
+| `pyf` | `uvx ruff format` | Format |
+| `pyl` | `uvx ruff check` | Lint |
+| - | `py-init <name>` | New project (uv init + ruff + pytest) |
+
+### TypeScript: Always `bun`
+
+Never use npm, yarn, or pnpm.
+
+| Alias | Command | Purpose |
+|-------|---------|---------|
+| `tsr` | `bun run` | Run script |
+| `tsa` | `bun add` | Add dependency |
+| `tst` | `bun test` | Run tests |
+| `tsf` | `bunx biome format` | Format |
+| `tsl` | `bunx biome lint` | Lint |
+| - | `ts-init <name>` | New project (bun init + typescript) |
+
+### Rust: `cargo` with edition 2024
+
+| Alias | Command | Purpose |
+|-------|---------|---------|
+| `rsr` | `cargo run` | Run |
+| `rsa` | `cargo add` | Add dependency |
+| `rst` | `cargo test` | Test |
+| `rsf` | `cargo fmt` | Format |
+| `rsl` | `cargo clippy` | Lint |
+| - | `rs-init <name>` | New project |
+
+Use `edition = "2024"` in Cargo.toml (valid since Rust 1.85, Jan 2025).
+
+## Task Runner: `just`
+
+Always use `just` (justfile) over Makefiles or npm scripts.
 
 ```bash
-./bootstrap/bootstrap.sh              # Full setup
-./bootstrap/bootstrap.sh --dry-run    # Preview
-./bootstrap/bootstrap.sh --help       # Options
+just              # List available tasks
+just <task>       # Run task
+just <module> <task>  # Monorepo pattern
 ```
 
-**Scripts:** bootstrap.sh, macos.sh, git.sh, duti.sh, vscodium.sh, tailscale.sh (manual)
+## CLI Tool Preferences
 
-All scripts are idempotent (safe to re-run).
+Always use these modern alternatives:
 
-## Paths
+| Instead of | Use | Aliases |
+|------------|-----|---------|
+| git | sl (Sapling) | `ss`, `sa`, `sc`, `sp`, `spl`, `sar` |
+| ls | eza | `ls`, `ll`, `la`, `lt` |
+| cat | bat | `cat` |
+| grep | rg (ripgrep) | `grep` |
+| find | fd | `find` |
+| cd | zoxide | `cd` |
+| diff | delta | - |
+| top/htop | btop | `top`, `htop` |
+| du | dust | `du` |
+| df | duf | `df` |
+| ps | procs | `ps` |
+| man | bat (as pager) | - |
+| help | tldr | `help` |
+| vim/vi/nano | nvim | `vim`, `vi`, `v`, `nano` |
+| vscode | codium | `code` |
+| npm/yarn/pnpm | bun | See TypeScript section |
+| pip/venv | uv | See Python section |
 
-- Dotfiles: `~/dotfiles`
-- Config: `~/.config/`
-- Templates: `~/.config/templates/`
-- Homebrew: `/opt/homebrew`
+## Environment
+
+- **direnv** for per-directory env vars (`.envrc` files)
+- **starship** prompt
+- **atuin** for shell history
+- **fzf** for fuzzy finding
+- **tmux** for terminal multiplexing
+
+## Multi-Machine Development
+
+Development happens across Tailscale network:
+
+| Machine | Role |
+|---------|------|
+| `methylene-studio` | Server (databases, APIs, Sudachi) |
+| `methylene-macbook` | Laptop (client, MCP, apps) |
+
+Environment variables via direnv:
+- `cd server/` → localhost URLs, DB paths
+- `cd mcp/` or `cd app/` → remote URLs via Tailscale
+
+Use `JISHO_REMOTE_HOST` and similar env vars for cross-machine URLs.
+
+## Commit Messages
+
+Always use conventional commits with optional scope:
+
+```
+feat(web): add user authentication
+fix(api): handle null response
+refactor(core): simplify error handling
+docs: update README
+```
+
+## Project Structure
+
+### Monorepos
+
+Use layered CLAUDE.md files:
+
+```
+project/
+├── CLAUDE.md           # Root: architecture, commands
+├── server/CLAUDE.md    # Layer: server-specific
+├── mcp/CLAUDE.md       # Layer: MCP-specific
+└── app/CLAUDE.md       # Layer: app-specific
+```
+
+### Dotfiles
+
+```
+~/dotfiles/           # Source (edit here)
+├── zsh/              # Shell config
+├── fish/             # Shell config (keep in sync!)
+├── brew/             # Modular Homebrew
+│   └── .config/brew/modules/  # *.brew files
+└── ...
+```
+
+**Brew Modules**: Add packages to appropriate `.brew` file, run `brewsync`.
+
+## MCP Development
+
+Scaffold new MCP servers:
+
+```bash
+py-init-mcp <name>    # Python MCP with mcp SDK
+ts-init-mcp <name>    # TypeScript MCP with @modelcontextprotocol/sdk
+```
+
+Templates in `~/.config/templates/`.
 
 ## Dual-Shell Sync
 
@@ -69,67 +191,34 @@ All scripts are idempotent (safe to re-run).
 | Function | `.zshrc` | `functions/*.fish` |
 | Environment | `.zshrc` | `config.fish` |
 
-When modifying shell config, update BOTH shells.
-
 ## Claude Code Automation
 
-**COMPLETE DEVELOPMENT WORKFLOW AUTOMATION**: Hooks, skills, and commands for Python, TypeScript, and Rust projects.
+Full automation docs: `~/.claude/AUTOMATION.md`
 
-📖 **Full Guide**: See `~/.claude/AUTOMATION.md` for comprehensive documentation.
+**Hooks** (automatic):
 
-### Quick Reference
-
-**Hooks** (run automatically):
-- ✅ Type checking after edits (Python, TypeScript, Rust)
-- ✅ Auto-formatting after edits (prettier, rustfmt, ruff)
-- ✅ Tests after edits (pytest, jest, cargo test)
-- ✅ Pre-commit checks (format, LSP, tests, lint, TODO scan)
-- ✅ Session summary on exit
+| Hook | Trigger | Purpose |
+|------|---------|---------|
+| lsp-check | After Edit | Type checking (tsc, ty, cargo check) |
+| format-on-edit | After Edit | Auto-format (prettier, ruff, rustfmt) |
+| test-after-edit | After Edit | Run targeted tests |
+| pre-commit-checks | Before commit | Format, lint, test, dead code scan |
+| session-summary | Session end | Generate session summary |
 
 **Commands** (invoke with `/command`):
-- `/test <file>` - Generate comprehensive tests
-- `/review <file>` - Code review for bugs/security/performance
-- `/doc [file]` - Update CLAUDE.md, README.md, docstrings
-- `/commit [msg]` - Smart conventional commits
-- `/refactor <target>` - Guided refactoring with safety checks
-- `/perf <file>` - Performance analysis and optimization
-- `/debug <issue>` - Investigate without fixing
-- `/design <feature>` - Create implementation plan
-- `/migrate <from> <to>` - Safe pattern/library migration
+
+| Command | Purpose |
+|---------|---------|
+| `/test <file>` | Generate tests |
+| `/review <file>` | Code review |
+| `/commit [msg]` | Smart commit (uses `sl`) |
+| `/refactor <target>` | Guided refactoring |
+| `/design <feature>` | Implementation plan |
+| `/doc [file]` | Update docs |
 
 **Skills** (auto-triggered):
-- `homebrew-modular` - Add brew packages to dotfiles modules
-- `dotfiles-stow` - Stow changes after editing dotfiles
 
-### Supported Languages
-
-All hooks and commands support:
-- 🐍 **Python**: ty, pytest, ruff format (via uv/uvx)
-- 📘 **TypeScript**: tsc, bun test, prettier (via bun/bunx)
-- 🦀 **Rust**: cargo check, cargo test, rustfmt
-
-### Configuration
-
-**Location**: `~/.claude/hooks/`
-
-**Disable a hook**:
-```bash
-mv ~/.claude/hooks/hook-name.sh{,.disabled}
-```
-
-**Enable a hook**:
-```bash
-mv ~/.claude/hooks/hook-name.sh{.disabled,}
-```
-
-### Workflow
-
-```
-1. Code changes → Auto: type check, format, test
-2. /review → Code review
-3. /doc → Update documentation
-4. /commit → Smart commit with pre-commit checks
-5. Session end → Summary of changes
-```
-
-All automation is **invisible**, **fast** (<5s), and **helpful** (catches errors early).
+| Skill | Purpose |
+|-------|---------|
+| `dotfiles-stow` | Apply dotfiles with Stow |
+| `homebrew-modular` | Add packages to brew modules |
