@@ -1,25 +1,19 @@
+---
+allowed-tools: Bash(sl:*)
+description: Create a smart conventional commit with proper message
+---
+
 Create a smart conventional commit with proper message: $ARGUMENTS
+
+**CRITICAL: Always use Sapling (`sl`), NEVER use `git` commands.**
 
 ## 1. Analyze Changes
 
-Determine if using Sapling (sl) or Git:
-```bash
-# Check VCS type
-if sl root &>/dev/null; then
-  VCS="sl"
-elif git rev-parse --git-dir &>/dev/null; then
-  VCS="git"
-fi
-```
-
-**For Sapling (sl):**
-- Run `sl status` to see modified/added/removed files
-- Run `sl diff` to see exact changes (Sapling has no staging - shows all uncommitted changes)
-- Categorize changes by type and scope
-
-**For Git (fallback):**
-- Run `git status` to see staged files
-- Run `git diff --cached` to see exact changes
+Run these `sl` commands to understand the changes:
+- `sl status` - see modified/added/removed files
+- `sl diff` - see exact changes (Sapling has no staging)
+- `sl log -l 5` - see recent commit style
+- `sl addremove` - stage new files and mark deleted files
 
 ## 2. Determine Commit Type
 
@@ -67,8 +61,6 @@ Before committing, run checks:
 
 ## 5. Commit Command
 
-### Sapling (preferred)
-
 **Commit all changes:**
 ```bash
 sl commit -m "$(cat <<'EOF'
@@ -97,32 +89,14 @@ sl commit -i -m "feat: message"
 sl amend -m "feat(scope): updated message"
 ```
 
-### Git (fallback)
-
-```bash
-git commit -m "$(cat <<'EOF'
-feat(scope): subject line
-
-Body explaining what and why.
-
-EOF
-)"
-```
-
 ## 6. Push Changes
 
-### Sapling
 ```bash
 # Push to remote (default bookmark/branch)
 sl push
 
 # Push to specific destination
 sl push --to main
-```
-
-### Git
-```bash
-git push
 ```
 
 ## Sapling Advantages

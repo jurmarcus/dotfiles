@@ -1,9 +1,14 @@
+---
+allowed-tools: Bash(sl:*)
+description: Generate changelog from commits
+---
+
 Generate changelog from commits: $ARGUMENTS
 
 ## What This Command Does
 
 Generates a structured changelog from commit history, grouped by type and formatted for release notes.
-Supports both Sapling (sl) and Git.
+Uses Sapling (sl) for version control.
 
 ## Usage
 
@@ -29,15 +34,6 @@ sl log -r 'v1.2.0::v1.3.0' --template '{node|short}|{desc|firstline}|{author|use
 
 # All commits on current stack
 sl log -r 'stack()' --template '{node|short}|{desc|firstline}|{author|user}|{date|isodate}\n'
-```
-
-**Git (fallback):**
-```bash
-# Since last tag
-git log $(git describe --tags --abbrev=0 2>/dev/null || echo "")..HEAD --pretty=format:"%h|%s|%an|%ad" --date=short
-
-# Between specific versions
-git log v1.2.0..v1.3.0 --pretty=format:"%h|%s|%an|%ad" --date=short
 ```
 
 ### 2. Parse Conventional Commits

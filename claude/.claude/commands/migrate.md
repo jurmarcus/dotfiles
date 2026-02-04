@@ -92,7 +92,7 @@ After each file:
 ## 5. Rollback Plan
 
 Always have a way back:
-- Keep old code in git history
+- Keep old code in sl history
 - Document revert commands
 - Test rollback before completing
 

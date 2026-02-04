@@ -115,7 +115,7 @@ validate_ts_apollo() {
   echo "🔍 [TS ↔ Apollo] Running TypeScript check..."
 
   cd "$web_root"
-  if ! npx tsc --noEmit --pretty 2>&1 | head -30; then
+  if ! bunx tsc --noEmit --pretty 2>&1 | head -30; then
     echo ""
     echo "❌ [TS ↔ Apollo] TypeScript errors - types don't match Apollo usage"
     return 1
@@ -131,7 +131,7 @@ validate_apollo_graphql() {
 
   cd "$web_root"
   local output
-  output=$(npm run codegen 2>&1)
+  output=$(bun run codegen 2>&1)
   local exit_code=$?
 
   if [[ $exit_code -ne 0 ]]; then

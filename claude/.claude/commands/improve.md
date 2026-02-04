@@ -2,8 +2,8 @@ Review the recent changes and suggest improvements.
 
 First, check what was recently modified:
 ```bash
-git diff HEAD~3 --stat
-git diff HEAD~3
+sl diff -r .~3 --stat
+sl diff -r .~3
 ```
 
 Then analyze and suggest:

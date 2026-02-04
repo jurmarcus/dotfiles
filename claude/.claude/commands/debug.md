@@ -15,7 +15,7 @@ Your goal is to **understand** the problem, not fix it yet.
 - Read the relevant source files
 - Trace the execution path
 - Identify all functions/modules involved
-- Look for recent changes (`git log -p --follow <file>`)
+- Look for recent changes (`sl log -p <file>`)
 
 ### Error Analysis
 - Parse error messages carefully
@@ -72,7 +72,7 @@ Summarize in this format:
 - **DO NOT fix the issue** - only investigate
 - Be thorough - check all related code
 - Consider edge cases and race conditions
-- Look at git history for context
+- Look at sl history for context
 - Ask clarifying questions if needed
 
 After presenting findings, ask: "Should I proceed with the fix?"

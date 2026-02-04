@@ -68,12 +68,12 @@ format_and_track() {
   FORMATTED_FILES="${FORMATTED_FILES}${file}\n"
 }
 
-# Format TypeScript/JavaScript files
+# Format TypeScript/JavaScript files (Biome)
 if echo "$CHANGED_FILES" | grep -qE "\.(ts|tsx|js|jsx|json)$"; then
   if command -v bunx &>/dev/null && [[ -f "package.json" ]]; then
     for file in $(echo "$CHANGED_FILES" | grep -E "\.(ts|tsx|js|jsx|json)$"); do
       if [[ -f "$file" ]]; then
-        bunx prettier --write "$file" 2>/dev/null || true
+        bunx biome format --write "$file" 2>/dev/null || true
         format_and_track "$file"
       fi
     done

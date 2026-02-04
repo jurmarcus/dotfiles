@@ -21,11 +21,11 @@ fi
 
 echo "🎨 Auto-formatting $EDITED_FILE..."
 
-# TypeScript/JavaScript (Prettier)
-if [[ "$EDITED_FILE" =~ \.(ts|tsx|js|jsx|json|md|yaml|yml)$ ]]; then
+# TypeScript/JavaScript/JSON (Biome)
+if [[ "$EDITED_FILE" =~ \.(ts|tsx|js|jsx|json)$ ]]; then
   if command -v bunx &> /dev/null && [[ -f "package.json" ]]; then
-    if bunx prettier --write "$EDITED_FILE" 2>&1 | grep -v "unchanged"; then
-      echo "  ✓ Formatted with Prettier"
+    if bunx biome format --write "$EDITED_FILE" 2>&1; then
+      echo "  ✓ Formatted with Biome"
     fi
   fi
 fi

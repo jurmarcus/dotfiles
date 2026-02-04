@@ -2,8 +2,8 @@ Update documentation after code changes: $ARGUMENTS
 
 ## 1. Identify Changes
 
-- Run `git status` to see modified files
-- Run `git diff` to see what changed
+- Run `sl status` to see modified files
+- Run `sl diff` to see what changed
 - Categorize changes:
   - Architecture (new patterns, structure changes)
   - API changes (new functions, changed signatures)
@@ -87,7 +87,7 @@ Compare code and docs for inconsistencies:
 
 ## Workflow
 
-1. Read git diff to understand changes
+1. Read sl diff to understand changes
 2. Update CLAUDE.md for architecture/patterns
 3. Update README.md for user-facing changes
 4. Update code docstrings for new functions
