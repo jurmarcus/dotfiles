@@ -67,7 +67,7 @@ regen-completions() {
 # =============================================================================
 
 eval "$(fzf --zsh)"
-eval "$(zoxide init zsh --cmd cd)"
+eval "$(zoxide init zsh)"
 eval "$(atuin init zsh)"
 eval "$(direnv hook zsh)"
 eval "$(starship init zsh)"
