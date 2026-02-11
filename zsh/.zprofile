@@ -1,2 +1,1 @@
-
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# Intentionally empty - homebrew vars are inlined in .zshrc

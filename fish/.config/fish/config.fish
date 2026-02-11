@@ -45,7 +45,8 @@ direnv hook fish | source
 starship init fish | source
 
 # Auto-start tmux with picker
-if not set -q TMUX; and test "$TERM_PROGRAM" != vscode
+# Require real TTY - prevents hanging IDE env resolvers (fzf blocks without one)
+if not set -q TMUX; and isatty stdin; and isatty stdout; and test "$TERM_PROGRAM" != vscode; and test "$TERM_PROGRAM" != codium
     _tmux_picker
 end
 

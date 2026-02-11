@@ -3,3 +3,6 @@ cask "font-fira-code-nerd-font"
 cask "font-jetbrains-mono-nerd-font"
 cask "font-hack-nerd-font"
 cask "font-meslo-lg-nerd-font"
+
+# Japanese monospace + Nerd Font (JetBrains Mono + BIZ UDGothic + Nerd icons)
+cask "font-udev-gothic-nf"

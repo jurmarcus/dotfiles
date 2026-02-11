@@ -66,11 +66,14 @@ regen-completions() {
 # Tool Initialization (lazy where possible)
 # =============================================================================
 
-eval "$(fzf --zsh)"
+# Guard zle-dependent tools behind TTY check (fzf emits "can't change option: zle" without one)
+if [[ -t 0 ]]; then
+  eval "$(fzf --zsh)"
+  eval "$(atuin init zsh)"
+  eval "$(starship init zsh)"
+fi
 eval "$(zoxide init zsh)"
-eval "$(atuin init zsh)"
 eval "$(direnv hook zsh)"
-eval "$(starship init zsh)"
 
 # =============================================================================
 # History (backup - atuin is primary)
@@ -136,8 +139,8 @@ _tmux_picker() {
   esac
 }
 
-# Auto-start tmux with picker
-if [[ -z "$TMUX" ]] && [[ "$TERM_PROGRAM" != "vscode" ]]; then
+# Auto-start tmux with picker (requires real TTY - prevents hanging IDE env resolvers)
+if [[ -z "$TMUX" ]] && [[ -t 0 ]] && [[ -t 1 ]] && [[ "$TERM_PROGRAM" != "vscode" ]] && [[ "$TERM_PROGRAM" != "codium" ]]; then
   _tmux_picker
 fi
 tclaude() { _trename claude; }

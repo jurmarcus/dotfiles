@@ -1,0 +1,9 @@
+{
+  "editor.fontFamily": "'UDEV Gothic NFLG'",
+  "editor.fontSize": 14,
+  "editor.fontLigatures": true,
+  "terminal.integrated.fontFamily": "'UDEV Gothic NFLG'",
+  "terminal.integrated.fontSize": 14,
+  "workbench.colorTheme": "Catppuccin Frappé",
+  "workbench.iconTheme": "catppuccin-frappe"
+}

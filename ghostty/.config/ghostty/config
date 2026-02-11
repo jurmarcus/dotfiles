@@ -11,8 +11,8 @@ keybind = alt+arrow_right=unbind
 # Command palette
 keybind = super+p=toggle_command_palette
 
-# Font
-font-family = JetBrainsMono Nerd Font
+# Font (UDEV Gothic NF = JetBrains Mono + BIZ UDGothic + Nerd icons, proper CJK 2:1 ratio)
+font-family = UDEV Gothic NFLG
 font-size = 14
 font-feature = liga
 font-feature = calt
