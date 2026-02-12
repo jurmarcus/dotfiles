@@ -1,0 +1,193 @@
+# Jisho Configuration
+# Japanese learning profile and acquisition settings
+
+[meta]
+description = "N4+ learner living in Tokyo - fine dining photographer, runner, tech professional"
+location = "Tokyo"
+interests = ["Running", "Photography", "Fine dining", "Tech/AI"]
+
+[acquisition]
+evaluate_mode = "inflection"
+
+[acquisition.thresholds]
+learning = 7
+young = 21
+mature = 84
+
+[[acquisition.filters]]
+note_type = "Japanese sentences"
+target_field = "Word"
+sentence_field = "Sentence"
+reading_field = "WordReading"
+enabled = true
+tags_include = []
+tags_exclude = []
+
+[[acquisition.filters]]
+note_type = "Japanese Jo Mako's Kanji"
+target_field = "Kanji"
+reading_field = "Reading_On"
+enabled = false
+comment = "Kanji cards - disabled by default for vocab acquisition"
+
+# Practice topics for sentence generation
+
+[[topics]]
+id = "restaurant_ordering"
+name_en = "Restaurant Ordering & Dining"
+name_ja = "レストランで注文"
+weight = 10
+tags = ["food", "daily", "social"]
+vocab_hints = ["注文", "予約", "美味しい", "食事", "店", "料理", "食べる", "飲む", "御飯", "定食", "会計", "お願いします"]
+
+[[topics]]
+id = "tokyo_commute"
+name_en = "Tokyo Trains & Commuting"
+name_ja = "東京の電車通勤"
+weight = 9
+tags = ["tokyo", "daily", "transport"]
+vocab_hints = ["電車", "地下鉄", "駅", "乗る", "降りる", "乗り換える", "新幹線", "特急", "急行", "混む", "時刻表"]
+
+[[topics]]
+id = "running_exercise"
+name_en = "Running & Exercise"
+name_ja = "ランニングと運動"
+weight = 9
+tags = ["fitness", "hobby", "health"]
+vocab_hints = ["走る", "運動", "体", "足", "歩く", "朝", "公園", "健康", "疲れる", "頑張る", "毎日", "毎朝"]
+
+[[topics]]
+id = "photography"
+name_en = "Photography & Cameras"
+name_ja = "写真撮影"
+weight = 9
+tags = ["hobby", "work", "creative"]
+vocab_hints = ["写真", "撮る", "光", "綺麗", "見る", "色", "美しい", "素敵", "店", "料理"]
+
+[[topics]]
+id = "dating_girlfriend"
+name_en = "Dating & Relationships"
+name_ja = "デートと恋愛"
+weight = 8
+tags = ["social", "relationship", "daily"]
+vocab_hints = ["彼女", "デート", "約束", "会う", "一緒に", "楽しい", "好き", "映画", "食事", "週末", "誘う"]
+
+[[topics]]
+id = "tokyo_neighborhoods"
+name_en = "Tokyo Neighborhoods & Places"
+name_ja = "東京の街と場所"
+weight = 8
+tags = ["tokyo", "travel", "daily"]
+vocab_hints = ["東京", "渋谷", "新宿", "秋葉原", "銀座", "上野", "浅草", "駅", "町", "近く", "遠い", "有名"]
+
+[[topics]]
+id = "food_cooking"
+name_en = "Food & Cooking"
+name_ja = "料理と食べ物"
+weight = 8
+tags = ["food", "home", "daily"]
+vocab_hints = ["料理", "作る", "肉", "野菜", "魚", "卵", "焼く", "切る", "美味しい", "味", "材料", "台所"]
+
+[[topics]]
+id = "seasons_weather"
+name_en = "Seasons & Weather"
+name_ja = "季節と天気"
+weight = 7
+tags = ["daily", "nature", "small_talk"]
+vocab_hints = ["天気", "暑い", "寒い", "雨", "雪", "春", "夏", "秋", "冬", "桜", "紅葉", "風"]
+
+[[topics]]
+id = "work_office"
+name_en = "Work & Office"
+name_ja = "仕事とオフィス"
+weight = 7
+tags = ["work", "daily", "professional"]
+vocab_hints = ["仕事", "会社", "会議", "社長", "部長", "課長", "出張", "残業", "忙しい", "休み", "書類"]
+
+[[topics]]
+id = "apartment_home"
+name_en = "Apartment & Home Life"
+name_ja = "アパートと家"
+weight = 7
+tags = ["home", "daily", "practical"]
+vocab_hints = ["家", "部屋", "家賃", "引っ越し", "掃除", "洗濯", "台所", "風呂", "寝る", "起きる", "鍵"]
+
+[[topics]]
+id = "shopping"
+name_en = "Shopping & Stores"
+name_ja = "買い物"
+weight = 6
+tags = ["daily", "practical", "tokyo"]
+vocab_hints = ["買う", "店", "値段", "高い", "安い", "売る", "払う", "お釣り", "円", "売り場", "探す"]
+
+[[topics]]
+id = "health_doctor"
+name_en = "Health & Doctor Visits"
+name_ja = "健康と病院"
+weight = 6
+tags = ["health", "practical", "important"]
+vocab_hints = ["病院", "医者", "薬", "痛い", "熱", "風邪", "体", "健康", "怪我", "治る", "診る"]
+
+[[topics]]
+id = "travel_japan"
+name_en = "Domestic Travel in Japan"
+name_ja = "日本国内旅行"
+weight = 6
+tags = ["travel", "hobby", "exploration"]
+vocab_hints = ["旅行", "泊まる", "旅館", "温泉", "予約", "新幹線", "京都", "大阪", "北海道", "景色", "観光"]
+
+[[topics]]
+id = "japanese_study"
+name_en = "Studying Japanese"
+name_ja = "日本語の勉強"
+weight = 6
+tags = ["study", "meta", "daily"]
+vocab_hints = ["日本語", "勉強", "漢字", "言葉", "意味", "練習", "難しい", "分かる", "読む", "書く", "覚える"]
+
+[[topics]]
+id = "family_people"
+name_en = "Family & People"
+name_ja = "家族と人間関係"
+weight = 5
+tags = ["social", "relationships", "culture"]
+vocab_hints = ["家族", "両親", "兄弟", "友達", "先輩", "紹介", "会う", "話す", "親切", "優しい"]
+
+[[topics]]
+id = "time_schedule"
+name_en = "Time & Scheduling"
+name_ja = "時間とスケジュール"
+weight = 5
+tags = ["daily", "practical", "work"]
+vocab_hints = ["時間", "今日", "明日", "昨日", "週末", "約束", "予定", "都合", "遅刻", "間に合う"]
+
+[[topics]]
+id = "nature_outdoors"
+name_en = "Nature & Outdoors"
+name_ja = "自然とアウトドア"
+weight = 5
+tags = ["nature", "hobby", "exploration"]
+vocab_hints = ["山", "川", "海", "空", "木", "花", "鳥", "公園", "散歩", "景色", "綺麗"]
+
+[[topics]]
+id = "phone_communication"
+name_en = "Phone & Communication"
+name_ja = "電話と連絡"
+weight = 5
+tags = ["daily", "practical", "tech"]
+vocab_hints = ["電話", "携帯", "連絡", "メール", "送る", "届く", "伝える", "もしもし", "番号"]
+
+[[topics]]
+id = "cafe_coffee"
+name_en = "Cafes & Coffee"
+name_ja = "カフェとコーヒー"
+weight = 5
+tags = ["food", "daily", "social"]
+vocab_hints = ["喫茶店", "珈琲", "紅茶", "飲む", "座る", "注文", "甘い", "休憩", "店"]
+
+[[topics]]
+id = "movies_entertainment"
+name_en = "Movies & Entertainment"
+name_ja = "映画と娯楽"
+weight = 4
+tags = ["hobby", "social", "culture"]
+vocab_hints = ["映画", "映画館", "見る", "面白い", "俳優", "音楽", "歌", "楽しい", "番組"]

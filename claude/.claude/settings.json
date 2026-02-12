@@ -1,16 +1,21 @@
 {
   "enabledPlugins": {
-    "pyright-lsp@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
     "feature-dev@claude-plugins-official": true,
+    "explanatory-output-style@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": false,
+    "pyright-lsp@claude-plugins-official": false,
+    "agent-sdk-dev@claude-plugins-official": true,
     "plugin-dev@claude-plugins-official": true,
     "hookify@claude-plugins-official": true,
-    "rust-analyzer-lsp@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": false,
     "swift-lsp@claude-plugins-official": true,
-    "explanatory-output-style@claude-plugins-official": true,
-    "agent-sdk-dev@claude-plugins-official": true
+    "code-simplifier@claude-plugins-official": true,
+    "serena@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "claude-code-setup@claude-plugins-official": true
   },
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
@@ -39,6 +44,82 @@
     "command": "fd --type f --hidden --exclude .git --exclude node_modules --exclude target --exclude __pycache__ --exclude .sl"
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/methylene/.claude/hooks/enforce-justfile.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "/Users/methylene/.claude/hooks/enforce-package-managers.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "/Users/methylene/.claude/hooks/pre-commit-checks.sh",
+            "timeout": 60
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/methylene/.claude/hooks/session-start-context.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/methylene/.claude/hooks/session-summary.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/methylene/.claude/hooks/lsp-check-after-edit.sh",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "/Users/methylene/.claude/hooks/format-on-edit.sh",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "/Users/methylene/.claude/hooks/test-after-edit.sh",
+            "timeout": 60
+          },
+          {
+            "type": "command",
+            "command": "/Users/methylene/.claude/hooks/layer-validation.sh",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "/Users/methylene/.claude/hooks/react-inline-component-check.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
     "Notification": [
       {
         "hooks": [

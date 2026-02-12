@@ -26,3 +26,11 @@ karabiner/.config/karabiner/automatic_backups/
 
 # Claude Code
 .claude/internet-mode-used_DO_NOT_REMOVE_MANUALLY_SECURITY_RISK
+claude/.claude/.DS_Store
+
+# Sensitive / machine-specific files
+gh/.config/gh/hosts.yml
+.claude/settings.local.json
+
+# Serena project config (auto-generated)
+.serena/
