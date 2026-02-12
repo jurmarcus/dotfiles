@@ -212,7 +212,7 @@ alias cc="claude"
 alias ccc="claude --continue"
 alias ccr="claude --resume"
 alias c="claude"
-alias ct="claude --teammate-mode tmux"
+alias ct="claude --dangerously-skip-permissions --teammate-mode tmux"
 
 # Navigation (AUTO_CD handles the cd)
 alias ...="../.."
