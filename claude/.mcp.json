@@ -1,0 +1,42 @@
+{
+  "mcpServers": {
+    "anki-mcp": {
+      "command": "npx",
+      "args": ["-y", "@ankimcp/anki-mcp-server", "--stdio"],
+      "env": {
+        "ANKI_CONNECT_URL": "http://localhost:8765"
+      }
+    },
+    "jisho-dictionary": {
+      "command": "/Users/methylene/CODE/jisho/target/release/jisho-dictionary-mcp",
+      "env": {
+        "JISHO_GRAPHQL_URL": "http://methylene-studio:4000/graphql"
+      }
+    },
+    "jisho-acquisition": {
+      "command": "/Users/methylene/CODE/jisho/target/release/jisho-acquisition-mcp",
+      "env": {
+        "JISHO_VOICE_URL": "http://methylene-studio:53000",
+        "ANKICONNECT_URL": "http://localhost:8765"
+      }
+    },
+    "jisho-voice": {
+      "command": "/Users/methylene/CODE/jisho/target/release/jisho-voice-mcp",
+      "env": {
+        "JISHO_VOICE_URL": "http://methylene-studio:53000"
+      }
+    },
+    "jisho-youtube": {
+      "command": "/Users/methylene/CODE/jisho/target/release/jisho-youtube-mcp",
+      "env": {
+        "JISHO_YOUTUBE_URL": "http://methylene-studio:52000"
+      }
+    },
+    "jisho-scraper": {
+      "command": "/Users/methylene/CODE/jisho/target/release/jisho-scraper-mcp",
+      "env": {
+        "JISHO_SCRAPER_URL": "http://methylene-studio:51000"
+      }
+    }
+  }
+}

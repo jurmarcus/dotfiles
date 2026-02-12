@@ -1,0 +1,76 @@
+{
+  "enabledPlugins": {
+    "pyright-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "plugin-dev@claude-plugins-official": true,
+    "hookify@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "swift-lsp@claude-plugins-official": true,
+    "explanatory-output-style@claude-plugins-official": true,
+    "agent-sdk-dev@claude-plugins-official": true
+  },
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/scripts/statusline.sh"
+  },
+  "spinnerVerbs": {
+    "mode": "append",
+    "verbs": [
+      "考え中",
+      "頑張っている",
+      "Conjuring",
+      "Weaving",
+      "Orchestrating",
+      "Brewing",
+      "Mulling over"
+    ]
+  },
+  "attribution": {
+    "commit": "\nCo-Authored-By: Claude <noreply@anthropic.com>"
+  },
+  "fileSuggestion": {
+    "type": "command",
+    "command": "fd --type f --hidden --exclude .git --exclude node_modules --exclude target --exclude __pycache__ --exclude .sl"
+  },
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "MSG=$(cat | python3 -c \"import sys,json; print(json.load(sys.stdin).get('message','Claude needs attention'))\" 2>/dev/null || echo 'Claude needs attention'); osascript -e \"display notification \\\"$MSG\\\" with title \\\"Claude Code\\\" sound name \\\"Glass\\\"\"",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "TeammateIdle": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "A teammate is about to go idle. Check the shared task list for unclaimed pending tasks. If there are unblocked tasks the teammate could work on, exit with code 2 and tell them to claim one. If all tasks are done or claimed, allow idle.",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "TaskCompleted": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Task completed\" with title \"Claude Team\" sound name \"Glass\"'",
+            "async": true
+          }
+        ]
+      }
+    ]
+  }
+}
