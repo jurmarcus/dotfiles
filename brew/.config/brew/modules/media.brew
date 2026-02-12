@@ -1,6 +1,7 @@
 # Media Processing
 brew "ffmpeg"
 brew "yt-dlp"
+brew "tesseract"    # OCR engine
 
 # Video Player
 cask "iina"

@@ -23,9 +23,6 @@ export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-# Opencode
-export PATH=/Users/methylene/.opencode/bin:$PATH
-
 # Android SDK
 export ANDROID_HOME="$HOME/Library/Android/sdk"
 export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH"
@@ -209,11 +206,13 @@ if [[ "$(hostname -s)" == allenj* ]]; then
 fi
 
 # Claude CLI
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 alias claude="claude --dangerously-skip-permissions"
 alias cc="claude"
 alias ccc="claude --continue"
 alias ccr="claude --resume"
 alias c="claude"
+alias ct="claude --teammate-mode tmux"
 
 # Navigation (AUTO_CD handles the cd)
 alias ...="../.."

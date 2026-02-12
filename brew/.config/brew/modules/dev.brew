@@ -23,3 +23,6 @@ brew "biome"        # JS/TS
 # Build Tools
 brew "watchexec"    # file watcher
 brew "just"         # modern make (task runner)
+
+# iOS/macOS
+brew "cocoapods"    # dependency manager

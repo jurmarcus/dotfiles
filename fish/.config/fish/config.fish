@@ -4,7 +4,7 @@
 # Environment (runs for all shells)
 # =============================================================================
 
-fish_add_path ~/.local/bin /opt/homebrew/bin /opt/homebrew/sbin ~/.bun/bin ~/.opencode/bin
+fish_add_path ~/.local/bin /opt/homebrew/bin /opt/homebrew/sbin ~/.bun/bin
 
 set -gx EDITOR nvim
 set -gx VISUAL nvim
@@ -59,7 +59,7 @@ abbr ss 'sl status'
 abbr sa 'sl add'
 abbr sc 'sl commit'
 abbr sp 'sl push'
-abbr spl 'sl pull'
+abbr spl 'sl pull --rebase'
 abbr sar 'sl addremove' 
 
 # GitHub CLI
@@ -105,6 +105,7 @@ alias vim nvim
 alias vi nvim
 alias v nvim
 alias code codium
+alias vimdiff 'nvim -d'
 
 # Python
 alias python 'uv run python'
@@ -139,8 +140,10 @@ alias rsl 'cargo clippy'
 alias rsf 'cargo fmt'
 
 # Claude CLI
+set -gx CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1
 alias claude 'claude --dangerously-skip-permissions'
 alias cc claude
 alias ccc 'claude --continue'
 alias ccr 'claude --resume'
 alias c claude
+alias ct 'claude --teammate-mode tmux'
