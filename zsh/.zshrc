@@ -207,11 +207,11 @@ fi
 
 # Claude CLI
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
-alias claude="claude --dangerously-skip-permissions --teammate-mode tmux"
-alias cc="claude"
-alias ccc="claude --continue"
-alias ccr="claude --resume"
-alias c="claude"
+claude() { command claude --dangerously-skip-permissions --teammate-mode tmux "$@"; }
+cc()     { claude "$@"; }
+c()      { claude "$@"; }
+ccc()    { claude --continue "$@"; }
+ccr()    { claude --resume "$@"; }
 
 # Navigation (AUTO_CD handles the cd)
 alias ...="../.."
