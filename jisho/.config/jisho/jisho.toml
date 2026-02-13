@@ -1,5 +1,8 @@
-# Jisho Configuration
-# Japanese learning profile and acquisition settings
+# Unified jisho configuration
+# Read by jisho-acquisition-mcp (Rust) and jisho-anki (Python)
+
+[anki]
+profile = "jurmarcus"
 
 [meta]
 description = "N4+ learner living in Tokyo - fine dining photographer, runner, tech professional"
@@ -14,14 +17,14 @@ learning = 7
 young = 21
 mature = 84
 
+# Acquisition filters — note types, fields, and deck mappings for card extraction
 [[acquisition.filters]]
 note_type = "Japanese sentences"
 target_field = "Word"
 sentence_field = "Sentence"
 reading_field = "WordReading"
 enabled = true
-tags_include = []
-tags_exclude = []
+decks = ["1. Mining", "2. Vocabulary"]
 
 [[acquisition.filters]]
 note_type = "Japanese Jo Mako's Kanji"
@@ -30,7 +33,8 @@ reading_field = "Reading_On"
 enabled = false
 comment = "Kanji cards - disabled by default for vocab acquisition"
 
-# Practice topics for sentence generation
+# Practice topics for i+1 sentence generation
+# Weight: higher = more likely to be selected (weighted random)
 
 [[topics]]
 id = "restaurant_ordering"

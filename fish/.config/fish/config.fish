@@ -141,9 +141,8 @@ alias rsf 'cargo fmt'
 
 # Claude CLI
 set -gx CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1
-alias claude 'claude --dangerously-skip-permissions'
+alias claude 'claude --dangerously-skip-permissions --teammate-mode tmux'
 alias cc claude
 alias ccc 'claude --continue'
 alias ccr 'claude --resume'
 alias c claude
-alias ct 'claude --teammate-mode tmux'
