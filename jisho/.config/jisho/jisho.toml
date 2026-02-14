@@ -4,6 +4,9 @@
 [anki]
 profile = "jurmarcus"
 
+[sentences]
+output_dir = "~/Japanese/Sentences"
+
 [meta]
 description = "N4+ learner living in Tokyo - fine dining photographer, runner, tech professional"
 location = "Tokyo"
