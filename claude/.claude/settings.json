@@ -1,47 +1,13 @@
 {
-  "enabledPlugins": {
-    "context7@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
-    "feature-dev@claude-plugins-official": true,
-    "explanatory-output-style@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": false,
-    "pyright-lsp@claude-plugins-official": false,
-    "agent-sdk-dev@claude-plugins-official": true,
-    "plugin-dev@claude-plugins-official": true,
-    "hookify@claude-plugins-official": true,
-    "rust-analyzer-lsp@claude-plugins-official": false,
-    "swift-lsp@claude-plugins-official": true,
-    "code-simplifier@claude-plugins-official": true,
-    "serena@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true,
-    "claude-md-management@claude-plugins-official": true,
-    "claude-code-setup@claude-plugins-official": true
+  "fileSuggestion": {
+    "type": "command",
+    "command": "fd --type f --hidden --exclude .git --exclude node_modules --exclude target --exclude __pycache__ --exclude .sl"
   },
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/scripts/statusline.sh"
-  },
-  "spinnerVerbs": {
-    "mode": "append",
-    "verbs": [
-      "考え中",
-      "頑張っている",
-      "Conjuring",
-      "Weaving",
-      "Orchestrating",
-      "Brewing",
-      "Mulling over"
-    ]
-  },
   "attribution": {
     "commit": "\nCo-Authored-By: Claude <noreply@anthropic.com>"
-  },
-  "fileSuggestion": {
-    "type": "command",
-    "command": "fd --type f --hidden --exclude .git --exclude node_modules --exclude target --exclude __pycache__ --exclude .sl"
   },
   "hooks": {
     "PreToolUse": [
@@ -153,5 +119,40 @@
         ]
       }
     ]
-  }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/scripts/statusline.sh"
+  },
+  "enabledPlugins": {
+    "context7@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "explanatory-output-style@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": false,
+    "pyright-lsp@claude-plugins-official": false,
+    "agent-sdk-dev@claude-plugins-official": true,
+    "plugin-dev@claude-plugins-official": true,
+    "hookify@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": false,
+    "swift-lsp@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "serena@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "claude-code-setup@claude-plugins-official": true
+  },
+  "spinnerVerbs": {
+    "mode": "append",
+    "verbs": [
+      "考え中",
+      "頑張っている",
+      "Conjuring",
+      "Weaving",
+      "Orchestrating",
+      "Brewing",
+      "Mulling over"
+    ]
+  },
+  "skipDangerousModePermissionPrompt": true
 }
