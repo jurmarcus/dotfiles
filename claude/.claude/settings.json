@@ -4,11 +4,22 @@
     "command": "fd --type f --hidden --exclude .git --exclude node_modules --exclude target --exclude __pycache__ --exclude .sl"
   },
   "env": {
+<<<<<<< dest:   57a46d1dbc49 - me: lots of changes 10
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+=======
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "0"
+>>>>>>> source: b23ea240f8b4 - me: lots of changes 8
   },
   "attribution": {
     "commit": "\nCo-Authored-By: Claude <noreply@anthropic.com>"
   },
+<<<<<<< dest:   57a46d1dbc49 - me: lots of changes 10
+=======
+  "permissions": {
+    "defaultMode": "default"
+  },
+>>>>>>> source: b23ea240f8b4 - me: lots of changes 8
   "hooks": {
     "PreToolUse": [
       {

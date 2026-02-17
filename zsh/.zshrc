@@ -207,12 +207,21 @@ fi
 
 # Claude CLI
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+<<<<<<< dest:   57a46d1dbc49 - me: lots of changes 10
 unalias claude c cc ccc ccr 2>/dev/null
 function claude { command claude --dangerously-skip-permissions --teammate-mode tmux "$@"; }
 function c      { claude "$@"; }
 function cc     { claude "$@"; }
 function ccc    { claude --continue "$@"; }
 function ccr    { claude --resume "$@"; }
+=======
+export CLAUDE_CODE_DISABLE_AUTO_MEMORY=0
+alias claude="claude --dangerously-skip-permissions --teammate-mode tmux"
+alias cc="claude"
+alias ccc="claude --continue"
+alias ccr="claude --resume"
+alias c="claude"
+>>>>>>> source: b23ea240f8b4 - me: lots of changes 8
 
 # Navigation (AUTO_CD handles the cd)
 alias ...="../.."
