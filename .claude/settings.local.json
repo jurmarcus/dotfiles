@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Skill(changelog)",
-      "Bash(zip:*)"
+      "Bash(zip:*)",
+      "Bash(sl log:*)",
+      "Bash(sl diff:*)",
+      "Skill(commit)"
     ]
   }
 }

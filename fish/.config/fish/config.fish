@@ -141,17 +141,11 @@ alias rsf 'cargo fmt'
 
 # Claude CLI
 set -gx CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1
-<<<<<<< dest:   57a46d1dbc49 - me: lots of changes 10
+set -gx CLAUDE_CODE_DISABLE_AUTO_MEMORY 0
 function claude --description "Claude Code" --wraps claude
     command claude --dangerously-skip-permissions --teammate-mode tmux $argv
 end
 function cc --wraps claude;  claude $argv; end
 function c --wraps claude;   claude $argv; end
 function ccc --wraps claude; claude --continue $argv; end
-function ccr --wraps claude; claude --resume $argv; end=======
-set -gx CLAUDE_CODE_DISABLE_AUTO_MEMORY 0
-alias claude 'claude --dangerously-skip-permissions --teammate-mode tmux'
-alias cc claude
-alias ccc 'claude --continue'
-alias ccr 'claude --resume'
-alias c claude>>>>>>> source: b23ea240f8b4 - me: lots of changes 8
+function ccr --wraps claude; claude --resume $argv; end
