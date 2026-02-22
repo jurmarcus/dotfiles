@@ -31,12 +31,6 @@
       "env": {
         "JISHO_YOUTUBE_URL": "http://methylene-studio:52000"
       }
-    },
-    "jisho-scraper": {
-      "command": "/Users/methylene/CODE/jisho/target/release/jisho-scraper-mcp",
-      "env": {
-        "JISHO_SCRAPER_URL": "http://methylene-studio:51000"
-      }
     }
   }
 }
