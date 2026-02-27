@@ -5,7 +5,10 @@
       "Bash(zip:*)",
       "Bash(sl log:*)",
       "Bash(sl diff:*)",
-      "Skill(commit)"
+      "Skill(commit)",
+      "Bash(sl push)",
+      "Bash(stow:*)",
+      "Bash(source:*)"
     ]
   }
 }

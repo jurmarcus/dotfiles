@@ -141,10 +141,11 @@
     "rust-analyzer-lsp@claude-plugins-official": false,
     "swift-lsp@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
-    "serena@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true,
     "claude-md-management@claude-plugins-official": true,
-    "claude-code-setup@claude-plugins-official": true
+    "claude-code-setup@claude-plugins-official": true,
+    "coderabbit@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true
   },
   "spinnerVerbs": {
     "mode": "append",
