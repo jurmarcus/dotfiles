@@ -2,6 +2,7 @@
 # Read by jisho-acquisition-mcp (Rust) and jisho-anki (Python)
 
 [anki]
+base_path = "~/.local/share/Anki2"
 profile = "jurmarcus"
 
 [sentences]

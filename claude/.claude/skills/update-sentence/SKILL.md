@@ -125,32 +125,38 @@ Call `mcp__jisho-voice__synthesize` with:
 
 **Crafting the instruct**: Qwen3-TTS accepts rich, descriptive natural language instructions — not just single words. ALWAYS provide an `instruct` value. Write it in **Japanese** since we're synthesizing Japanese speech. The instruction should describe the speaker's emotion, pace, and context as if directing a voice actor.
 
-**How to write good instructions**:
-1. Read the sentence and imagine the real-world context
-2. Describe the speaker's emotion, energy level, and speaking style
-3. Write it in Japanese as a natural direction (1-2 sentences, max 200 chars)
+**Emotion analysis process** — follow these steps for EVERY sentence before writing the instruct:
 
-**Examples by sentence type**:
+1. **Identify the situation**: What's happening? (e.g., typhoon cancels trains, fever keeps someone home, a date goes well)
+2. **Identify emotional signals** in the sentence:
+   - Vocabulary: 大変 (serious), 嬉しい (happy), 残念 (disappointed), 頑張る (determined)
+   - Sentence-ending particles: よ (assertive), ね (seeking agreement), な (reflective), ぞ (emphatic)
+   - Grammar patterns: ～てしまった (regret), ～たい (desire), ～てよかった (relief), ～なければならない (obligation)
+   - Punctuation: ！(excitement/emphasis), ？(questioning), 。(neutral)
+   - Negative constructions: ～ない, ～できない (frustration, limitation)
+3. **Determine the speaker's role**: Who would naturally say this? (friend chatting, parent scolding, student explaining, worker complaining)
+4. **Set pace**: Short urgent sentences → fast. Reflective/nostalgic → slow. Explanatory → moderate.
+5. **Write the instruct** in Japanese, combining emotion + pace + speaker context (1-2 sentences, max 200 chars)
 
-| Sentence context | instruct example |
-|------------------|------------------|
-| Everyday factual statement | `"落ち着いた口調で、自然に話してください。"` |
-| Happy/excited news | `"嬉しそうに、明るい声で元気よく話してください。"` |
-| Sad/disappointed | `"少し寂しそうに、静かな声でゆっくり話してください。"` |
-| Angry/frustrated | `"怒りを込めて、強い口調で話してください。"` |
-| Gentle explanation | `"優しく丁寧に、友達に教えるように話してください。"` |
-| Casual chat with friend | `"リラックスした雰囲気で、友達に話しかけるように。"` |
-| Surprised reaction | `"驚いた様子で、少し声を高くして話してください。"` |
-| Polite/formal | `"丁寧で礼儀正しい口調で、はっきりと話してください。"` |
-| Nostalgic/reflective | `"懐かしそうに、穏やかにゆっくり語ってください。"` |
-| Worried/anxious | `"心配そうに、少し不安な声で話してください。"` |
+**Example analysis**:
+
+| Sentence | Situation | Signals | instruct |
+|----------|-----------|---------|----------|
+| 台風で電車が止まって、大変な事態になった。 | Typhoon disruption | 大変, negative event, reporting past crisis | `"緊迫感を持って、困った状況を報告するように話してください。"` |
+| 今日のデートはうまくいく予感がする。 | Pre-date excitement | うまくいく, 予感, positive anticipation | `"ワクワクした気持ちで、期待を込めて明るく話してください。"` |
+| 日本語がまだ上手じゃないのが現状だけど、毎日勉強している。 | Self-reflection + resolve | まだ～ない (limitation), けど (contrast), 毎日 (determination) | `"少し悔しさを感じつつも、前向きな決意を込めてしっかり話してください。"` |
+| 写真を撮るのは、旅の思い出を残す一番いい手段だ。 | Sharing a belief | 一番いい, declarative, about a hobby | `"自信を持って、好きなことについて語るように穏やかに話してください。"` |
+| 先週は三十八度の熱が出て、仕事を休んだ。 | Reporting illness | 熱, 休んだ, past hardship | `"少しだるそうに、体調が悪かった経験を振り返るように話してください。"` |
+| 毎朝走っている友達を見て、本当に感心した。 | Admiring someone | 本当に, 感心, positive observation | `"感心した気持ちを込めて、尊敬するように温かく話してください。"` |
+| 彼女の料理は、いつも私のお腹を満たしてくれる。 | Grateful contentment | いつも, くれる (receiving kindness), warmth | `"幸せそうに、感謝の気持ちを込めて柔らかく話してください。"` |
 
 **Key principles**:
 - NEVER omit instruct — every sentence gets a direction
+- ALWAYS analyze the sentence first — do NOT pick from a static list of templates
 - Write in Japanese for best results with Japanese speech
-- Be descriptive: "優しく丁寧に、友達に教えるように" beats "warmly"
-- Match the instruction to the sentence's emotional content, punctuation, and vocabulary
-- For neutral sentences, use `"落ち着いた口調で、自然に話してください。"` — this is better than no instruction because it actively directs natural, calm delivery
+- Be specific to THIS sentence: "緊迫感を持って、困った状況を報告するように" beats generic "心配そうに"
+- Combine multiple dimensions: emotion + pace + speaker context + physical state when relevant
+- For genuinely neutral sentences (rare), use `"落ち着いた口調で、自然に話してください。"` as fallback
 
 **Important**: The output path must be absolute (no `~` tilde). Always use `/Users/methylene/...`.
 
