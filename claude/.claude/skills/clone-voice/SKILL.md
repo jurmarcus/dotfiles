@@ -94,7 +94,7 @@ Call `mcp__jisho-voice__synthesize` with:
 - `text`: "こんにちは、今日はいい天気ですね。"
 - `voice`: the voice ID from Step 4
 - `output`: "/tmp/<voice_id>_test.mp3"
-- `instruct`: "落ち着いた口調で、自然に話してください。"
+- `instruct`: "calmly"
 
 ### Step 7: Report success
 

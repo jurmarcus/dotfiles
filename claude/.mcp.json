@@ -31,6 +31,12 @@
       "env": {
         "JISHO_YOUTUBE_URL": "http://methylene-studio:52000"
       }
+    },
+    "jisho-irasutoya": {
+      "command": "/Users/methylene/CODE/jisho/target/release/jisho-irasutoya-mcp",
+      "env": {
+        "JISHO_GRAPHQL_URL": "http://methylene-studio:4000/graphql"
+      }
     }
   }
 }

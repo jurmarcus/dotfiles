@@ -33,3 +33,15 @@ function ts-init-mcp --description "Initialize MCP server with TypeScript"
     echo "Created MCP server: $name"
     echo "Run: bun run src/index.ts"
 end
+
+function rs-init-mcp --description "Initialize MCP server with Rust"
+    set name (test -n "$argv[1]"; and echo $argv[1]; or echo "mcp-server")
+    rs-init $name
+    cargo add rmcp --features server,transport-io,macros
+    cargo add tokio --features full
+    cargo add serde --features derive
+    cargo add serde_json anyhow tracing tracing-subscriber
+    template $TEMPLATE_DIR/mcp-server.rs NAME=$name > src/main.rs
+    echo "Created Rust MCP server: $name"
+    echo "Run: cargo run"
+end

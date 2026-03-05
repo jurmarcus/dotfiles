@@ -406,6 +406,18 @@ ts-init-mcp() {
   echo "Run: bun run src/index.ts"
 }
 
+rs-init-mcp() {
+  local name="${1:-mcp-server}"
+  rs-init "$name"
+  cargo add rmcp --features server,transport-io,macros
+  cargo add tokio --features full
+  cargo add serde --features derive
+  cargo add serde_json anyhow tracing tracing-subscriber
+  template "$TEMPLATE_DIR/mcp-server.rs" NAME="$name" > src/main.rs
+  echo "Created Rust MCP server: $name"
+  echo "Run: cargo run"
+}
+
 # =============================================================================
 # Zsh Plugins (must be last)
 # =============================================================================
