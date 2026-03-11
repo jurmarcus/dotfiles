@@ -151,16 +151,38 @@ tk() { tmux kill-session -t "$@"; }
 tka() { tmux kill-server; }
 
 # =============================================================================
-# Aliases - Modern CLI Replacements
+# SSH - rename tmux window to hostname
 # =============================================================================
+
+ssh() {
+  local host="" skip_next=false
+  for arg in "$@"; do
+    if $skip_next; then skip_next=false; continue; fi
+    case "$arg" in
+      -[bcDEeFIiJLlmOopQRSWw]) skip_next=true ;;
+      -*) ;;
+      *) host="$arg"; break ;;
+    esac
+  done
+  host="${host##*@}"  # strip user@ prefix
+
+  [[ -n "$TMUX" && -n "$host" ]] && tmux rename-window "$host"
+  TERM=xterm-256color command ssh "$@"
+  [[ -n "$TMUX" ]] && tmux set-window-option automatic-rename on
+}
+
+# Work machine overrides
 if [[ "$(hostname -s)" == allenj* ]]; then
-  ssh()   { TERM=xterm-256color command ssh "$@"; }
   x2ssh() { TERM=xterm-256color command x2ssh -mosh -mosh_colors 256 "$@"; }
   dev()   { TERM=xterm-256color command dev "$@"; }
   dconn() { TERM=xterm-256color command dev connect -m "$@"; }
   mosh()  { TERM=xterm-256color command mosh "$@"; }
   et()    { TERM=xterm-256color command et "$@"; }
 fi
+
+# =============================================================================
+# Aliases - Modern CLI Replacements
+# =============================================================================
 
 # File operations
 alias ls="eza --icons --group-directories-first"
