@@ -20,17 +20,17 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/methylene/.claude/hooks/enforce-justfile.sh",
+            "command": "~/.claude/hooks/enforce-justfile.sh",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "/Users/methylene/.claude/hooks/enforce-package-managers.sh",
+            "command": "~/.claude/hooks/enforce-package-managers.sh",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "/Users/methylene/.claude/hooks/pre-commit-checks.sh",
+            "command": "~/.claude/hooks/pre-commit-checks.sh",
             "timeout": 60
           }
         ]
@@ -41,7 +41,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/methylene/.claude/hooks/session-start-context.sh",
+            "command": "~/.claude/hooks/session-start-context.sh",
             "timeout": 10
           }
         ]
@@ -52,7 +52,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/methylene/.claude/hooks/session-summary.sh",
+            "command": "~/.claude/hooks/session-summary.sh",
             "timeout": 30
           }
         ]
@@ -64,27 +64,27 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/methylene/.claude/hooks/lsp-check-after-edit.sh",
+            "command": "~/.claude/hooks/lsp-check-after-edit.sh",
             "timeout": 30
           },
           {
             "type": "command",
-            "command": "/Users/methylene/.claude/hooks/format-on-edit.sh",
+            "command": "~/.claude/hooks/format-on-edit.sh",
             "timeout": 30
           },
           {
             "type": "command",
-            "command": "/Users/methylene/.claude/hooks/test-after-edit.sh",
+            "command": "~/.claude/hooks/test-after-edit.sh",
             "timeout": 60
           },
           {
             "type": "command",
-            "command": "/Users/methylene/.claude/hooks/layer-validation.sh",
+            "command": "~/.claude/hooks/layer-validation.sh",
             "timeout": 30
           },
           {
             "type": "command",
-            "command": "/Users/methylene/.claude/hooks/react-inline-component-check.sh",
+            "command": "~/.claude/hooks/react-inline-component-check.sh",
             "timeout": 10
           }
         ]

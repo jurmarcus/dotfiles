@@ -9,12 +9,13 @@ argument: deck name (e.g., "Tango N3")
 
 Automatically generate i+1 sentences, synthesize audio, and update a batch of Anki cards that have empty Sentence fields. Fully automatic with a summary at the end.
 
-Follow **sentence-core** conventions for formatting, audio synthesis, voice selection, and illustration search.
+Follow **sentence-core** conventions for sentence quality, formatting, audio synthesis, voice selection, and illustration search.
 
 ## Prerequisites
 
 Read `~/.config/jisho/jisho.toml` to get:
 - `[anki].profile` — Anki profile name (for the audio file path)
+- `[meta]` — user profile (location, interests) for sentence personalization
 
 ## Arguments
 
@@ -59,29 +60,28 @@ Call `mcp__jisho-acquisition__generate_sentences` with `topic_count: 5`.
 
 ### Step 5: Generate sentences
 
-For each card, generate **one** i+1 sentence. Distribute topics evenly across the batch.
+For each card, generate **one** i+1 sentence following sentence-core quality guidelines. Make each sentence vivid, personally relevant, and memorable. Distribute topics evenly across the batch. Prefer interesting collocations over basic literal usage.
 
 ### Step 6: Format fields
 
 For each card, call `mcp__jisho-acquisition__format_sentence` with the sentence, furigana, word, meaning, and translation. This returns `sentence_html`, `furigana_html`, `audio_tag`, etc.
 
-### Step 7: Find illustrations
+### Step 7: Find illustrations and synthesize audio (parallel)
 
-Follow sentence-core illustration search conventions for each card.
+Do both in parallel for all cards:
 
-### Step 8: Synthesize audio (batch)
+1. **Illustrations**: Follow sentence-core illustration search conventions — search by each sentence's scene, not just the word.
 
-Call `mcp__jisho-voice__synthesize_batch` with all items at once. Follow sentence-core audio conventions.
+2. **Audio**: Call `mcp__jisho-voice__synthesize_batch` with all items at once. Follow sentence-core audio conventions.
+   Output path: `/Users/methylene/Library/Application Support/Anki2/<profile>/collection.media/<Word>-sentence.ogg`
 
-Output path: `/Users/methylene/Library/Application Support/Anki2/<profile>/collection.media/<Word>-sentence.ogg`
-
-### Step 9: Update all cards
+### Step 8: Update all cards
 
 For each card, call `mcp__anki-mcp__updateNoteFields` with the note ID and the formatted fields from Step 6 (use sentence-core field names: Sentence, SentenceFurigana, SentenceMeaning, SentenceAudio, Picture).
 
 Update all cards in parallel for speed.
 
-### Step 10: Tag all cards
+### Step 9: Tag all cards
 
 Add the `refreshed` tag to all processed notes:
 
@@ -89,14 +89,14 @@ Add the `refreshed` tag to all processed notes:
 mcp__anki-mcp__tagActions(action: "addTags", notes: [<all noteIds>], tags: "refreshed")
 ```
 
-### Step 11: Summary
+### Step 10: Summary
 
 ```
 Updated **N** cards in **<deck>**:
 
-| # | Word | Sentence | Meaning | Picture | Topic |
-|---|------|----------|---------|---------|-------|
-| 1 | ... | ... | ... | ✓ / — | ... |
+| # | Word | Sentence | Meaning | Picture |
+|---|------|----------|---------|---------|
+| 1 | ... | ... | ... | ✓ / — |
 
 Remaining suspended empty cards: ~<count>
 ```

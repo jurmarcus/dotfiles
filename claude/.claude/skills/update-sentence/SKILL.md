@@ -7,14 +7,15 @@ argument: word to update (e.g., "一応")
 
 # Update Sentence Skill
 
-Replace an Anki vocabulary card's example sentence with a comprehensible i+1 sentence, synthesize audio, and update the card.
+Replace an Anki vocabulary card's example sentence with a memorable i+1 sentence, synthesize audio, find an illustration, and update the card. Fully automatic — no user interaction needed.
 
-Follow **sentence-core** conventions for formatting, audio synthesis, voice selection, and illustration search.
+Follow **sentence-core** conventions for sentence quality, formatting, audio synthesis, voice selection, and illustration search.
 
 ## Prerequisites
 
 Read `~/.config/jisho/jisho.toml` to get:
 - `[anki].profile` — Anki profile name (for the audio file path)
+- `[meta]` — user profile (location, interests) for sentence personalization
 
 ## Workflow
 
@@ -36,54 +37,36 @@ Then call `mcp__anki-mcp__notesInfo` on the returned note IDs.
 - If **multiple cards found**: show each card's Word, Sentence, and deck. Ask the user to pick one using `AskUserQuestion`.
 - If **one card found**: proceed.
 
-### Step 3: Show current state
-
-```
-Current sentence for **<Word>** (<WordMeaning>):
-  Sentence: <Sentence>
-  Meaning:  <SentenceMeaning>
-  Furigana: <SentenceFurigana>
-```
-
-### Step 4: Generate i+1 sentences
+### Step 3: Generate i+1 context
 
 Call `mcp__jisho-acquisition__generate_sentences` with `count: 5`, `topic_count: 1`.
 
-Generate **5 example sentences** using the returned context.
+### Step 4: Generate the best sentence
 
-**Present 3 sentences** to the user using `AskUserQuestion`:
-- `header`: "Sentence"
-- `question`: "Which sentence for **<Word>**?"
-- Each sentence as an option with the Japanese as label, English as description
-- Add a **"More options"** option with description "Show 2 more sentences"
+Using the vocabulary context and sentence-core quality guidelines, generate **one** i+1 sentence — the best one. Make it vivid, personally relevant, and memorable. Prefer interesting collocations over basic literal usage.
 
-If "More options" selected, present 2 reserve sentences plus "Custom" option.
+Also generate:
+- Furigana in `kanji[reading]` format
+- English translation
 
-### Step 5: Confirm translation
+### Step 5: Format fields
 
-After sentence selection, confirm translation via `AskUserQuestion`:
-- `header`: "Translation"
-- Options: "Looks good" or "Suggest a change"
+Call `mcp__jisho-acquisition__format_sentence` with the sentence, furigana, word, meaning, and translation. This returns all formatted fields.
 
-### Step 6: Format fields
+### Step 6: Find illustration and synthesize audio (parallel)
 
-Call `mcp__jisho-acquisition__format_sentence` with the chosen sentence, furigana, word, meaning, and confirmed translation. This returns all formatted fields.
+Do both in parallel:
 
-### Step 7: Find illustration
+1. **Illustration**: Follow sentence-core illustration search conventions — search by the sentence's scene, not just the word.
 
-Follow sentence-core illustration search conventions.
+2. **Audio**: Call `mcp__jisho-voice__synthesize` with the plain sentence. Follow sentence-core audio conventions.
+   Output path: `/Users/methylene/Library/Application Support/Anki2/<profile>/collection.media/<Word>-sentence.ogg`
 
-### Step 8: Synthesize audio
+### Step 7: Update the card
 
-Call `mcp__jisho-voice__synthesize` with the plain sentence. Follow sentence-core audio conventions.
+Call `mcp__anki-mcp__updateNoteFields` with the note ID and formatted fields from Step 5 (use sentence-core field names).
 
-Output path: `/Users/methylene/Library/Application Support/Anki2/<profile>/collection.media/<Word>-sentence.ogg`
-
-### Step 9: Update the card
-
-Call `mcp__anki-mcp__updateNoteFields` with the note ID and formatted fields from Step 6 (use sentence-core field names).
-
-### Step 10: Tag the card
+### Step 8: Tag the card
 
 Add the `refreshed` tag:
 
@@ -91,13 +74,11 @@ Add the `refreshed` tag:
 mcp__anki-mcp__tagActions(action: "addTags", notes: [<noteId>], tags: "refreshed")
 ```
 
-### Step 11: Confirm
+### Step 9: Confirm
 
 ```
-Updated **<Word>** card:
-  Sentence:  <sentence_html>
-  Meaning:   <translation>
-  Furigana:  <furigana_html>
-  Audio:     <audio_tag>
-  Picture:   <Picture or "—">
+Updated **<Word>** (<WordMeaning>):
+  <sentence_html>
+  <translation>
+  Picture: <✓ or —>
 ```

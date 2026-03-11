@@ -9,7 +9,7 @@ argument: "optional deck name and count (e.g., 'Tango N3 20')"
 
 Pull due cards from Anki, generate i+1 sentences, and save to sentences.json for jisho-review TUI practice with Anki grading support.
 
-Follow **sentence-core** conventions for formatting, audio synthesis, voice selection, and illustration search.
+Follow **sentence-core** conventions for sentence quality, formatting, audio synthesis, and voice selection.
 
 ## Arguments
 
@@ -59,10 +59,7 @@ This returns a prompt with vocabulary lists. Use this context for all sentence g
 
 ### Step 5: Generate sentences
 
-For each card, generate **one** i+1 sentence where:
-- The target word (`<Word>`) is the +1 learning word
-- All other words come from the user's acquired/mature vocabulary
-- Sentences are natural, everyday Japanese
+For each card, generate **one** i+1 sentence following sentence-core quality guidelines. Make each sentence vivid, personally relevant, and memorable. Prefer interesting collocations over basic literal usage.
 
 Distribute topics from Step 4 evenly across the batch.
 
