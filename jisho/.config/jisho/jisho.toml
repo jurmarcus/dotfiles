@@ -2,7 +2,7 @@
 # Read by jisho-acquisition-mcp (Rust) and jisho-anki (Python)
 
 [anki]
-base_path = "~/.local/share/Anki2"
+# base_path omitted — defaults to platform data dir (~/Library/Application Support/Anki2 on macOS)
 profile = "jurmarcus"
 
 [sentences]
@@ -28,7 +28,7 @@ target_field = "Word"
 sentence_field = "Sentence"
 reading_field = "WordReading"
 enabled = true
-decks = ["1. Mining", "2. Vocabulary"]
+# decks filter removed — notetype is sufficient; parent deck names don't match child decks (Anki uses ::)
 
 [[acquisition.filters]]
 note_type = "Japanese Jo Mako's Kanji"
