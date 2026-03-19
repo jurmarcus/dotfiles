@@ -15,3 +15,4 @@ cask "karabiner-elements"
 # System Tools
 brew "mas"          # Mac App Store CLI
 brew "duti"         # default app associations
+brew "googleworkspace-cli"  # Google Workspace CLI

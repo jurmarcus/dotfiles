@@ -28,7 +28,7 @@ export ANDROID_HOME="$HOME/Library/Android/sdk"
 export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH"
 
 # Rust (Homebrew rustup doesn't create ~/.cargo/bin proxies)
-export PATH="$HOME/.rustup/toolchains/stable-aarch64-apple-darwin/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$HOME/.rustup/toolchains/stable-aarch64-apple-darwin/bin:$PATH"
 
 # =============================================================================
 # Completions (cached to files for fast startup)
@@ -381,6 +381,12 @@ rsa() { cargo add "$@"; }
 rsb() { cargo build "$@"; }
 rsl() { cargo clippy "$@"; }
 rsf() { cargo fmt "$@"; }
+
+# =============================================================================
+# Functions - kuro (Claude helper)
+# =============================================================================
+
+kss() { kuro ss "$@"; }
 
 # =============================================================================
 # Functions - Templates

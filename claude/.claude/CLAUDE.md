@@ -222,3 +222,17 @@ Full automation docs: `~/.claude/AUTOMATION.md`
 |-------|---------|
 | `dotfiles-stow` | Apply dotfiles with Stow |
 | `homebrew-modular` | Add packages to brew modules |
+| `kuro-ss` | Screenshot capture, transfer, clipboard prompt |
+
+## Proactive Screenshots with kuro
+
+When visual context would help, offer to capture a screenshot. Ask first: **"Should we grab a screenshot of that?"** — then run `kuro ss "<name>"` (default 2s delay gives time to arrange the screen).
+
+After capture, read the **local** file at `/tmp/screenshots/<name>-<ts>.png` with the Read tool (Claude runs on methylene-macbook where the screenshot is captured).
+
+Suggest screenshots when:
+- Debugging a UI/layout issue and the description is ambiguous
+- The user mentions something looks "wrong" or "off" on screen
+- Working on frontend/CSS changes and need to verify the result
+- A terminal output, error dialog, or browser state would clarify the problem
+- The user is describing something visual that words alone can't capture
