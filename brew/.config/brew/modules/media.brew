@@ -1,7 +1,6 @@
 # Media Processing
 brew "ffmpeg"
 brew "yt-dlp"
-brew "tesseract"    # OCR engine
 
 # Video Player
 cask "iina"
@@ -12,9 +11,5 @@ cask "phoenix-slides"
 # Podcasts
 cask "pocket-casts"
 
-<<<<<<< dest:   f908a473c4c0 - me: feat(tmux): add OSC 52 clipboard for neste...
-# Torrent Client
-=======
 # Torrents
->>>>>>> source: 256d5a172acd - me: lots of changes 11
 cask "transmission"

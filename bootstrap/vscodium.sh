@@ -5,9 +5,6 @@ set -e
 EXTENSIONS=(
   # AI Coding Assistants
   anthropic.claude-code
-  google.gemini-cli-vscode-ide-companion
-  google.geminicodeassist
-  openai.chatgpt
 
   # Themes & Icons
   catppuccin.catppuccin-vsc

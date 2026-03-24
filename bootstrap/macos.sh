@@ -39,6 +39,9 @@ defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool
 defaults -currentHost write -g com.apple.mouse.tapBehavior -int 1
 defaults write -g com.apple.mouse.tapBehavior -int 1
 
+# Natural scrolling (content follows finger direction)
+defaults write -g com.apple.swipescrolldirection -bool true
+
 # Three finger drag
 defaults write com.apple.AppleMultitouchTrackpad Dragging -bool true
 defaults write com.apple.AppleMultitouchTrackpad DragLock -bool false

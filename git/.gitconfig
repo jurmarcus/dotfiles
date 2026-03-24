@@ -30,7 +30,7 @@
 [difftool "nvimdiff"]
 	cmd = nvim -d "$LOCAL" "$REMOTE"
 [user]
-	name = jurmarcus
+	name = Jurmarcus
 	email = me@jurmarcus.com
 [init]
 	defaultBranch = main

@@ -10,7 +10,6 @@ enable "fonts"
 
 # AI
 enable "ai"
-enable "local-llm"
 
 # Media & Knowledge
 enable "media"
