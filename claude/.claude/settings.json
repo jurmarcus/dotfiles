@@ -54,6 +54,11 @@
             "type": "command",
             "command": "~/.claude/hooks/session-summary.sh",
             "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/memory-promote.sh",
+            "timeout": 10
           }
         ]
       }
@@ -86,6 +91,11 @@
             "type": "command",
             "command": "~/.claude/hooks/react-inline-component-check.sh",
             "timeout": 10
+          },
+          {
+            "type": "prompt",
+            "prompt": "A file was just written. Check if it was written to a project memory path (any path containing '/memory/' with a .md extension that has YAML frontmatter with 'type: user'). If so, this memory should ALSO exist in ~/.claude/memory/ (global). If the file is a 'type: user' memory that doesn't already exist in ~/.claude/memory/, copy it there and update ~/.claude/memory/MEMORY.md. If it's not a memory file, do nothing. Exit silently with code 0 in all cases.",
+            "timeout": 15
           }
         ]
       }

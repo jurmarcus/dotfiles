@@ -30,6 +30,9 @@ export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH"
 # Rust (Homebrew rustup doesn't create ~/.cargo/bin proxies)
 export PATH="$HOME/.cargo/bin:$HOME/.rustup/toolchains/stable-aarch64-apple-darwin/bin:$PATH"
 
+# PostgreSQL client (Homebrew keg-only, not linked)
+export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
+
 # =============================================================================
 # Completions (cached to files for fast startup)
 # =============================================================================
@@ -149,6 +152,21 @@ tls() { tmux list-sessions; }
 tcd() { tmux attach-session -t "$1"; }
 tk() { tmux kill-session -t "$@"; }
 tka() { tmux kill-server; }
+
+# =============================================================================
+# Eternal Terminal - persistent remote sessions
+# =============================================================================
+
+# Quick connect (opens login shell → tmux picker)
+alias ets="et methylene-studio"
+alias eth="et hanekawa-nas"
+
+# Direct tmux session via et (bypasses picker, reconnects to named session)
+etmux() {
+  local host="${1:?Usage: etmux <host> [session]}"
+  local session="${2:-main}"
+  et "$host" -c "tmux new-session -A -s $session"
+}
 
 # =============================================================================
 # SSH - rename tmux window to hostname

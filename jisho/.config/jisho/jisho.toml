@@ -16,6 +16,10 @@ interests = ["Running", "Photography", "Fine dining", "Tech/AI"]
 [acquisition]
 evaluate_mode = "inflection"
 
+[acquisition.study_day]
+day_rollover_hour = 4   # Study day resets at 4:00 AM local time
+utc_offset_hours = 9    # JST (Asia/Tokyo, UTC+9)
+
 [acquisition.thresholds]
 learning = 7
 young = 21
@@ -27,8 +31,17 @@ note_type = "Japanese sentences"
 target_field = "Word"
 sentence_field = "Sentence"
 reading_field = "WordReading"
+meaning_field = "WordMeaning"
+furigana_field = "WordFurigana"
+audio_field = "WordAudio"
+sentence_meaning_field = "SentenceMeaning"
+sentence_furigana_field = "SentenceFurigana"
+sentence_audio_field = "SentenceAudio"
+pos_field = "POS"
+pos_notes_field = "POSNotes"
+notes_field = "Notes"
+picture_field = "Picture"
 enabled = true
-# decks filter removed — notetype is sufficient; parent deck names don't match child decks (Anki uses ::)
 
 [[acquisition.filters]]
 note_type = "Japanese Jo Mako's Kanji"

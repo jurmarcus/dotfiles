@@ -4,7 +4,7 @@
 # Environment (runs for all shells)
 # =============================================================================
 
-fish_add_path ~/.local/bin /opt/homebrew/bin /opt/homebrew/sbin ~/.bun/bin
+fish_add_path ~/.local/bin /opt/homebrew/bin /opt/homebrew/sbin ~/.bun/bin /opt/homebrew/opt/postgresql@17/bin
 
 set -gx EDITOR nvim
 set -gx VISUAL nvim
@@ -72,6 +72,10 @@ abbr tls 'tmux list-sessions'
 abbr tcd 'tmux attach-session -t'
 abbr tk 'tmux kill-session -t'
 abbr tka 'tmux kill-server'
+
+# Eternal Terminal
+abbr ets 'et methylene-studio'
+abbr eth 'et hanekawa-nas'
 
 # Navigation (fish has AUTO_CD built-in)
 abbr -g ... '../..'

@@ -56,7 +56,11 @@ brew "yq"           # YAML
 brew "xh"           # curl (fancy)
 brew "curl"         # curl (standard)
 brew "tealdeer"     # tldr
+<<<<<<< dest:   f908a473c4c0 - me: feat(tmux): add OSC 52 clipboard for neste...
 brew "glow"          # markdown renderer
+=======
+brew "glow"         # markdown renderer
+>>>>>>> source: 256d5a172acd - me: lots of changes 11
 
 # =============================================================================
 # Dotfiles

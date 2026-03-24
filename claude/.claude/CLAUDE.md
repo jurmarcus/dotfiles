@@ -2,6 +2,16 @@
 
 macOS development environment managed with GNU Stow.
 
+## Global Memory
+
+At session start, read `~/.claude/memory/MEMORY.md` for cross-project context (engineering philosophy, infrastructure, preferences). These memories apply to ALL projects.
+
+When saving memories, decide where they belong:
+- **Global** (`~/.claude/memory/`) — user identity, engineering philosophy, infrastructure, cross-project preferences. Update these files directly + their MEMORY.md index.
+- **Project** (auto-memory project path) — project-specific patterns, feedback, domain context. Use the standard auto-memory system.
+
+Rule: if a memory would be useful in a DIFFERENT project, it's global.
+
 ## Critical Rules
 
 These rules MUST be followed without exception:
