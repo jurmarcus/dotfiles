@@ -11,3 +11,6 @@ cask "phoenix-slides"
 
 # Podcasts
 cask "pocket-casts"
+
+# Torrent Client
+cask "transmission"

@@ -1,12 +1,13 @@
 # Tmux Configuration
 
-Terminal multiplexer with Ctrl+A prefix and Catppuccin Frappe theme.
+Terminal multiplexer with Ctrl+A prefix, Catppuccin Frappe theme, and OSC 52 clipboard that works through nested tmux/mosh/ET/SSH sessions.
 
 ## Files
 
 ```
-tmux/.config/tmux/
-└── tmux.conf    # Main config
+tmux/
+├── .config/tmux/tmux.conf    # Main config
+└── .local/bin/osc52-copy     # Clipboard helper (pipes OSC 52 to client TTY)
 ```
 
 ## Key Bindings
@@ -47,8 +48,11 @@ After pressing `Ctrl+A`, use these keys:
 |-----|--------|
 | `[` | Enter copy mode |
 | `v` | Begin selection (in copy mode) |
-| `y` | Copy to clipboard (in copy mode) |
+| `y` | Copy to system clipboard (in copy mode) |
+| Mouse drag | Copy to system clipboard |
 | `Escape` | Exit copy mode |
+
+Clipboard works through any nesting of tmux, mosh, ET, and SSH — see CLAUDE.md for architecture details.
 
 ## Shell Commands
 
