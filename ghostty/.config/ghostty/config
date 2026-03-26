@@ -20,6 +20,13 @@ font-feature = calt
 # Theme
 theme = Catppuccin Frappe
 
+# Copy on select (highlight to copy)
+copy-on-select = clipboard
+
+# Clipboard passthrough (OSC 52) - allows tmux/SSH to access clipboard
+clipboard-read = allow
+clipboard-write = allow
+
 # Cursor
 cursor-style = bar
 cursor-style-blink = true

@@ -226,7 +226,13 @@ alias vi="nvim"
 alias v="nvim"
 alias code="codium"
 alias vimdiff='nvim -d'
-[[ "$(hostname -s)" == allenj* ]] && alias code="code-fb" || alias code="codium"
+
+if [[ "$(hostname -s)" == allenj* ]]; then
+  alias code="code-fb"
+  alias codeoss="codium"
+else
+  alias code="codium"
+fi 
 
 # Version control (sapling for everything)
 alias ss="sl status"
