@@ -6,6 +6,7 @@
 ^/README(\..*)?$
 ^/LICENSE(\..*)?$
 ^/COPYING$
+^/CLAUDE\.md$
 
 # vcs & os junk
 (^|/)\.git(/|$)
