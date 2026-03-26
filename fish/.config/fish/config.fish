@@ -129,8 +129,16 @@ alias nano nvim
 alias vim nvim
 alias vi nvim
 alias v nvim
-alias code codium
 alias vimdiff 'nvim -d'
+
+# Work machine overrides
+if string match -q 'allenj*' (hostname -s)
+    alias code code-fb
+    alias codeoss codium
+    set -gx META_CLAUDE_CODE_RELEASE latest
+else
+    alias code codium
+end
 
 # Python
 alias python 'uv run python'

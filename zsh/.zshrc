@@ -329,20 +329,14 @@ watch() { watchexec -e "${2:-py,ts,js,rs}" -- "$1"; }
 DOTFILES="$HOME/dotfiles"
 
 restow() {
-  local dir
-  local -a skip_packages=()
-
-  # Machine-specific package skips
-  case "$(hostname)" in
-    allenj-macbook) skip_packages=(claude git sapling ssh) ;;
-  esac
+  source "$DOTFILES/stow/.config/stow/hosts/detect.sh"
+  _detect_stow_host
+  echo "Host: ${STOW_HOST} (${#STOW_PACKAGES[@]} packages)"
 
   cd "$DOTFILES" || return 1
-  for dir in */; do
-    dir="${dir%/}"
-    [[ "$dir" == "bootstrap" ]] && continue
-    if (( ${skip_packages[(Ie)$dir]} )); then
-      echo "Skipping $dir (not managed on $(hostname))..."
+  for dir in "${STOW_PACKAGES[@]}"; do
+    if [[ ! -d "$dir" ]]; then
+      echo "Warning: $dir not found, skipping"
       continue
     fi
     echo "Restowing $dir..."
@@ -521,4 +515,4 @@ autoload -Uz add-zsh-hook
 add-zsh-hook precmd _load_syntax_highlighting
 
 # Navi CLI
-export PATH="/Users/allenj/.navi/bin:$PATH"
+export PATH="$HOME/.navi/bin:$PATH"

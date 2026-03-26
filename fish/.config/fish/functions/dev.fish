@@ -55,3 +55,28 @@ function dev --description 'Dev command with proper TERM'
         command dev $argv
     end
 end
+
+# TERM wrappers for remote connection tools (work machines only)
+function x2ssh --description 'x2ssh with proper TERM'
+    if string match -q 'allenj*' (hostname -s)
+        TERM=xterm-256color command x2ssh -mosh -mosh_colors 256 $argv
+    else
+        command x2ssh $argv
+    end
+end
+
+function mosh --description 'mosh with proper TERM'
+    if string match -q 'allenj*' (hostname -s)
+        TERM=xterm-256color command mosh $argv
+    else
+        command mosh $argv
+    end
+end
+
+function et --description 'Eternal Terminal with proper TERM'
+    if string match -q 'allenj*' (hostname -s)
+        TERM=xterm-256color command et $argv
+    else
+        command et $argv
+    end
+end

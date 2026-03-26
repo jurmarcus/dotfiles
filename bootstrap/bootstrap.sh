@@ -117,22 +117,15 @@ fi
 step "Step 3: Install stow + symlink dotfiles"
 command -v stow >/dev/null 2>&1 || run brew install stow
 
-# Machine-specific package skips
-SKIP_PACKAGES=()
-case "$(hostname)" in
-  allenj-macbook) SKIP_PACKAGES=(claude git sapling ssh) ;;
-esac
+# Load host-specific package list
+DOTFILES="${DOTFILES_DIR}" source "${DOTFILES_DIR}/stow/.config/stow/hosts/detect.sh"
+_detect_stow_host
+echo "  Host: ${STOW_HOST} (${#STOW_PACKAGES[@]} packages)"
 
 pushd "${DOTFILES_DIR}" >/dev/null
-shopt -s nullglob
-for d in */; do
-  d="${d%/}"
-  case "$d" in
-    .git*|scripts*|bin*|images*|docs*|.github*|private*|bootstrap* ) continue ;;
-  esac
-  # shellcheck disable=SC2199
-  if [[ " ${SKIP_PACKAGES[@]:-} " == *" $d "* ]]; then
-    echo "  Skipping: $d (not managed on $(hostname))"
+for d in "${STOW_PACKAGES[@]}"; do
+  if [[ ! -d "$d" ]]; then
+    warn "Package '$d' listed in host file but directory not found"
     continue
   fi
   echo "  Stowing: $d"

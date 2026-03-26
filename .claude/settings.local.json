@@ -8,7 +8,14 @@
       "Skill(commit)",
       "Bash(sl push)",
       "Bash(stow:*)",
-      "Bash(source:*)"
+      "Bash(source:*)",
+      "Bash(rm /Users/allenj/.claude/plans)",
+      "Bash(mkdir -p /Users/allenj/.claude/plans)",
+      "Bash(bash -c 'DOTFILES=/Users/allenj/dotfiles HOST_OVERRIDE=methylene-macbook source /Users/allenj/dotfiles/stow/hosts/detect.sh && _detect_stow_host && echo \"Host: $STOW_HOST\" && echo \"Packages \\(${#STOW_PACKAGES[@]}\\):\" && printf \"  %s\\\\n\" \"${STOW_PACKAGES[@]}\"')",
+      "Bash(bash -c 'DOTFILES=/Users/allenj/dotfiles HOST_OVERRIDE=unknown-host source /Users/allenj/dotfiles/stow/hosts/detect.sh && _detect_stow_host && echo \"Host: $STOW_HOST\" && echo \"Packages \\(${#STOW_PACKAGES[@]}\\):\" && printf \"  %s\\\\n\" \"${STOW_PACKAGES[@]}\"')",
+      "Bash(bash -c 'export HOST_OVERRIDE=methylene-macbook; source /Users/allenj/dotfiles/stow/.config/stow/hosts/detect.sh; _detect_stow_host; echo \"Host: $STOW_HOST \\(${#STOW_PACKAGES[@]} packages\\)\"')",
+      "Bash(bash -c 'export HOST_OVERRIDE=methylene-macbook; source /Users/allenj/dotfiles/stow/.config/stow/hosts/detect.sh; _detect_stow_host; echo \"\"Host: $STOW_HOST \\(${#STOW_PACKAGES[@]} packages\\)\"\"')",
+      "Bash(bash -c 'source /Users/allenj/dotfiles/stow/.config/stow/hosts/detect.sh; _detect_stow_host; echo \"\"Host: $STOW_HOST \\(${#STOW_PACKAGES[@]} packages\\)\"\"')"
     ]
   }
 }

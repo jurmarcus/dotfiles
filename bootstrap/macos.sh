@@ -54,8 +54,8 @@ defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeF
 # Finder
 # =============================================================================
 
-# Show hidden files
-defaults write com.apple.finder AppleShowAllFiles -bool true
+# Hide hidden files
+defaults write com.apple.finder AppleShowAllFiles -bool false
 
 # Show all file extensions
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
