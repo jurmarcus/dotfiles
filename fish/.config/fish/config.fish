@@ -45,15 +45,14 @@ function _cache_init
     set -l name $argv[1]
     set -l cmd $argv[2..-1]
     set -l cache "$cache_dir/$name.fish"
-    set -l bin (command -v $argv[2])
-    if not test -f $cache; or test $bin -nt $cache
+    if not test -f $cache
         eval $cmd > $cache 2>/dev/null
     end
     source $cache
 end
 
 _cache_init fzf fzf --fish
-_cache_init zoxide zoxide init fish --cmd cd
+_cache_init zoxide "zoxide init fish"
 _cache_init atuin atuin init fish
 _cache_init direnv direnv hook fish
 _cache_init starship starship init fish

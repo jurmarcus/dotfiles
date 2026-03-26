@@ -70,13 +70,11 @@ regen-completions() {
 ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 [[ -d "$ZSH_CACHE_DIR" ]] || mkdir -p "$ZSH_CACHE_DIR"
 
-# Cache helper: generates init script if missing or binary is newer
+# Cache helper: sources cached init, regenerates only if cache missing
 _cache_init() {
-  local name="$1" cmd="$2"
-  local cache="$ZSH_CACHE_DIR/$name.zsh"
-  local bin="$(whence -p ${cmd%% *})"
-  if [[ ! -f "$cache" || "$bin" -nt "$cache" ]]; then
-    eval "$cmd" > "$cache" 2>/dev/null
+  local cache="$ZSH_CACHE_DIR/$1.zsh"
+  if [[ ! -f "$cache" ]]; then
+    eval "$2" > "$cache" 2>/dev/null
   fi
   source "$cache"
 }
@@ -88,7 +86,7 @@ if [[ -t 0 ]]; then
   _cache_init starship "starship init zsh"
 fi
 _cache_init direnv "direnv hook zsh"
-_cache_init zoxide "zoxide init zsh --cmd cd"
+_cache_init zoxide "zoxide init zsh"
 
 # Regenerate all caches (run after tool updates)
 regen-tool-cache() {
@@ -125,8 +123,9 @@ export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
 # =============================================================================
 
 # Machine slug from hostname (methylene-macbook or allenj-macbook → macbook)
+_HOSTNAME_SHORT=$(hostname -s)
 _machine() {
-  local host=$(hostname -s)
+  local host=$_HOSTNAME_SHORT
   host=${host#methylene-}  # Strip methylene- prefix if present
   host=${host#allenj-}     # Strip allenj- prefix if present
   echo "$host"
@@ -194,7 +193,6 @@ etmux() {
 # =============================================================================
 # SSH - rename tmux window to hostname
 # =============================================================================
-
 ssh() {
   local host="" skip_next=false
   for arg in "$@"; do
@@ -213,7 +211,7 @@ ssh() {
 }
 
 # Work machine overrides
-if [[ "$(hostname -s)" == allenj* ]]; then
+if [[ "$_HOSTNAME_SHORT" == allenj* ]]; then
   x2ssh() { TERM=xterm-256color command x2ssh -mosh -mosh_colors 256 "$@"; }
   dev()   { TERM=xterm-256color command dev "$@"; }
   mosh()  { TERM=xterm-256color command mosh "$@"; }
@@ -254,7 +252,7 @@ alias v="nvim"
 alias code="codium"
 alias vimdiff='nvim -d'
 
-if [[ "$(hostname -s)" == allenj* ]]; then
+if [[ "$_HOSTNAME_SHORT" == allenj* ]]; then
   alias code="code-fb"
   alias codeoss="codium"
 else
@@ -274,7 +272,7 @@ alias pr="gh pr"
 alias issue="gh issue"
 alias repo="gh repo"
 
-if [[ "$(hostname -s)" == allenj* ]]; then
+if [[ "$_HOSTNAME_SHORT" == allenj* ]]; then
   export META_CLAUDE_CODE_RELEASE=latest
 fi
 
