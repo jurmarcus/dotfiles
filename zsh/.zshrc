@@ -330,10 +330,21 @@ DOTFILES="$HOME/dotfiles"
 
 restow() {
   local dir
+  local -a skip_packages=()
+
+  # Machine-specific package skips
+  case "$(hostname)" in
+    allenj-macbook) skip_packages=(claude git sapling ssh) ;;
+  esac
+
   cd "$DOTFILES" || return 1
   for dir in */; do
     dir="${dir%/}"
     [[ "$dir" == "bootstrap" ]] && continue
+    if (( ${skip_packages[(Ie)$dir]} )); then
+      echo "Skipping $dir (not managed on $(hostname))..."
+      continue
+    fi
     echo "Restowing $dir..."
     stow -R "$dir"
   done

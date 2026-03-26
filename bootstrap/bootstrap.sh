@@ -116,6 +116,13 @@ fi
 # Step 3: Install stow (if needed) + symlink dotfiles
 step "Step 3: Install stow + symlink dotfiles"
 command -v stow >/dev/null 2>&1 || run brew install stow
+
+# Machine-specific package skips
+SKIP_PACKAGES=()
+case "$(hostname)" in
+  allenj-macbook) SKIP_PACKAGES=(claude git sapling ssh) ;;
+esac
+
 pushd "${DOTFILES_DIR}" >/dev/null
 shopt -s nullglob
 for d in */; do
@@ -123,6 +130,11 @@ for d in */; do
   case "$d" in
     .git*|scripts*|bin*|images*|docs*|.github*|private*|bootstrap* ) continue ;;
   esac
+  # shellcheck disable=SC2199
+  if [[ " ${SKIP_PACKAGES[@]:-} " == *" $d "* ]]; then
+    echo "  Skipping: $d (not managed on $(hostname))"
+    continue
+  fi
   echo "  Stowing: $d"
   if [[ "$DRY_RUN" == "true" ]]; then
     stow --simulate --target="${HOME}" "$d" 2>/dev/null || stow --simulate --target="${HOME}" -R "$d"

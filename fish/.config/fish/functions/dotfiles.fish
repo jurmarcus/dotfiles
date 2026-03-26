@@ -1,11 +1,22 @@
 # Dotfiles management
 
 function restow --description "Re-stow all dotfiles packages"
+    # Machine-specific package skips
+    set -l skip_packages
+    switch (hostname)
+        case allenj-macbook
+            set skip_packages claude git sapling ssh
+    end
+
     set orig_dir $PWD
     cd $DOTFILES; or return 1
     for dir in */
         set dir (string trim -r -c "/" $dir)
         test "$dir" = "bootstrap"; and continue
+        if contains $dir $skip_packages
+            echo "Skipping $dir (not managed on $(hostname))..."
+            continue
+        end
         echo "Restowing $dir..."
         stow -R $dir
     end
