@@ -1,13 +1,12 @@
 # Tmux session management
 
-# Machine slug from hostname (methylene-macbook → macbook)
+# Machine slug from hostname (methylene-macbook or allenj-macbook → macbook)
 function _machine --description "Get machine slug from hostname"
     set host (hostname -s)
-    if string match -q 'methylene-*' $host
-        string replace 'methylene-' '' $host
-    else
-        echo $host
-    end
+    # Strip methylene- or allenj- prefix if present
+    set host (string replace 'methylene-' '' $host)
+    set host (string replace 'allenj-' '' $host)
+    echo $host
 end
 
 # Rename current tmux session to machine-prefix-N

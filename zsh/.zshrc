@@ -63,17 +63,38 @@ regen-completions() {
 }
 
 # =============================================================================
-# Tool Initialization (lazy where possible)
+# Tool Initialization (cached for fast startup)
 # =============================================================================
+
+# Cache directory for tool init scripts
+ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+[[ -d "$ZSH_CACHE_DIR" ]] || mkdir -p "$ZSH_CACHE_DIR"
+
+# Cache helper: generates init script if missing or binary is newer
+_cache_init() {
+  local name="$1" cmd="$2"
+  local cache="$ZSH_CACHE_DIR/$name.zsh"
+  local bin="$(whence -p ${cmd%% *})"
+  if [[ ! -f "$cache" || "$bin" -nt "$cache" ]]; then
+    eval "$cmd" > "$cache" 2>/dev/null
+  fi
+  source "$cache"
+}
 
 # Guard zle-dependent tools behind TTY check (fzf emits "can't change option: zle" without one)
 if [[ -t 0 ]]; then
-  eval "$(fzf --zsh)"
-  eval "$(atuin init zsh)"
-  eval "$(starship init zsh)"
+  _cache_init fzf "fzf --zsh"
+  _cache_init atuin "atuin init zsh"
+  _cache_init starship "starship init zsh"
 fi
-eval "$(zoxide init zsh)"
-eval "$(direnv hook zsh)"
+_cache_init direnv "direnv hook zsh"
+_cache_init zoxide "zoxide init zsh --cmd cd"
+
+# Regenerate all caches (run after tool updates)
+regen-tool-cache() {
+  rm -rf "$ZSH_CACHE_DIR"/*.zsh
+  echo "Cleared tool cache. Restart shell to regenerate."
+}
 
 # =============================================================================
 # History (backup - atuin is primary)
@@ -103,10 +124,12 @@ export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
 # Tmux Session Management
 # =============================================================================
 
-# Machine slug from hostname (methylene-macbook → macbook)
+# Machine slug from hostname (methylene-macbook or allenj-macbook → macbook)
 _machine() {
   local host=$(hostname -s)
-  [[ "$host" == methylene-* ]] && echo "${host#methylene-}" || echo "$host"
+  host=${host#methylene-}  # Strip methylene- prefix if present
+  host=${host#allenj-}     # Strip allenj- prefix if present
+  echo "$host"
 }
 
 # Rename current tmux session to machine-prefix-N
@@ -140,7 +163,7 @@ _tmux_picker() {
 }
 
 # Auto-start tmux with picker (requires real TTY - prevents hanging IDE env resolvers)
-if [[ -z "$TMUX" ]] && [[ -t 0 ]] && [[ -t 1 ]] && [[ "$TERM_PROGRAM" != "vscode" ]] && [[ "$TERM_PROGRAM" != "codium" ]]; then
+if [[ -z "$TMUX" ]] && [[ -t 0 ]] && [[ -t 1 ]] && [[ "$TERM_PROGRAM" != "vscode" ]] && [[ "$TERM_PROGRAM" != "codium" ]] && [[ "$TERM_PROGRAM" != "Apple_Terminal" ]]; then
   _tmux_picker
 fi
 tclaude() { _trename claude; }
@@ -193,9 +216,13 @@ ssh() {
 if [[ "$(hostname -s)" == allenj* ]]; then
   x2ssh() { TERM=xterm-256color command x2ssh -mosh -mosh_colors 256 "$@"; }
   dev()   { TERM=xterm-256color command dev "$@"; }
-  dconn() { TERM=xterm-256color command dev connect -m "$@"; }
   mosh()  { TERM=xterm-256color command mosh "$@"; }
   et()    { TERM=xterm-256color command et "$@"; }
+  # Dev connect wrappers with tmux window naming
+  _tmux_name() { [[ -n "$TMUX" ]] && tmux rename-window "$1" && tmux set-window-option automatic-rename off; }
+  det()   { [[ -n "$1" ]] && _tmux_name "et:${1%%.*}" || _tmux_name "et"; TERM=xterm-256color command dev connect --et "$@"; }
+  dmosh() { [[ -n "$1" ]] && _tmux_name "mosh:${1%%.*}" || _tmux_name "mosh"; TERM=xterm-256color command dev connect --mosh "$@"; }
+  dssh()  { [[ -n "$1" ]] && _tmux_name "ssh:${1%%.*}" || _tmux_name "ssh"; TERM=xterm-256color command dev connect --ssh "$@"; }
 fi
 
 # =============================================================================
@@ -471,8 +498,18 @@ rs-init-mcp() {
 }
 
 # =============================================================================
-# Zsh Plugins (must be last)
+# Zsh Plugins (syntax highlighting lazy-loaded for faster startup)
 # =============================================================================
 
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# Lazy-load syntax highlighting after first prompt (saves 100-300ms on startup)
+_load_syntax_highlighting() {
+  unset -f _load_syntax_highlighting
+  source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+}
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _load_syntax_highlighting
+
+# Navi CLI
+export PATH="/Users/allenj/.navi/bin:$PATH"

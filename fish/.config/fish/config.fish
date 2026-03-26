@@ -37,16 +37,38 @@ set -g TEMPLATE_DIR ~/.config/templates
 
 status is-interactive || return
 
-# Tool initialization
-fzf --fish | source
-zoxide init fish --cmd cd | source
-atuin init fish | source
-direnv hook fish | source
-starship init fish | source
+# Tool initialization (cached for fast startup)
+set -l cache_dir ~/.cache/fish
+test -d $cache_dir; or mkdir -p $cache_dir
+
+function _cache_init
+    set -l name $argv[1]
+    set -l cmd $argv[2..-1]
+    set -l cache "$cache_dir/$name.fish"
+    set -l bin (command -v $argv[2])
+    if not test -f $cache; or test $bin -nt $cache
+        eval $cmd > $cache 2>/dev/null
+    end
+    source $cache
+end
+
+_cache_init fzf fzf --fish
+_cache_init zoxide zoxide init fish --cmd cd
+_cache_init atuin atuin init fish
+_cache_init direnv direnv hook fish
+_cache_init starship starship init fish
+
+functions -e _cache_init
+
+# Regenerate all caches (run after tool updates)
+function regen-tool-cache
+    rm -f ~/.cache/fish/*.fish
+    echo "Cleared tool cache. Restart shell to regenerate."
+end
 
 # Auto-start tmux with picker
 # Require real TTY - prevents hanging IDE env resolvers (fzf blocks without one)
-if not set -q TMUX; and isatty stdin; and isatty stdout; and test "$TERM_PROGRAM" != vscode; and test "$TERM_PROGRAM" != codium
+if not set -q TMUX; and isatty stdin; and isatty stdout; and test "$TERM_PROGRAM" != vscode; and test "$TERM_PROGRAM" != codium; and test "$TERM_PROGRAM" != Apple_Terminal
     _tmux_picker
 end
 
