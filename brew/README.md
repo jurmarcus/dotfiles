@@ -24,7 +24,7 @@ brew/
         ├── base.brew            # Meta: terminal + security + browsers + utils
         ├── terminal.brew        # Shells, CLI tools, prompt, emulator (27 tools)
         ├── dev.brew             # Editors, VCS, runtimes, linting (neovim, vscodium)
-        ├── remote.brew          # Remote access (mosh, et, tailscale)
+        ├── remote.brew          # Remote access (tailscale)
         ├── fonts.brew           # Nerd fonts
         ├── ai.brew              # Claude, ChatGPT, Perplexity
         ├── local-llm.brew       # LM Studio, Ollama

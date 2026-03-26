@@ -1,5 +1,2 @@
 # Remote Access
-tap "mistertea/et"
-brew "mistertea/et/et"
-brew "mosh"
 cask "tailscale-app"
