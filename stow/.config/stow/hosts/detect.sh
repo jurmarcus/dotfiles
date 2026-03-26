@@ -13,9 +13,15 @@ _detect_stow_host() {
   local host="${HOST_OVERRIDE:-$(hostname -s)}"
   host=$(echo "$host" | tr '[:upper:]' '[:lower:]')
 
-  # Resolve hosts dir relative to this script (works via symlink or source tree)
+  # Resolve hosts dir relative to this script (works in bash and zsh, via symlink or source tree)
   local hosts_dir
-  hosts_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  if [[ -n "${BASH_SOURCE[0]:-}" ]]; then
+    hosts_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  elif [[ -n "${(%):-%x}" ]]; then
+    hosts_dir="$(cd "$(dirname "${(%):-%x}")" && pwd)"
+  else
+    hosts_dir="${DOTFILES:-$HOME/dotfiles}/stow/.config/stow/hosts"
+  fi
   local host_file="$hosts_dir/$host.conf"
 
   STOW_HOST="$host"
