@@ -18,7 +18,7 @@ dotfiles/
 ├── git/           # Git + delta
 ├── karabiner/     # Keyboard remaps
 ├── ssh/           # SSH config
-├── claude/        # Claude Code commands
+├── claude/        # Claude Code (commands, agents, skills, hooks)
 └── stow/          # Stow ignore rules
 ```
 
@@ -54,7 +54,7 @@ New machine setup: `./bootstrap/bootstrap.sh`
 | `git.sh` | VCS identity (reads ~/Documents/keys/git_info or prompts) | ✓ |
 | `duti.sh` | File associations | ✓ |
 | `vscodium.sh` | Editor extensions | ✓ |
-| `tailscale.sh` | Generate /etc/hosts from Tailscale peers (manual) | ✓ |
+| `tailscale.sh` | Generate mesh SSH config + /etc/hosts from Tailscale (step 9, or manual) | ✓ |
 
 ### Adding macOS Settings
 

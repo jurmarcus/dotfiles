@@ -12,6 +12,21 @@ When saving memories, decide where they belong:
 
 Rule: if a memory would be useful in a DIFFERENT project, it's global.
 
+**IMPORTANT: Do NOT evaluate non-memory file writes against these rules. Only apply memory routing when you are actually saving a memory. Never interrupt normal code editing to announce "this is not a memory file."**
+
+## Notes Vault
+
+When producing durable knowledge artifacts, write to `~/notes/` (Obsidian vault):
+- Project-specific designs, plans, reviews: `~/notes/projects/<project>/`
+- Cross-project papers, research, blog drafts: `~/notes/projects/personal/`
+- Every note gets YAML frontmatter: `type`, `project`, `status`, `created`, `tags`
+- Use templates from `~/notes/_templates/` as reference for format
+- Session-scoped work (task lists, debug notes) stays ephemeral — don't clutter the vault
+
+When using superpowers brainstorming/planning skills:
+- Save specs to: `~/notes/projects/<project>/YYYY-MM-DD-<topic>-design.md`
+- Save plans to: `~/notes/projects/<project>/YYYY-MM-DD-<topic>-plan.md`
+
 ## Critical Rules
 
 These rules MUST be followed without exception:
@@ -127,14 +142,71 @@ Always use these modern alternatives:
 - **fzf** for fuzzy finding
 - **tmux** for terminal multiplexing
 
-## Multi-Machine Development
+## Tailscale SSH Mesh
 
-Development happens across Tailscale network:
+All machines are connected via Tailscale with full-mesh SSH. One key (`tailscale`) grants access to every host. Claude Code can and should run commands on remote hosts via `ssh <alias> '<command>'` when the task requires it.
 
-| Machine | Role |
-|---------|------|
-| `methylene-studio` | Server (databases, APIs, Sudachi) |
-| `methylene-macbook` | Laptop (client, MCP, apps) |
+### SSH Mesh (full-mesh SSH access)
+
+| Alias | Full Name | Role | OS | User |
+|-------|-----------|------|----|------|
+| `studio` | `methylene-studio` | Server (databases, APIs, Sudachi) | macOS | `methylene` |
+| `macbook` | `methylene-macbook` | Laptop (client, MCP, apps) | macOS | `methylene` |
+| `mini` | `methylene-mini` | Mac Mini workstation | macOS | `methylene` |
+| `fold` | `methylene-fold` | Phone (Termux, mobile dev) | Android | `u0_a395` |
+| `pc` | `methylene-pc` | HTPC (4090, future Linux) | Windows/Linux | `methylene` |
+| `hanekawa` | `hanekawa-nas` | NAS (dev Docker, backups) | Linux | `methylene` |
+| `gaen` | `gaen-nas` | NAS (media Docker, arr stack) | Linux | `methylene` |
+
+`mini` and `pc` are planned — not yet onboarded. Run `bootstrap/tailscale.sh` after Tailscale is set up on them.
+
+### ADB Targets (Tailscale, no SSH)
+
+| Name | Role | Notes |
+|------|------|-------|
+| `methylene-senjougahara` | Nvidia Shield Pro | Android TV, ADB target |
+| `methylene-fold` | Phone | Also in SSH mesh via Termux |
+
+Reachable by Tailscale IP for ADB: `adb connect <tailscale-ip>:5555`
+
+### SSH Usage
+
+```bash
+ssh studio 'command'          # Run on studio
+ssh hanekawa 'ls /volume1/'   # Run on NAS
+ssh fold 'cat ~/.zshrc'       # Run on phone
+```
+
+**When to use remote SSH:**
+- Checking/restarting services on another host
+- Reading logs or files on a remote machine
+- Deploying configs or dotfiles to other hosts
+- Running builds/tests on a specific machine
+- Managing Docker containers on hanekawa (dev) or gaen (media)
+- Checking NAS storage or media services
+
+**ADB for Android/TV devices:**
+```bash
+adb connect <tailscale-ip>:5555    # Connect to Shield/Apple TV/fold
+adb install app.apk                # Deploy app
+```
+
+**Key locations:**
+- macOS hosts: `~/Documents/keys/tailscale`
+- Termux (fold): `~/keys/tailscale`
+- Config: `~/.ssh/config` (stowed) or `~/.ssh/tailscale_config`
+
+### Adding a New Machine to the Mesh
+
+When a new machine joins the Tailscale network:
+1. Run `bootstrap/tailscale.sh` on any existing host to regenerate configs
+2. Deploy the `tailscale` public key to the new host's `~/.ssh/authorized_keys`
+3. Deploy the `tailscale` private key to `~/Documents/keys/tailscale`
+4. Copy `~/.ssh/tailscale_config` to the new host
+5. If macOS working machine: clone dotfiles, run `bootstrap/bootstrap.sh`
+6. Run `bootstrap/tailscale.sh` on all other mesh hosts to pick up the new peer
+
+### Environment Variables
 
 Environment variables via direnv:
 - `cd server/` → localhost URLs, DB paths

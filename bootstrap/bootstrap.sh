@@ -202,9 +202,28 @@ else
   skip
 fi
 
+# Step 9: Tailscale SSH mesh
+step "Step 9: Tailscale SSH mesh"
+if command -v tailscale >/dev/null 2>&1 && tailscale status >/dev/null 2>&1; then
+  if [[ -f "${BOOTSTRAP_DIR}/tailscale.sh" ]]; then
+    if [[ "$DRY_RUN" == "true" ]]; then
+      echo -e "${YELLOW}[dry-run]${NC} Would generate Tailscale SSH mesh config"
+    else
+      bash "${BOOTSTRAP_DIR}/tailscale.sh"
+    fi
+    ok "Tailscale mesh configured"
+  else
+    skip
+  fi
+else
+  warn "Tailscale not installed or not connected. Run manually later:"
+  echo "  tailscale up && ~/dotfiles/bootstrap/tailscale.sh"
+fi
+
 echo -e "\n${GREEN}✅ Bootstrap complete!${NC}"
 echo ""
 echo "Next steps:"
 echo "  1. Open a new terminal for shell changes"
 echo "  2. Log out/in for some macOS settings to take effect"
+echo "  3. If Tailscale was skipped: tailscale up && ~/dotfiles/bootstrap/tailscale.sh"
 echo ""

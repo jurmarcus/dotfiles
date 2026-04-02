@@ -43,6 +43,7 @@ Main orchestrator with CLI flags:
 6. **macOS settings** - System preferences
 7. **Default apps** - File associations via duti
 8. **VSCodium extensions** - Editor plugins
+9. **Tailscale SSH mesh** - Generate mesh config (skipped if Tailscale not connected)
 
 ## git.sh
 
@@ -124,15 +125,17 @@ All scripts are safe to re-run:
 
 ## SSH Keys & Identity
 
-Stored in iCloud-synced `~/Documents/keys/`:
+Stored in `~/Documents/keys/` (iCloud-synced on macOS, `~/keys/` on Termux):
 
 | File | Purpose |
 |------|---------|
-| `personal` | SSH private key |
-| `personal.pub` | SSH public key |
+| `tailscale` | SSH private key (Tailscale mesh, no passphrase) |
+| `tailscale.pub` | SSH public key |
+| `jurmarcus` | GitHub SSH key |
 | `git_info` | Git identity (name/email) |
 
-These sync automatically across machines via iCloud Drive.
+The `tailscale` key is deployed to all hosts for full mesh SSH access.
+Any machine can SSH to any other machine on the Tailscale network.
 
 ## claude.sh (Manual)
 
@@ -147,9 +150,10 @@ Sets up Claude Code symlinks for synced directories. Run after Notes sync is con
 
 **Requires:** `~/Notes/plans/claude` to exist (iCloud/Obsidian sync)
 
-## tailscale.sh (Manual)
+## tailscale.sh
 
-Generates host entries from Tailscale network peers. Run manually when needed:
+Generates full-mesh SSH config from Tailscale network peers. Runs as step 9 in
+bootstrap (skipped if Tailscale not connected), or manually:
 
 ```bash
 ./bootstrap/tailscale.sh
@@ -157,9 +161,14 @@ Generates host entries from Tailscale network peers. Run manually when needed:
 
 **Creates:**
 - `~/.config/tailscale/hosts` - Host entries to paste into /etc/hosts
-- `~/.ssh/tailscale_config` - SSH config with host aliases
+- `~/.ssh/tailscale_config` - SSH mesh config with host aliases
 
-**Not part of bootstrap flow** - run separately after Tailscale app is configured.
+**Auto-generates:**
+- Short aliases: `methylene-X` → `X`, `Y-nas` → `Y`
+- Correct user/port for special hosts (Termux: u0_a395, port 8022)
+- IdentityFile pointing to `tailscale` key
+
+**When to re-run:** After adding/removing a machine from the Tailscale network.
 
 ## Post-Bootstrap
 
@@ -168,4 +177,7 @@ Generates host entries from Tailscale network peers. Run manually when needed:
 exec zsh  # or: exec fish
 
 # Log out/in for some macOS settings to take effect
+
+# If Tailscale was skipped during bootstrap:
+tailscale up && ~/dotfiles/bootstrap/tailscale.sh
 ```

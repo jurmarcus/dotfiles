@@ -1,48 +1,61 @@
 # SSH Configuration
 
-SSH config managed by stow. Uses **Tailscale SSH** for machine auth (no keys).
+Full-mesh SSH across all Tailscale hosts using a single `tailscale` ed25519 key (no passphrase).
 
 ## Files
 
 ```
 ssh/
 ├── .ssh/
-│   └── config          # Main config (includes tailscale_config)
+│   └── config          # Main config (all mesh hosts inline)
 └── README.md
 ```
 
-Generated at runtime:
-- `~/.ssh/tailscale_config` - Auto-generated from Tailscale network
+## SSH Mesh Hosts
 
-## Setup
+| Alias | Full Name | IP | User | Port | Status |
+|-------|-----------|-----|------|------|--------|
+| `studio` | `methylene-studio` | 100.112.221.98 | methylene | 22 | active |
+| `macbook` | `methylene-macbook` | 100.108.7.69 | methylene | 22 | active |
+| `mini` | `methylene-mini` | TBD | methylene | 22 | planned |
+| `fold` | `methylene-fold` | 100.79.7.64 | u0_a395 | 8022 | active |
+| `pc` | `methylene-pc` | 100.120.167.29 | methylene | 22 | planned (future Linux) |
+| `hanekawa` | `hanekawa-nas` | 100.105.249.117 | methylene | 22 | active |
+| `gaen` | `gaen-nas` | 100.114.109.120 | methylene | 22 | active |
 
-Requires Tailscale CLI (not GUI app):
+## Network-Only Devices (no SSH)
 
-```bash
-brew install tailscale
-sudo brew services start tailscale
-tailscale up
-tailscale set --ssh
+| Name | Role | Notes |
+|------|------|-------|
+| `allenj-macbook` | Work laptop | On Tailscale, not in mesh |
+| `apple-tv` | Apple TV | ADB target only |
+| `methylene-senjougahara` | Nvidia Shield Pro | ADB target only |
 
-# Generate SSH config from Tailscale peers
-~/dotfiles/bootstrap/tailscale.sh
-```
+## Keys
 
-## Hosts
+| Key | Location | Purpose |
+|-----|----------|---------|
+| `tailscale` | `~/Documents/keys/` (macOS), `~/keys/` (Termux) | All Tailscale mesh SSH |
+| `jurmarcus` | `~/Documents/keys/` | GitHub |
 
-Hosts are dynamically generated from your Tailscale network. Run `tailscale.sh` to regenerate.
+## Adding a New Machine
 
-Short aliases are created automatically: `methylene-studio` becomes `studio`.
+1. Install Tailscale on the new machine, `tailscale up`
+2. Run `bootstrap/tailscale.sh` on any existing host to regenerate configs
+3. Deploy `tailscale` public key to new host: `echo 'KEY' >> ~/.ssh/authorized_keys`
+4. Deploy `tailscale` private key to new host: `~/Documents/keys/tailscale`
+5. Copy `~/.ssh/tailscale_config` to the new host
+6. If macOS working machine: clone dotfiles, run `bootstrap/bootstrap.sh`
+7. Re-run `bootstrap/tailscale.sh` on all other mesh hosts
 
-```bash
-ssh studio              # Short alias
-ssh methylene-studio    # Full hostname
-mosh studio             # Persistent connection
-```
+The `tailscale.sh` script auto-discovers Tailscale peers, generates short aliases
+(methylene-X → X, Y-nas → Y), and handles special hosts (Termux port/user).
 
 ## Notes
 
-- **No SSH keys needed** - Tailscale SSH handles authentication
-- **GitHub**: Use HTTPS + `gh auth` (no SSH keys)
-- **Local network**: Tailscale auto-detects LAN, uses direct connection
-- **Regenerate config**: Run `~/dotfiles/bootstrap/tailscale.sh` when Tailscale network changes
+- **No passphrase on tailscale key** — hosts are only reachable via Tailscale WireGuard tunnel
+- **GitHub uses a separate key** (`jurmarcus`) — not part of the mesh
+- **Termux (fold)** — port 8022 (Android blocks privileged ports), keys at `~/keys/`
+- **NAS boxes** — standard Linux SSH, no special config needed
+- **Stowed config** — edit `~/dotfiles/ssh/.ssh/config`, then `stow -R ssh`
+- **Network-only devices** — reachable by Tailscale IP for ADB, not SSH
