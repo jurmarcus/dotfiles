@@ -9,6 +9,7 @@ brew "gh"           # GitHub CLI
 # Editors
 brew "neovim"
 cask "vscodium"
+cask "zed"
 
 # Runtimes & Package Managers
 brew "uv"           # Python

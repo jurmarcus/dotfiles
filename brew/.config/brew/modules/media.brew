@@ -1,5 +1,6 @@
 # Media Processing
 brew "ffmpeg"
+brew "mpv"
 brew "yt-dlp"
 
 # Video Player
