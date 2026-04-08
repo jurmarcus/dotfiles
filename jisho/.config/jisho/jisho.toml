@@ -27,31 +27,19 @@ mature = 84
 
 # Acquisition filters — note types, fields, and deck mappings for card extraction
 [[acquisition.filters]]
-note_type = "Japanese sentences"
-target_field = "Word"
-sentence_field = "Sentence"
-reading_field = "WordReading"
-meaning_field = "WordMeaning"
-furigana_field = "WordFurigana"
-audio_field = "WordAudio"
-sentence_meaning_field = "SentenceMeaning"
-sentence_furigana_field = "SentenceFurigana"
-sentence_audio_field = "SentenceAudio"
-pos_field = "POS"
-pos_notes_field = "POSNotes"
-notes_field = "Notes"
-picture_field = "Picture"
+note_type = "jisho"
+target_field = "word"
+sentence_field = "sentence"
+meaning_field = "word_meaning"
+furigana_field = "word_furigana"
+audio_field = "word_audio"
+sentence_meaning_field = "sentence_meaning"
+sentence_audio_field = "sentence_audio"
+pos_field = "pos"
+pos_notes_field = "pos_notes"
+notes_field = "notes"
+picture_field = "picture"
 enabled = true
-
-[[acquisition.filters]]
-note_type = "Japanese Jo Mako's Kanji"
-target_field = "Kanji"
-reading_field = "Reading_On"
-enabled = false
-comment = "Kanji cards - disabled by default for vocab acquisition"
-
-# Practice topics for i+1 sentence generation
-# Weight: higher = more likely to be selected (weighted random)
 
 [[topics]]
 id = "restaurant_ordering"

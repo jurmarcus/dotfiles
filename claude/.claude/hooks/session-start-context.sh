@@ -8,6 +8,7 @@
 
 set -euo pipefail
 
+echo "🖥️ Host: $(hostname -s)"
 echo "📚 Loading project context..."
 
 # Get current directory name for matching
