@@ -152,19 +152,19 @@ All machines are connected via Tailscale with full-mesh SSH. One key (`tailscale
 |-------|-----------|------|----|------|
 | `studio` | `methylene-studio` | Server (databases, APIs, Sudachi) | macOS | `methylene` |
 | `macbook` | `methylene-macbook` | Laptop (client, MCP, apps) | macOS | `methylene` |
-| `mini` | `methylene-mini` | Mac Mini workstation | macOS | `methylene` |
+| `mini` | `methylene-mini` | Mac Mini M4 workstation | macOS | `methylene` |
 | `fold` | `methylene-fold` | Phone (Termux, mobile dev) | Android | `u0_a395` |
-| `pc` | `methylene-pc` | HTPC (4090, future Linux) | Windows/Linux | `methylene` |
+| `htpc` | `methylene-htpc` | HTPC (4090, Bazzite) | Linux | `methylene` |
 | `hanekawa` | `hanekawa-nas` | NAS (dev Docker, backups) | Linux | `methylene` |
 | `gaen` | `gaen-nas` | NAS (media Docker, arr stack) | Linux | `methylene` |
 
-`mini` and `pc` are planned — not yet onboarded. Run `bootstrap/tailscale.sh` after Tailscale is set up on them.
+All mesh hosts are onboarded.
 
 ### ADB Targets (Tailscale, no SSH)
 
 | Name | Role | Notes |
 |------|------|-------|
-| `methylene-senjougahara` | Nvidia Shield Pro | Android TV, ADB target |
+| `methylene-shield` | Nvidia Shield Pro | Android TV, ADB target |
 | `methylene-fold` | Phone | Also in SSH mesh via Termux |
 
 Reachable by Tailscale IP for ADB: `adb connect <tailscale-ip>:5555`

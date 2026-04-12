@@ -16,7 +16,7 @@ fi
 # Hosts excluded from SSH mesh (network-only, no SSH)
 SKIP_SSH=(
     "apple-tv"
-    "methylene-senjougahara"
+    "methylene-shield"
     "allenj-macbook"
 )
 

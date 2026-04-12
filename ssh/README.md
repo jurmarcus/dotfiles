@@ -17,9 +17,9 @@ ssh/
 |-------|-----------|-----|------|------|--------|
 | `studio` | `methylene-studio` | 100.112.221.98 | methylene | 22 | active |
 | `macbook` | `methylene-macbook` | 100.108.7.69 | methylene | 22 | active |
-| `mini` | `methylene-mini` | TBD | methylene | 22 | planned |
+| `mini` | `methylene-mini` | 100.127.130.86 | methylene | 22 | active |
 | `fold` | `methylene-fold` | 100.79.7.64 | u0_a395 | 8022 | active |
-| `pc` | `methylene-pc` | 100.120.167.29 | methylene | 22 | planned (future Linux) |
+| `htpc` | `methylene-htpc` | 100.121.133.42 | methylene | 22 | active |
 | `hanekawa` | `hanekawa-nas` | 100.105.249.117 | methylene | 22 | active |
 | `gaen` | `gaen-nas` | 100.114.109.120 | methylene | 22 | active |
 
@@ -29,7 +29,7 @@ ssh/
 |------|------|-------|
 | `allenj-macbook` | Work laptop | On Tailscale, not in mesh |
 | `apple-tv` | Apple TV | ADB target only |
-| `methylene-senjougahara` | Nvidia Shield Pro | ADB target only |
+| `methylene-shield` | Nvidia Shield Pro | ADB target only |
 
 ## Keys
 
