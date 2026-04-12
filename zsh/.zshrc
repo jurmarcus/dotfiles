@@ -63,36 +63,17 @@ regen-completions() {
 }
 
 # =============================================================================
-# Tool Initialization (cached for fast startup)
+# Tool Initialization
 # =============================================================================
-
-# Cache directory for tool init scripts
-ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
-[[ -d "$ZSH_CACHE_DIR" ]] || mkdir -p "$ZSH_CACHE_DIR"
-
-# Cache helper: sources cached init, regenerates only if cache missing
-_cache_init() {
-  local cache="$ZSH_CACHE_DIR/$1.zsh"
-  if [[ ! -f "$cache" ]]; then
-    eval "$2" > "$cache" 2>/dev/null
-  fi
-  source "$cache"
-}
 
 # Guard zle-dependent tools behind TTY check (fzf emits "can't change option: zle" without one)
 if [[ -t 0 ]]; then
-  _cache_init fzf "fzf --zsh"
-  _cache_init atuin "atuin init zsh"
-  _cache_init starship "starship init zsh"
+  eval "$(fzf --zsh)"
+  eval "$(atuin init zsh)"
+  eval "$(starship init zsh)"
 fi
-_cache_init direnv "direnv hook zsh"
-_cache_init zoxide "zoxide init zsh"
-
-# Regenerate all caches (run after tool updates)
-regen-tool-cache() {
-  rm -rf "$ZSH_CACHE_DIR"/*.zsh
-  echo "Cleared tool cache. Restart shell to regenerate."
-}
+eval "$(direnv hook zsh)"
+eval "$(zoxide init zsh)"
 
 # =============================================================================
 # History (backup - atuin is primary)
