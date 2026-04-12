@@ -1,3 +1,4 @@
 # AI Assistants
 cask "claude"
 cask "codex"
+cask "wispr-flow"
