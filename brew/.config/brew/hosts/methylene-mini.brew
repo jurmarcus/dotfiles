@@ -1,4 +1,4 @@
-# Mac Mini - TV/media center
+# Mac Mini - AI agents + workstation
 
 # Base (terminal, security, browsers, utils)
 enable "base"
@@ -8,5 +8,10 @@ enable "dev"
 enable "remote"
 enable "fonts"
 
-# Media
+# AI
+enable "ai"
+
+# Media & Communication
 enable "media"
+enable "communication"
+enable "knowledge"

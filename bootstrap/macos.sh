@@ -54,11 +54,7 @@ defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeF
 # Finder
 # =============================================================================
 
-<<<<<<< dest:   c5ab8e22ee39 - allenj: fix(tmux): use absolute path for osc52...
-# Hide hidden files
-=======
 # Hide hidden files (use Cmd+Shift+. to toggle in Finder when needed)
->>>>>>> source: bfbe297a77e3 - me: feat(claude): add agents to stow (global +...
 defaults write com.apple.finder AppleShowAllFiles -bool false
 
 # Show all file extensions
