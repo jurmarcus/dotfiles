@@ -23,6 +23,7 @@ brew "biome"        # JS/TS
 
 # Build Tools
 brew "watchexec"    # file watcher
+brew "watchman"     # Meta's file watcher (used by sapling ISL for live refresh)
 brew "just"         # modern make (task runner)
 
 # iOS/macOS
