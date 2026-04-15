@@ -260,6 +260,13 @@ sl() {
   fi
 }
 
+# Mercurial → sapling: `hg` is aliased to `sl` because sapling is Meta's
+# descendant/fork of hg — the two names are synonyms in 2026. Typing `hg` in a
+# "we use mercurial" context resolves to `sl` with the sapling.conf personality
+# (not hg-identity mode, which would read ~/.hgrc). Full names `sapling` and
+# `mercurial` are NOT aliased because nobody actually types them.
+alias hg='sl'
+
 # GitHub CLI
 alias pr="gh pr"
 alias issue="gh issue"

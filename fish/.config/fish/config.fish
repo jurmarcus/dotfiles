@@ -87,6 +87,11 @@ abbr sar 'sl addremove'
 # because `abbr sl 'sl ssl'` would expand `sl status` into `sl ssl status`,
 # breaking every other sl subcommand.
 
+# Mercurial → sapling: `hg` is abbreviated to `sl` because sapling is Meta's
+# descendant/fork of hg. Full names `sapling` and `mercurial` are NOT
+# abbreviated because nobody actually types them.
+abbr hg 'sl'
+
 # GitHub CLI
 abbr pr 'gh pr'
 abbr issue 'gh issue'
