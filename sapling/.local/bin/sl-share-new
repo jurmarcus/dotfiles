@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+# sl-share-new: create a sapling share of a repo under ~/code/ and open it
+#               in a new tmux window cd'd into the share.
+#
+# Usage:
+#   sl-share-new <share-name>                 # repo inferred from cwd
+#   sl-share-new <repo-path> <share-name>     # explicit repo path (relative to ~/code/)
+#
+# Examples:
+#   cd ~/code/jisho && sl-share-new feature-x
+#     → creates share at ~/code/shares/jisho/feature-x/
+#     → opens tmux window "jisho/feature-x" cd'd into the share
+#
+#   sl-share-new sudachi/sudachi-search experiment
+#     → creates share at ~/code/shares/sudachi/sudachi-search/experiment/
+#     → opens tmux window "sudachi-search/experiment" cd'd into the share
+#
+# Layout convention:
+#   ~/code/<repo-path>/               ← the source repo (native .sl)
+#   ~/code/shares/<repo-path>/<name>/ ← shares live here, mirroring source layout
+#
+# Notes:
+# - repo-path can have slashes (e.g., "sudachi/sudachi-search") for nested
+#   organization. The share target mirrors this layout exactly.
+# - window name is always "<last-path-segment>/<share-name>" so nested
+#   repos get a tight label (e.g., "sudachi-search/feature-x", not
+#   "sudachi/sudachi-search/feature-x").
+# - if not in a tmux session, just creates the share and prints instructions;
+#   does not try to spawn tmux.
+# - errors if the share target already exists (no silent overwrite).
+
+set -euo pipefail
+
+CODE_ROOT="$HOME/code"
+SHARES_ROOT="$CODE_ROOT/shares"
+
+die() {
+  printf 'sl-share-new: %s\n' "$1" >&2
+  exit 1
+}
+
+usage() {
+  cat >&2 <<EOF
+usage: sl-share-new <share-name>                 (repo inferred from cwd)
+       sl-share-new <repo-path> <share-name>     (explicit repo path)
+
+See the comment at the top of \$(command -v sl-share-new) for details.
+EOF
+  exit 2
+}
+
+# ---- parse args ----
+case $# in
+  1)
+    SHARE_NAME=$1
+    # Infer repo-path from cwd. cwd must be inside ~/code/<repo-path> but NOT
+    # inside ~/code/shares/ (you don't share from a share — that's still
+    # possible via sapling but not the idiomatic entry point).
+    if [[ $PWD != "$CODE_ROOT"/* ]]; then
+      die "cwd must be inside $CODE_ROOT/<repo> (got: $PWD)"
+    fi
+    if [[ $PWD == "$SHARES_ROOT"/* ]]; then
+      die "cwd is inside a share; pass explicit repo-path to share from the source"
+    fi
+    # Strip CODE_ROOT prefix. Everything up to the repo root is <repo-path>.
+    # We walk up from cwd until we find a .sl directory; that's the repo root.
+    REPO_ROOT=$PWD
+    while [[ $REPO_ROOT != "$CODE_ROOT" && $REPO_ROOT != / ]]; do
+      if [[ -d $REPO_ROOT/.sl ]]; then
+        break
+      fi
+      REPO_ROOT=$(dirname "$REPO_ROOT")
+    done
+    if [[ $REPO_ROOT == "$CODE_ROOT" || $REPO_ROOT == / ]]; then
+      die "could not find a .sl ancestor of $PWD"
+    fi
+    REPO_PATH=${REPO_ROOT#$CODE_ROOT/}
+    ;;
+  2)
+    REPO_PATH=$1
+    SHARE_NAME=$2
+    ;;
+  *)
+    usage
+    ;;
+esac
+
+[[ -n $REPO_PATH ]] || die "empty repo-path"
+[[ -n $SHARE_NAME ]] || die "empty share-name"
+# Disallow slashes in share-name (they'd mess with tmux window naming and
+# filesystem structure).
+[[ $SHARE_NAME != */* ]] || die "share-name must not contain slashes (got: $SHARE_NAME)"
+
+SOURCE="$CODE_ROOT/$REPO_PATH"
+TARGET="$SHARES_ROOT/$REPO_PATH/$SHARE_NAME"
+
+# ---- validation ----
+[[ -d $SOURCE ]] || die "source repo not found: $SOURCE"
+[[ -d $SOURCE/.sl ]] || die "source is not a native sapling repo (no .sl dir): $SOURCE"
+[[ ! -e $TARGET ]] || die "share already exists: $TARGET"
+
+# ---- create share ----
+mkdir -p "$(dirname "$TARGET")"
+printf '→ sl share %s %s\n' "$SOURCE" "$TARGET"
+sl share "$SOURCE" "$TARGET"
+
+# ---- tmux window ----
+REPO_TAIL=${REPO_PATH##*/}
+WINDOW_NAME="$REPO_TAIL/$SHARE_NAME"
+
+if [[ -n ${TMUX:-} ]]; then
+  tmux new-window -n "$WINDOW_NAME" -c "$TARGET"
+  printf '→ opened tmux window "%s" in session "%s"\n' \
+    "$WINDOW_NAME" \
+    "$(tmux display-message -p '#S')"
+else
+  printf '→ share ready at: %s\n' "$TARGET"
+  printf '  (not in tmux — cd there manually or open a new window)\n'
+fi
