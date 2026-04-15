@@ -81,7 +81,11 @@ abbr sa 'sl add'
 abbr sc 'sl commit'
 abbr sp 'sl push'
 abbr spl 'sl pull --rebase'
-abbr sar 'sl addremove' 
+abbr sar 'sl addremove'
+# Note: plain `sl` (no args) defaults to `sl ssl` (Super Smartlog) via the
+# function in functions/sl.fish. A function is used instead of an abbreviation
+# because `abbr sl 'sl ssl'` would expand `sl status` into `sl ssl status`,
+# breaking every other sl subcommand.
 
 # GitHub CLI
 abbr pr 'gh pr'

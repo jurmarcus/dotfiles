@@ -248,6 +248,18 @@ alias sp="sl push"
 alias spl="sl pull --rebase"
 alias sar="sl addremove"
 
+# Plain `sl` with no args defaults to Super Smartlog (PR status + CI inline).
+# Implemented as a function, NOT an alias, so `sl status` etc. still work —
+# `alias sl='sl ssl'` would expand `sl status` into `sl ssl status`, breaking
+# every other sl subcommand. The function only intercepts the zero-arg case.
+sl() {
+  if [ $# -eq 0 ]; then
+    command sl ssl
+  else
+    command sl "$@"
+  fi
+}
+
 # GitHub CLI
 alias pr="gh pr"
 alias issue="gh issue"
