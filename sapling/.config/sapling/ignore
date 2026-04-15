@@ -1,6 +1,10 @@
-# Global git excludesfile — applies to every repo on this machine that doesn't
-# already cover these patterns in its own .gitignore. Sapling does NOT read
-# this file; see ~/.config/sapling/ignore for the sapling equivalent.
+# Global sapling ignore — applies to all sapling repos on this machine
+# that don't already cover these patterns in their own .gitignore/.slignore.
+#
+# Mirror of ~/.config/git/ignore because sapling does NOT read git's global
+# excludesfile. Keep them in sync when adding new entries.
+#
+# Wired into sapling via [ui] ignore = ~/.config/sapling/ignore in sapling.conf.
 
 # Claude Code local settings (machine-specific)
 **/.claude/settings.local.json
