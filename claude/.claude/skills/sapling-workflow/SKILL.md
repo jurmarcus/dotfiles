@@ -24,16 +24,43 @@ Other `git X → sl Y` mappings are mostly mechanical (`git status → sl status
 From ezyang's blog post (https://blog.ezyang.com/2026/03/parallel-agents-heart-sapling/):
 
 ```
-     <one sapling repo>
+     ~/code/<repo>/                         ← source (native .sl)
             │
-            ├── sl share . ../repo-work-a    # worktree A: top of stack, feature work
-            ├── sl share . ../repo-work-b    # worktree B: mid-stack, review fixes
-            └── sl share . ../repo-work-c    # worktree C: E2E tests
+            ├── sl-share-new feature-x      → ~/code/shares/<repo>/feature-x/
+            ├── sl-share-new review-fixes   → ~/code/shares/<repo>/review-fixes/
+            └── sl-share-new e2e-tests      → ~/code/shares/<repo>/e2e-tests/
 ```
 
-All three shares read/write the same store. Each has its own `.` (current commit) and working directory. Edits in A don't affect B's working copy. When one share amends a commit, the obsmarker propagates to the store; other shares whose `.` is now pointing at an obsoleted commit can catch up via `sl follow`.
+All three shares read/write the same store. Each has its own `.` (current commit) and working directory. Edits in one share don't affect another share's working copy. When one share amends a commit, the obsmarker propagates to the store; other shares whose `.` is now pointing at an obsoleted commit can catch up via `sl follow`.
 
-**The two aliases baked into the user's sapling.conf:**
+### The `sl-share-new` helper
+
+The user has a helper script at `~/.local/bin/sl-share-new` (source: `~/dotfiles/sapling/.local/bin/sl-share-new`) that:
+1. Runs `sl share <source> ~/code/shares/<repo-path>/<name>/`
+2. Creates a new tmux window named `<repo-tail>/<name>` cd'd into the share
+3. Validates: source must be a native sapling repo, target must not exist, cwd must be under `~/code/` (or pass an explicit `<repo-path>`)
+
+**Usage:**
+
+```bash
+# From inside any native sapling repo under ~/code/:
+sl-share-new feature-x
+# ↪ creates ~/code/shares/<repo>/feature-x/ (layout mirrors source path)
+# ↪ opens tmux window "<repo-tail>/feature-x" in the current session
+
+# Explicit form for nested repos or when cwd isn't helpful:
+sl-share-new sudachi experiment
+# ↪ creates ~/code/shares/sudachi/experiment/
+
+# For nested source layouts (rare — deprecated in favor of monorepos):
+sl-share-new parent/child feature-x
+# ↪ creates ~/code/shares/parent/child/feature-x/
+# ↪ window name is "child/feature-x" (last path segment only)
+```
+
+**ALWAYS reach for `sl-share-new` first.** It's faster than manual `sl share` + `tmux new-window`, it enforces the layout convention, and it gives error messages that are useful.
+
+### The two parallel-work aliases (configured globally in sapling.conf)
 
 ```ini
 [alias]
@@ -41,17 +68,89 @@ follow = goto last(successors(.))
 adopt = rebase -s 'children(parents(.)) - .' -d .
 ```
 
-- **`sl follow`** — chase the obsmarker chain to the live successor of `.`. Use this in share B after share A amended a commit that B was sitting on.
+- **`sl follow`** — chase the obsmarker chain to the live successor of `.`. Use this in share B after share A amended a commit that B was sitting on. No-op when already on the live successor, so safe to run speculatively.
 - **`sl adopt`** — rebase any newly-inserted children of our parent onto `.`. Use when share A inserted a new commit mid-stack and share B needs to rebase its work on top.
 
-**Canonical multi-agent flow:**
+### End-to-end recipe: spawn → work → finish
+
+**1. Start parallel work** (from the source repo):
+
+```bash
+cd ~/code/<repo>
+sl-share-new <meaningful-name>
+# The script opens a new tmux window cd'd into the share.
+# Switch to that window to start working.
+```
+
+**2. Do work in the share** (just like any other sapling repo):
+
+```bash
+# (now in the share's tmux window)
+sl                              # smartlog via sl ssl function
+<edit files>
+sl commit -m "..."              # normal commit
+sl amend                        # normal amend (auto-restacks descendants)
+sl absorb                       # line-aware amend
+```
+
+All of this flows to the shared store. Other shares can see the changes.
+
+**3. Coordinate across shares** (when another share amended something you were on):
+
+```bash
+sl follow                       # walks successors(.) to the live commit
+# Your working copy is now at the new version of whatever you were on.
+# Sapling updates the working copy as part of the goto.
+```
+
+If you want to see the positions of other shares on the same repo:
+
+```bash
+# One-shot "where is share X?":
+sl -R ~/code/shares/<repo>/<name> whereami
+
+# All shares at once:
+for share in ~/code/shares/<repo>/*/; do
+  name=$(basename "$share")
+  printf "  %-30s %s\n" "$name" "$(sl -R "$share" whereami)"
+done
+```
+
+(There's no single-view multi-share dashboard in ISL or sl smartlog. Use `sl whereami` per share, or open multiple ISL tabs.)
+
+**4. Push work from a share** (shares push to the same origin as the source):
+
+```bash
+sl push --to main               # push to origin/main (REGULAR fast-forward)
+sl push --to main --force       # force push if needed (e.g., after graft rewriting SHAs)
+```
+
+**IMPORTANT: `sl push --to main`, NOT `sl push --to remote/main`.** The `remote/` prefix is the LOCAL name sapling uses for remote bookmarks — it's not part of the destination on the remote. Passing `--to remote/main` pushes to a branch named literally `remote/main` on origin, which is almost certainly not what you want. (If you hit this bug, delete the stray branch via `gh api --method DELETE /repos/<org>/<repo>/git/refs/heads/remote/main`.)
+
+**5. Clean up a share when done**:
+
+```bash
+# Kill the tmux window (run from any pane in the same session):
+tmux list-windows -F '#{window_index}:#{window_name}' | \
+  awk -F: '$2 == "<window-name>" {print $1}' | \
+  xargs -I{} tmux kill-window -t {}
+
+# Delete the share directory:
+rm -rf ~/code/shares/<repo>/<name>
+```
+
+**There is no `sl unshare` step.** Deleting the share directory is sufficient — the store stays intact at the source. If the source directory itself is deleted while shares exist, the shares become dangling (their `sharedpath` points at a nonexistent directory). Don't delete the source while shares are active.
+
+### Canonical multi-agent flow (ezyang pattern)
 
 1. Agent A, working in share-a, amends the schema commit. Sapling auto-restacks downstream work in share-a.
-2. Agent B, working in share-b, was parked on the old schema commit. Agent B runs `sl follow` to chase the obsmarker chain to the new schema commit.
+2. Agent B, working in share-b, was parked on the old schema commit. Agent B runs `sl follow` to chase the obsmarker chain to the new schema commit. Sapling updates share-b's working copy.
 3. Agent B commits a new change on top; that change is now in the store.
 4. Agent C, working in share-c (E2E tests), runs `sl follow` to catch up to the full new state.
 
-**When recommending parallel work**, suggest `sl share` explicitly. Do not suggest `git worktree add` under any circumstances in `~/code/` — it will fail and the user has explicitly chosen sapling-only.
+The `.` pointer in each share is per-working-copy, but the commit graph is per-store. All changes made by any agent are visible to all other agents immediately (via `sl smartlog` or `sl -R <share> smartlog`).
+
+**When recommending parallel work**, reach for `sl-share-new` explicitly. Do NOT suggest `git worktree add` under any circumstances in `~/code/` — it will fail (no `.git` directory) and the user has explicitly chosen sapling-only.
 
 ## S-tier daily commands
 
