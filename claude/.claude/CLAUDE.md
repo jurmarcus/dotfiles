@@ -273,6 +273,37 @@ Templates in `~/.config/templates/`.
 | Function | `.zshrc` | `functions/*.fish` |
 | Environment | `.zshrc` | `config.fish` |
 
+## Superpowers skill overrides (sapling-first)
+
+These overrides resolve conflicts between superpowers skills (which assume git) and this machine's sapling-first setup. These instructions have **user-instruction priority** — they take precedence over any conflicting guidance in superpowers skills themselves, per the instruction-priority rules in `superpowers:using-superpowers`.
+
+### `using-git-worktrees` → `sl-share-new`
+
+**Trigger**: any superpowers skill invocation that calls for `using-git-worktrees` (called by `brainstorming` Phase 4, `subagent-driven-development`, `executing-plans`, and any skill needing an isolated workspace).
+
+**Affected directories**: **any native `.sl` sapling repo** — currently `~/code/*` (all repos) and `~/dotfiles/`. Detect by walking up from cwd looking for a `.sl` directory with no sibling `.git` directory. Git worktree commands will fail in these locations with `fatal: not a git repository`.
+
+**Substitution** — do NOT run `using-git-worktrees`' git commands. Use the sapling equivalent:
+
+| Step in git-worktrees skill | Sapling equivalent |
+|---|---|
+| Create worktree (`git worktree add .worktrees/<branch> -b <branch>`) | Run `sl-share-new <name>` from the repo root. Helper creates `~/code/shares/<repo-path>/<name>/` (or for dotfiles: `~/code/shares/../dotfiles/<name>/` — use explicit path) and opens a tmux window cd'd into it. |
+| Verify `.worktrees/` is gitignored | Skip. `~/code/shares/` lives outside any repo; no ignore-list concerns. |
+| Run project setup (npm install / cargo build / etc.) | Unchanged. The share has a full working copy; run setup commands as normal. |
+| Verify clean test baseline | Unchanged. Use `sl status` + project test commands. |
+| Report location | Report as `~/code/shares/<repo-path>/<name>/` instead of `.worktrees/<name>/`. |
+| Cleanup after work (`git worktree remove`) | `rm -rf ~/code/shares/<repo-path>/<name>/`. No `sl unshare` step; sapling shares are just directories with a `sharedpath` file pointing at the source's `.sl`. |
+
+**`finishing-a-development-branch` note**: that skill pairs with `using-git-worktrees` for cleanup. Same rule applies — use `rm -rf` on the share, no git-worktree-removal commands.
+
+**Full procedural walkthrough** lives in the `sapling-workflow` skill's "Parallel-work pattern" section. Read that skill when the override is triggered to get the complete end-to-end recipe (spawn → work → coordinate via `sl follow` / `sl adopt` → push → clean up).
+
+**Helper source**: `~/dotfiles/sapling/.local/bin/sl-share-new` (stowed to `~/.local/bin/sl-share-new`).
+
+### Non-override case: git repos outside `~/code/` and `~/dotfiles/`
+
+If a superpowers skill runs `using-git-worktrees` in a directory that IS a real git repo (has `.git/` and no `.sl/`), use the normal git-worktrees flow. The override only applies when sapling is the VCS. Currently there are no such repos on this machine — everything under `~/code/` and `~/dotfiles/` is native `.sl`, and `~/notes/` is Obsidian Sync (not VCS at all). This case is future-proofing.
+
 ## Claude Code Automation
 
 Full automation docs: `~/.claude/AUTOMATION.md`
