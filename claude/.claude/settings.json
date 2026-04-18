@@ -174,7 +174,8 @@
     ]
   },
   "effortLevel": "high",
-  "voiceEnabled": true,
   "autoDreamEnabled": true,
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "voiceEnabled": true,
+  "tui": "fullscreen"
 }
