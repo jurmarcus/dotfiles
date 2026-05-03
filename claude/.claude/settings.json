@@ -174,8 +174,9 @@
     ]
   },
   "effortLevel": "high",
+  "tui": "fullscreen",
   "autoDreamEnabled": true,
   "skipDangerousModePermissionPrompt": true,
   "voiceEnabled": true,
-  "tui": "fullscreen"
+  "teammateMode": "tmux"
 }

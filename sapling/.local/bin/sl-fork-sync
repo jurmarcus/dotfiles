@@ -1,0 +1,171 @@
+#!/usr/bin/env bash
+# sl-fork-sync: replay your local fork changes onto upstream HEAD as one
+#               atomic commit, then force-push to your fork's main.
+#
+# Usage:
+#   sl-fork-sync                          # defaults: upstream=upstream/main, fork=main
+#   sl-fork-sync -u upstream/master       # custom upstream remote bookmark
+#   sl-fork-sync -f main                  # custom fork branch name
+#   sl-fork-sync -m "feat: my message"    # commit message (default: opens editor)
+#   sl-fork-sync -c "cargo check -p foo"  # validation command after patch (regen lockfiles)
+#   sl-fork-sync -n                       # dry-run (computes diff, doesn't apply/push)
+#
+# What it does:
+#   1. sl pull <upstream-remote>
+#   2. Computes cumulative diff: ancestor(., <upstream>) → .
+#   3. Strips lockfiles from the patch (Cargo.lock, package-lock.json, etc — they regen)
+#   4. sl goto <upstream>
+#   5. patch -p1 --forward < diff
+#   6. sl addremove (picks up new files)
+#   7. Runs validation command if given (regenerates lockfiles)
+#   8. sl commit (-m if given, else editor)
+#   9. sl push --to <fork-branch> --force
+#
+# Bails on:
+#   - dirty working copy
+#   - no commits to replay
+#   - patch conflicts (review .rej files; the patch is at /tmp/sl-fork-sync-<repo>.patch)
+#   - validation command failure
+#
+# This script is idempotent for the no-op case: if your tip is already
+# the upstream tip with no local changes, it exits cleanly.
+
+set -euo pipefail
+
+UPSTREAM="upstream/main"
+FORK_BRANCH="main"
+COMMIT_MSG=""
+CHECK_CMD=""
+DRY_RUN=0
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -u|--upstream)    UPSTREAM="$2"; shift 2 ;;
+    -f|--fork-branch) FORK_BRANCH="$2"; shift 2 ;;
+    -m|--message)     COMMIT_MSG="$2"; shift 2 ;;
+    -c|--check)       CHECK_CMD="$2"; shift 2 ;;
+    -n|--dry-run)     DRY_RUN=1; shift ;;
+    -h|--help)
+      sed -n '2,/^$/p' "$0" | sed 's/^# \?//'
+      exit 0 ;;
+    *) echo "unknown arg: $1" >&2; exit 2 ;;
+  esac
+done
+
+# Verify we're in a sapling repo
+if ! sl root >/dev/null 2>&1; then
+  echo "fatal: not in a sapling repo" >&2
+  exit 1
+fi
+REPO_ROOT="$(sl root)"
+REPO_NAME="$(basename "$REPO_ROOT")"
+cd "$REPO_ROOT"
+
+# Verify clean working copy
+if [[ -n "$(sl status 2>/dev/null)" ]]; then
+  echo "fatal: working copy not clean. Commit or shelve first." >&2
+  sl status >&2
+  exit 1
+fi
+
+# Pull upstream remote (extract remote name from "<remote>/<branch>")
+UPSTREAM_REMOTE="${UPSTREAM%%/*}"
+echo "==> sl pull $UPSTREAM_REMOTE"
+sl pull "$UPSTREAM_REMOTE" 2>&1 | grep -v "^warning: failed to read from Github" | grep -v "not marking commits as landed" || true
+
+# Verify upstream bookmark resolves
+if ! UPSTREAM_REV=$(sl log -r "$UPSTREAM" -T '{node|short}' 2>/dev/null); then
+  echo "fatal: cannot resolve $UPSTREAM" >&2
+  exit 1
+fi
+CURRENT_REV=$(sl log -r . -T '{node|short}')
+
+if [[ "$CURRENT_REV" == "$UPSTREAM_REV" ]]; then
+  echo "==> already at $UPSTREAM ($UPSTREAM_REV) — nothing to do"
+  exit 0
+fi
+
+# Find common ancestor
+ANCESTOR=$(sl log -r "ancestor(., $UPSTREAM)" -T '{node|short}')
+echo "==> ancestor: $ANCESTOR  current: $CURRENT_REV  upstream: $UPSTREAM_REV"
+
+# Capture cumulative diff
+PATCH="/tmp/sl-fork-sync-${REPO_NAME}.patch"
+sl diff -r "$ANCESTOR" -r "$CURRENT_REV" > "$PATCH"
+
+if [[ ! -s "$PATCH" ]]; then
+  echo "==> no diff between ancestor and current — nothing to replay"
+  echo "==> if you just want to fast-forward, run: sl goto $UPSTREAM && sl push --to $FORK_BRANCH --force"
+  exit 0
+fi
+
+# Strip lockfiles from the patch (they regenerate)
+LOCKFILES=(Cargo.lock package-lock.json yarn.lock pnpm-lock.yaml bun.lockb uv.lock poetry.lock)
+PATCH_STRIPPED="/tmp/sl-fork-sync-${REPO_NAME}-no-lock.patch"
+awk -v lockfiles="${LOCKFILES[*]}" '
+  BEGIN {
+    n = split(lockfiles, arr, " ")
+    for (i = 1; i <= n; i++) lock[arr[i]] = 1
+    skip = 0
+  }
+  /^diff --git/ {
+    skip = 0
+    for (f in lock) {
+      if (index($0, "/" f) > 0) { skip = 1; break }
+    }
+  }
+  !skip { print }
+' "$PATCH" > "$PATCH_STRIPPED"
+
+PATCH_LINES=$(wc -l < "$PATCH_STRIPPED")
+echo "==> stripped patch: $PATCH_LINES lines (lockfiles excluded — will regen)"
+
+if [[ $DRY_RUN -eq 1 ]]; then
+  echo "==> dry-run: patch saved at $PATCH_STRIPPED (full at $PATCH)"
+  echo "==> would: sl goto $UPSTREAM && patch -p1 < $PATCH_STRIPPED && sl commit && sl push --to $FORK_BRANCH --force"
+  exit 0
+fi
+
+# Dry-run the patch first
+if ! patch -p1 --dry-run --forward < "$PATCH_STRIPPED" >/dev/null 2>&1; then
+  echo "fatal: patch would not apply cleanly to $UPSTREAM. Conflicts:" >&2
+  patch -p1 --dry-run --forward < "$PATCH_STRIPPED" 2>&1 | grep -E "FAILED|Hunk|Reversed" >&2 || true
+  echo "" >&2
+  echo "Patch is at: $PATCH_STRIPPED" >&2
+  echo "Resolve manually: sl goto $UPSTREAM, then patch -p1 --forward < $PATCH_STRIPPED, fix .rej files, sl commit, sl push --to $FORK_BRANCH --force" >&2
+  exit 1
+fi
+
+# Move to upstream
+echo "==> sl goto $UPSTREAM"
+sl goto "$UPSTREAM"
+
+# Apply patch
+echo "==> applying patch ($PATCH_LINES lines)"
+patch -p1 --forward < "$PATCH_STRIPPED"
+
+# Track new files
+sl addremove
+
+# Run validation if given (regenerates lockfiles)
+if [[ -n "$CHECK_CMD" ]]; then
+  echo "==> $CHECK_CMD"
+  eval "$CHECK_CMD"
+fi
+
+# Commit
+if [[ -n "$COMMIT_MSG" ]]; then
+  sl commit -m "$COMMIT_MSG"
+else
+  sl commit
+fi
+
+NEW_REV=$(sl log -r . -T '{node|short}')
+echo "==> committed $NEW_REV on top of $UPSTREAM_REV"
+
+# Push
+echo "==> sl push --to $FORK_BRANCH --force"
+sl push --to "$FORK_BRANCH" --force
+
+echo ""
+echo "✓ Fork synced. New tip: $NEW_REV (was $CURRENT_REV)"
