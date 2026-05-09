@@ -48,6 +48,8 @@ STEPS:
     6. macOS settings
     7. Default applications (duti)
     8. VSCodium extensions
+    9. Tailscale SSH mesh
+    10. Syncthing claude memory sync
 
 EXAMPLES:
     $(basename "$0")              # Full bootstrap
@@ -220,10 +222,26 @@ else
   echo "  tailscale up && ~/dotfiles/bootstrap/tailscale.sh"
 fi
 
+# Step 10: Syncthing claude memory sync
+step "Step 10: Syncthing claude memory sync"
+if command -v syncthing >/dev/null 2>&1 && [[ -f "${BOOTSTRAP_DIR}/syncthing.sh" ]]; then
+  if [[ "$DRY_RUN" == "true" ]]; then
+    echo -e "${YELLOW}[dry-run]${NC} Would configure Syncthing for claude memories"
+  else
+    bash "${BOOTSTRAP_DIR}/syncthing.sh"
+  fi
+  ok "Syncthing configured"
+else
+  warn "Syncthing not installed (brew bundle should have installed it). Skipping."
+  warn "  Re-run with: ~/dotfiles/bootstrap/syncthing.sh"
+fi
+
 echo -e "\n${GREEN}✅ Bootstrap complete!${NC}"
 echo ""
 echo "Next steps:"
 echo "  1. Open a new terminal for shell changes"
 echo "  2. Log out/in for some macOS settings to take effect"
 echo "  3. If Tailscale was skipped: tailscale up && ~/dotfiles/bootstrap/tailscale.sh"
+echo "  4. Once 2+ macOS peers are bootstrapped, pair the syncthing mesh:"
+echo "       ~/dotfiles/bootstrap/syncthing-mesh.sh --seed-from <canonical-host>"
 echo ""
