@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+# Add a new Syncthing folder to claude-sync config and register it via the API.
+# Idempotent: re-running with the same args is a no-op (after first success).
+set -euo pipefail
+
+usage() {
+  cat <<EOF
+Usage: $(basename "$0") <folder-id> <local-path> <label> <stignore-template>
+
+Args:
+  folder-id           unique syncthing folder ID (lowercase, hyphens)
+  local-path          absolute path; ~ and \$HOME are expanded
+  label               human-readable label (quote if it contains spaces)
+  stignore-template   filename in ~/.config/claude-sync/stignore/, or "none"
+
+Effects:
+  1. Append entry to ~/.config/claude-sync/folders.conf (if not already present)
+  2. Create folder via Syncthing REST API (if not already configured)
+  3. Deploy .stignore from template (if template != none)
+  4. Share folder with all currently-paired claude-mem-* devices
+
+Example:
+  $(basename "$0") claude-plans \$HOME/Notes/plans/claude-personal \\
+    "Claude Plans" claude-plans
+EOF
+}
+
+[[ $# -eq 4 ]] || { usage; exit 1; }
+
+FOLDER_ID="$1"
+LOCAL_PATH="${2/#\~/$HOME}"
+LOCAL_PATH="$(eval echo "$LOCAL_PATH")"
+LABEL="$3"
+STIGNORE_TEMPLATE="$4"
+
+CONF_FILE="$HOME/.config/claude-sync/folders.conf"
+STIGNORE_DIR="$HOME/.config/claude-sync/stignore"
+CONFIG_XML="$HOME/Library/Application Support/Syncthing/config.xml"
+API_URL="http://127.0.0.1:8384/rest"
+
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+RED='\033[0;31m'
+NC='\033[0m'
+ok()   { echo -e "${GREEN}✓${NC} $*"; }
+warn() { echo -e "${YELLOW}!${NC} $*"; }
+die()  { echo -e "${RED}error:${NC} $*" >&2; exit 1; }
+
+# Validate inputs
+[[ "$LOCAL_PATH" = /* ]] || die "local-path must be absolute (got: $LOCAL_PATH)"
+[[ -f "$CONFIG_XML" ]] || die "syncthing not bootstrapped (no $CONFIG_XML)"
+if [[ "$STIGNORE_TEMPLATE" != "none" ]]; then
+  [[ -f "$STIGNORE_DIR/$STIGNORE_TEMPLATE" ]] \
+    || die "stignore template not found: $STIGNORE_DIR/$STIGNORE_TEMPLATE"
+fi
+
+api_key=$(xmllint --xpath 'string(/configuration/gui/apikey)' "$CONFIG_XML" 2>/dev/null) \
+  || die "failed to read API key from $CONFIG_XML"
+[[ -n "$api_key" ]] || die "API key empty in $CONFIG_XML"
+curl_api() { curl -sf -H "X-API-Key: $api_key" "$@"; }
+
+# 1. Ensure folder is in folders.conf
+if grep -qE "^\s*$FOLDER_ID\b" "$CONF_FILE"; then
+  ok "$FOLDER_ID already in folders.conf"
+else
+  printf '%s %s "%s" %s\n' "$FOLDER_ID" "$LOCAL_PATH" "$LABEL" "$STIGNORE_TEMPLATE" >> "$CONF_FILE"
+  ok "appended $FOLDER_ID to folders.conf"
+fi
+
+# 2. Ensure target dir exists
+mkdir -p "$LOCAL_PATH"
+
+# 3. Register folder via API (idempotent)
+existing=$(curl_api "$API_URL/config/folders" | jq -r --arg id "$FOLDER_ID" '.[] | select(.id == $id) | .id')
+if [[ -n "$existing" ]]; then
+  ok "$FOLDER_ID already registered with syncthing"
+else
+  # Discover currently-paired devices on the existing claude-mem-global folder
+  shared_devices=$(curl_api "$API_URL/config/folders" \
+    | jq -c '[.[] | select(.id == "claude-mem-global") | .devices[]] // []')
+  body=$(jq -n \
+    --arg id "$FOLDER_ID" \
+    --arg label "$LABEL" \
+    --arg path "$LOCAL_PATH" \
+    --argjson devices "$shared_devices" \
+    '{
+       id: $id,
+       label: $label,
+       path: $path,
+       type: "sendreceive",
+       fsWatcherEnabled: true,
+       fsWatcherDelayS: 10,
+       rescanIntervalS: 3600,
+       versioning: { type: "simple", params: { keep: "5" } },
+       devices: $devices
+     }')
+  curl -sf -H "X-API-Key: $api_key" -H "Content-Type: application/json" \
+    -X POST -d "$body" "$API_URL/config/folders" >/dev/null \
+    || die "failed to register folder via API"
+  ok "registered $FOLDER_ID with syncthing (shared with $(echo "$shared_devices" | jq 'length') devices)"
+fi
+
+# 4. Deploy .stignore
+if [[ "$STIGNORE_TEMPLATE" != "none" ]]; then
+  install -m 644 "$STIGNORE_DIR/$STIGNORE_TEMPLATE" "$LOCAL_PATH/.stignore"
+  ok "deployed .stignore from template '$STIGNORE_TEMPLATE'"
+fi
+
+ok "done. run 'claude-sync-status' to verify."
