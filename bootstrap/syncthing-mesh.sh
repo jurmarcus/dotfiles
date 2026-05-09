@@ -75,17 +75,20 @@ mapfile -t peer_hosts < <(
 [[ ${#peer_hosts[@]} -gt 0 ]] || die "no macOS peers found in tailscale mesh"
 ok "peers: ${peer_hosts[*]}"
 
-all_hosts=("$self_host" "${peer_hosts[@]}")
-
-# 2. Verify each peer is bootstrapped
+# 2. Verify each peer is bootstrapped (skip unreachable ones — macOS mesh is often partial)
 step "Verifying peers have run bootstrap/syncthing.sh"
+reachable_peers=()
 for h in "${peer_hosts[@]}"; do
   if ssh -o ConnectTimeout=5 -o BatchMode=yes "$h" 'test -f ~/.claude/.syncthing-device-id' 2>/dev/null; then
     ok "$h: bootstrapped"
+    reachable_peers+=("$h")
   else
-    die "$h: not bootstrapped or unreachable. SSH there and run bootstrap/syncthing.sh first."
+    warn "$h: unreachable or not bootstrapped — skipping (run bootstrap/syncthing.sh there later)"
   fi
 done
+peer_hosts=("${reachable_peers[@]}")
+[[ ${#peer_hosts[@]} -gt 0 ]] || die "no reachable bootstrapped peers — run bootstrap/syncthing.sh on at least one peer first"
+all_hosts=("$self_host" "${peer_hosts[@]}")
 
 # 3. Optional seeding
 if [[ -n "$SEED_FROM" ]]; then
