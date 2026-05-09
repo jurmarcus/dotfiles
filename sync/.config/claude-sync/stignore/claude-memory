@@ -1,0 +1,3 @@
+// Syncthing ignore patterns for ~/.claude/memory/
+// Default: sync everything in this folder.
+// Empty file would also work; this header documents intent.

@@ -1,0 +1,7 @@
+// Syncthing ignore patterns for ~/.claude/projects/
+// Goal: sync ONLY <project-slug>/memory/** subdirs.
+// First match wins, so re-include patterns must come BEFORE the catch-all '*'.
+
+!**/memory
+!**/memory/**
+*
