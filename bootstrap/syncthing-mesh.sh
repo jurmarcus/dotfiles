@@ -21,8 +21,20 @@ ok()   { echo -e "${GREEN}✓${NC} $1"; }
 warn() { echo -e "${YELLOW}!${NC} $1"; }
 die()  { echo -e "${RED}error:${NC} $1" >&2; exit 1; }
 
-# Folders that should be shared with all paired peers
-FOLDER_IDS=(claude-mem-global claude-mem-projects)
+# Folders that should be shared with all paired peers — read from config (single source of truth)
+CONF_FILE="$HOME/.config/claude-sync/folders.conf"
+[[ -f "$CONF_FILE" ]] || die "folders.conf missing — run 'stow sync' first"
+mapfile -t FOLDER_IDS < <(
+  awk '
+    # strip inline comments
+    { sub(/#.*/, "") }
+    # skip blank lines
+    NF == 0 { next }
+    # first field is the folder ID
+    { print $1 }
+  ' "$CONF_FILE"
+)
+[[ ${#FOLDER_IDS[@]} -gt 0 ]] || die "no folders defined in $CONF_FILE"
 
 DRY_RUN=false
 SEED_FROM=""
