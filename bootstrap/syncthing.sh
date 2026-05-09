@@ -6,12 +6,13 @@
 # Steps:
 #   1. Verify syncthing is installed
 #   2. Start brew services syncthing (no-op if running)
-#   3. Wait for REST API
-#   4. Read device ID + API key
-#   5. For each folder in ~/.config/claude-sync/folders.conf:
+#   3. Read API key from config.xml (Syncthing v2+ requires auth on all REST)
+#   4. Wait for REST API (authenticated ping)
+#   5. Read device ID via authenticated API
+#   6. For each folder in ~/.config/claude-sync/folders.conf:
 #        - Register via API if missing
 #        - Deploy .stignore from template
-#   6. Write device ID to ~/.claude/.syncthing-device-id
+#   7. Write device ID to ~/.claude/.syncthing-device-id
 #
 # Run from any macOS host AFTER `stow sync` has been applied.
 #
