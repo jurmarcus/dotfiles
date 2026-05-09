@@ -28,3 +28,10 @@ brew "just"         # modern make (task runner)
 
 # iOS/macOS
 brew "cocoapods"    # dependency manager
+
+# Android (added with apps/jisho-android scaffold)
+cask "android-commandlinetools"   # sdkmanager + avdmanager
+cask "android-platform-tools"     # adb + fastboot, brew-managed
+brew "gradle"                     # one-time wrapper bootstrap; wrapper used thereafter
+brew "scrcpy"                     # screen mirror — emu/Tailscale device → mac window
+# cask "android-studio"           # optional; uncomment if hybrid IDE workflow desired
