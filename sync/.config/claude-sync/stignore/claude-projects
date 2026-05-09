@@ -2,6 +2,12 @@
 // Goal: sync ONLY <project-slug>/memory/** subdirs.
 // First match wins, so re-include patterns must come BEFORE the catch-all '*'.
 
+// Per-machine transient state — Claude Code's memory-edit lock files. Ignore even inside memory/.
+**/*.consolidate-lock
+
+// Re-include memory dirs and their contents.
 !**/memory
 !**/memory/**
+
+// Catch-all: ignore everything else.
 *
