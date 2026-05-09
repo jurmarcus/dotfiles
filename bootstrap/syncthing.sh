@@ -62,19 +62,8 @@ else
   ok "brew service started"
 fi
 
-# 3. Wait for API
-step "Waiting for REST API"
-for i in $(seq 1 20); do
-  if curl -sf "$API_URL/system/ping" >/dev/null 2>&1; then
-    ok "API responding ($i tries)"
-    break
-  fi
-  sleep 0.5
-  [[ $i -eq 20 ]] && die "API did not come up after 10s"
-done
-
-# 4. Extract device ID + API key from config.xml
-step "Reading device ID and API key"
+# 3. Read API key from config.xml (Syncthing v2+ requires auth on all endpoints)
+step "Reading API key from config"
 api_key=$(xmllint --xpath 'string(/configuration/gui/apikey)' "$CONFIG_XML" 2>/dev/null) \
   || die "failed to read API key from $CONFIG_XML"
 [[ -n "$api_key" ]] || die "API key empty in $CONFIG_XML"
@@ -83,6 +72,18 @@ curl_api() {
   curl -sf -H "X-API-Key: $api_key" "$@"
 }
 
+# 4. Wait for API (authenticated — v2 returns 403 CSRF on unauthenticated /rest/*)
+step "Waiting for REST API"
+for i in $(seq 1 20); do
+  if curl_api "$API_URL/system/ping" >/dev/null 2>&1; then
+    ok "API responding ($i tries)"
+    break
+  fi
+  sleep 0.5
+  [[ $i -eq 20 ]] && die "API did not come up after 10s"
+done
+
+# 4b. Read device ID via authenticated API
 device_id=$(curl_api "$API_URL/system/status" | jq -r '.myID')
 [[ -n "$device_id" && "$device_id" != "null" ]] || die "could not read device ID from API"
 ok "device ID: $device_id"
