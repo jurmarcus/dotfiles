@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# Print Syncthing claude memory sync status: folders, peers, conflicts.
+set -euo pipefail
+
+CONFIG_XML="$HOME/Library/Application Support/Syncthing/config.xml"
+API_URL="http://127.0.0.1:8384/rest"
+
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+RED='\033[0;31m'
+BOLD='\033[1m'
+NC='\033[0m'
+
+die() { echo -e "${RED}error:${NC} $*" >&2; exit 1; }
+
+[[ -f "$CONFIG_XML" ]] || die "syncthing config not found at $CONFIG_XML — has it been bootstrapped?"
+
+api_key=$(xmllint --xpath 'string(/configuration/gui/apikey)' "$CONFIG_XML" 2>/dev/null) \
+  || die "failed to read API key from $CONFIG_XML"
+[[ -n "$api_key" ]] || die "API key empty in $CONFIG_XML"
+
+curl_api() {
+  curl -sf -H "X-API-Key: $api_key" "$API_URL$1"
+}
+
+if ! curl_api /system/ping >/dev/null 2>&1; then
+  die "syncthing daemon not responding at $API_URL — try 'brew services start syncthing'"
+fi
+
+echo -e "${BOLD}Syncthing claude memory status${NC}"
+echo
+
+# Folders
+echo -e "${BOLD}Folders:${NC}"
+folders_json=$(curl_api /config/folders)
+echo "$folders_json" | jq -r '.[] | select(.id | startswith("claude-")) | "\(.id)\t\(.path)"' | while IFS=$'\t' read -r fid fpath; do
+  status=$(curl_api "/db/status?folder=$fid")
+  state=$(echo "$status" | jq -r '.state')
+  global_files=$(echo "$status" | jq -r '.globalFiles')
+  local_files=$(echo "$status" | jq -r '.localFiles')
+  need_files=$(echo "$status" | jq -r '.needFiles')
+  case "$state" in
+    idle)     color="$GREEN" ;;
+    syncing)  color="$YELLOW" ;;
+    *)        color="$RED" ;;
+  esac
+  echo -e "  ${color}●${NC} $fid: $state  (local: $local_files, global: $global_files, need: $need_files)"
+  echo "    path: $fpath"
+done
+echo
+
+# Peers
+echo -e "${BOLD}Peers:${NC}"
+my_id=$(curl_api /system/status | jq -r '.myID')
+devices=$(curl_api /config/devices)
+connections=$(curl_api /system/connections)
+echo "$devices" | jq -r --arg me "$my_id" '.[] | select(.deviceID != $me) | "\(.deviceID)\t\(.name)"' | while IFS=$'\t' read -r did dname; do
+  conn_state=$(echo "$connections" | jq -r --arg id "$did" '.connections[$id].connected // false')
+  if [[ "$conn_state" == "true" ]]; then
+    echo -e "  ${GREEN}●${NC} $dname  (connected)"
+  else
+    echo -e "  ${YELLOW}○${NC} $dname  (offline)"
+  fi
+done
+echo
+
+# Conflict files
+echo -e "${BOLD}Conflict files:${NC}"
+conflicts=$(find "$HOME/.claude/memory" "$HOME/.claude/projects" -name '*.sync-conflict-*' 2>/dev/null || true)
+if [[ -z "$conflicts" ]]; then
+  echo -e "  ${GREEN}●${NC} none"
+else
+  echo "$conflicts" | sed 's/^/  /'
+  echo
+  echo -e "  ${YELLOW}!${NC} resolve via /memory-sync skill"
+fi
