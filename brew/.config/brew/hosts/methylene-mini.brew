@@ -15,3 +15,6 @@ enable "ai"
 enable "media"
 enable "communication"
 enable "knowledge"
+
+# Sync (claude memory across mesh)
+enable "sync"
