@@ -66,7 +66,7 @@ echo
 
 # Conflict files
 echo -e "${BOLD}Conflict files:${NC}"
-conflicts=$(find "$HOME/.claude/memory" "$HOME/.claude/projects" -name '*.sync-conflict-*' 2>/dev/null || true)
+conflicts=$(find "$HOME/.claude/memory" "$HOME/.claude/projects" -path '*/.stversions' -prune -o -name '*.sync-conflict-*' -print 2>/dev/null || true)
 if [[ -z "$conflicts" ]]; then
   echo -e "  ${GREEN}●${NC} none"
 else
