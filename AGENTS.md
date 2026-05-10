@@ -19,6 +19,7 @@ dotfiles/
 ├── karabiner/     # Keyboard remaps
 ├── ssh/           # SSH config
 ├── claude/        # Claude Code (commands, agents, skills, hooks)
+├── sync/          # Claude memory sync via Syncthing (folders.conf + helpers)
 └── stow/          # Stow ignore rules
 ```
 
@@ -34,6 +35,8 @@ dotfiles/
 | Add default app | `bootstrap/duti.sh` | By file extension |
 | Change editor keys | `nvim/.config/nvim/lua/mappings.lua` | |
 | Change tmux config | `tmux/.config/tmux/tmux.conf` | |
+| Add Claude memory sync target | `sync/.config/claude-sync/folders.conf` | Then `claude-sync-add-folder` (see `sync/README.md`) |
+| Check Claude sync health | `claude-sync-status` | Or `ssh studio claude-sync-status` |
 
 ## BOOTSTRAP
 
@@ -55,6 +58,8 @@ New machine setup: `./bootstrap/bootstrap.sh`
 | `duti.sh` | File associations | ✓ |
 | `vscodium.sh` | Editor extensions | ✓ |
 | `tailscale.sh` | Generate mesh SSH config + /etc/hosts from Tailscale (step 9, or manual) | ✓ |
+| `syncthing.sh` | Per-machine Syncthing setup for Claude memory sync (step 10) | ✓ |
+| `syncthing-mesh.sh` | One-shot mesh pairing across macOS peers (run after 2+ bootstrapped) | ✓ |
 
 ### Adding macOS Settings
 
@@ -111,3 +116,35 @@ stow -R <pkg>       # Re-stow single package
 - Fish has these built-in
 - Atuin handles history for both shells
 - Karabiner handles Caps Lock→Control (persistent across reboots)
+
+## CLAUDE MEMORY SYNC
+
+Real-time bidirectional sync of `~/.claude/memory/` and `~/.claude/projects/*/memory/` across the macOS mesh (studio, macbook, mini) via Syncthing. Live since 2026-05-10. See `sync/README.md` for full details.
+
+**TL;DR daily commands:**
+
+```bash
+claude-sync-status                            # health check (folders, peers, conflicts)
+~/dotfiles/bootstrap/syncthing.sh             # idempotent re-bootstrap (e.g., after stignore changes)
+~/dotfiles/bootstrap/syncthing-mesh.sh        # re-pair after a new peer comes online (idempotent)
+```
+
+**Two synced folders:**
+
+| Folder ID | Path | Notes |
+|---|---|---|
+| `claude-mem-global` | `~/.claude/memory/` | global memories — sync everything |
+| `claude-mem-projects` | `~/.claude/projects/` | re-include only `**/memory/**`; everything else (session jsonl, transcripts) ignored |
+
+**Key files:**
+
+- `sync/.config/claude-sync/folders.conf` — declarative folder list (single source of truth)
+- `sync/.config/claude-sync/stignore/` — `.stignore` templates (deployed by `syncthing.sh` via `install -m 644`)
+- `sync/.local/bin/claude-sync-status` — health check helper
+- `sync/.local/bin/claude-sync-add-folder` — add new sync target (e.g., to extend to plans later)
+- `bootstrap/syncthing.sh` — per-machine setup (idempotent; reads API key BEFORE waiting for daemon since Syncthing v2 requires auth on `/rest/system/ping`)
+- `bootstrap/syncthing-mesh.sh` — mesh pairing via SSH-tunneled REST. Skips unreachable peers. Optional `--seed-from <host>` for canonical-overwrite seeding.
+
+**Conflicts** become `<original>.sync-conflict-<ts>-<deviceID>.<ext>` files. Resolve via the `/memory-sync` skill (audit, dedupe, merge). Deleted files are kept in `<folder>/.stversions/` for 5 versions as insurance.
+
+**Bootstrap on a new machine:** `bootstrap.sh` Step 10 handles the per-machine setup automatically. Then run `syncthing-mesh.sh` once from any peer to wire pairings.

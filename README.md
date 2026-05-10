@@ -28,6 +28,7 @@ dotfiles/
 ├── karabiner/     # Keyboard remaps
 ├── ssh/           # SSH config
 ├── claude/        # Claude Code commands
+├── sync/          # Claude memory sync via Syncthing (see sync/README.md)
 └── stow/          # Stow settings
 ```
 
